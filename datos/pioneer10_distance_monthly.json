@@ -1,0 +1,4608 @@
+[
+{
+"date": "1972-03-04",
+"sun_au": 0.992,
+"earth_au": 0.005,
+"earth_km": 744014,
+"light_time_h": 0.001
+},
+{
+"date": "1972-04-04",
+"sun_au": 1.1053,
+"earth_au": 0.1644,
+"earth_km": 24598289,
+"light_time_h": 0.023
+},
+{
+"date": "1972-05-04",
+"sun_au": 1.3349,
+"earth_au": 0.3377,
+"earth_km": 50522869,
+"light_time_h": 0.047
+},
+{
+"date": "1972-06-04",
+"sun_au": 1.6178,
+"earth_au": 0.628,
+"earth_km": 93940106,
+"light_time_h": 0.087
+},
+{
+"date": "1972-07-04",
+"sun_au": 1.8985,
+"earth_au": 1.0506,
+"earth_km": 157162704,
+"light_time_h": 0.146
+},
+{
+"date": "1972-08-04",
+"sun_au": 2.181,
+"earth_au": 1.6076,
+"earth_km": 240497118,
+"light_time_h": 0.223
+},
+{
+"date": "1972-09-04",
+"sun_au": 2.4504,
+"earth_au": 2.2393,
+"earth_km": 335001487,
+"light_time_h": 0.31
+},
+{
+"date": "1972-10-04",
+"sun_au": 2.6973,
+"earth_au": 2.8689,
+"earth_km": 429178364,
+"light_time_h": 0.398
+},
+{
+"date": "1972-11-04",
+"sun_au": 2.9383,
+"earth_au": 3.4795,
+"earth_km": 520531967,
+"light_time_h": 0.482
+},
+{
+"date": "1972-12-04",
+"sun_au": 3.1584,
+"earth_au": 3.9764,
+"earth_km": 594860033,
+"light_time_h": 0.551
+},
+{
+"date": "1973-01-04",
+"sun_au": 3.3728,
+"earth_au": 4.3424,
+"earth_km": 649614460,
+"light_time_h": 0.602
+},
+{
+"date": "1973-02-04",
+"sun_au": 3.5748,
+"earth_au": 4.5245,
+"earth_km": 676861590,
+"light_time_h": 0.627
+},
+{
+"date": "1973-03-04",
+"sun_au": 3.7474,
+"earth_au": 4.5227,
+"earth_km": 676589629,
+"light_time_h": 0.627
+},
+{
+"date": "1973-04-04",
+"sun_au": 3.9279,
+"earth_au": 4.3549,
+"earth_km": 651485966,
+"light_time_h": 0.604
+},
+{
+"date": "1973-05-04",
+"sun_au": 4.0928,
+"earth_au": 4.0753,
+"earth_km": 609659930,
+"light_time_h": 0.565
+},
+{
+"date": "1973-06-04",
+"sun_au": 4.2535,
+"earth_au": 3.7542,
+"earth_km": 561613209,
+"light_time_h": 0.52
+},
+{
+"date": "1973-07-04",
+"sun_au": 4.4003,
+"earth_au": 3.5328,
+"earth_km": 528494061,
+"light_time_h": 0.49
+},
+{
+"date": "1973-08-04",
+"sun_au": 4.5434,
+"earth_au": 3.529,
+"earth_km": 527937272,
+"light_time_h": 0.489
+},
+{
+"date": "1973-09-04",
+"sun_au": 4.6783,
+"earth_au": 3.8158,
+"earth_km": 570838192,
+"light_time_h": 0.529
+},
+{
+"date": "1973-10-04",
+"sun_au": 4.8018,
+"earth_au": 4.3138,
+"earth_km": 645339521,
+"light_time_h": 0.598
+},
+{
+"date": "1973-11-04",
+"sun_au": 4.9236,
+"earth_au": 4.9301,
+"earth_km": 737528251,
+"light_time_h": 0.683
+},
+{
+"date": "1973-12-04",
+"sun_au": 5.0518,
+"earth_au": 5.5189,
+"earth_km": 825614957,
+"light_time_h": 0.765
+},
+{
+"date": "1974-01-04",
+"sun_au": 5.0701,
+"earth_au": 5.8602,
+"earth_km": 876674710,
+"light_time_h": 0.812
+},
+{
+"date": "1974-02-04",
+"sun_au": 5.1001,
+"earth_au": 6.0658,
+"earth_km": 907435321,
+"light_time_h": 0.841
+},
+{
+"date": "1974-03-04",
+"sun_au": 5.1435,
+"earth_au": 6.1178,
+"earth_km": 915210897,
+"light_time_h": 0.848
+},
+{
+"date": "1974-04-04",
+"sun_au": 5.2088,
+"earth_au": 6.0264,
+"earth_km": 901543142,
+"light_time_h": 0.835
+},
+{
+"date": "1974-05-04",
+"sun_au": 5.2887,
+"earth_au": 5.8088,
+"earth_km": 868991279,
+"light_time_h": 0.805
+},
+{
+"date": "1974-06-04",
+"sun_au": 5.3874,
+"earth_au": 5.4931,
+"earth_km": 821759716,
+"light_time_h": 0.761
+},
+{
+"date": "1974-07-04",
+"sun_au": 5.4976,
+"earth_au": 5.1633,
+"earth_km": 772421152,
+"light_time_h": 0.716
+},
+{
+"date": "1974-08-04",
+"sun_au": 5.6254,
+"earth_au": 4.8895,
+"earth_km": 731455543,
+"light_time_h": 0.678
+},
+{
+"date": "1974-09-04",
+"sun_au": 5.7664,
+"earth_au": 4.7917,
+"earth_km": 716828230,
+"light_time_h": 0.664
+},
+{
+"date": "1974-10-04",
+"sun_au": 5.9142,
+"earth_au": 4.9431,
+"earth_km": 739477310,
+"light_time_h": 0.685
+},
+{
+"date": "1974-11-04",
+"sun_au": 6.0776,
+"earth_au": 5.3591,
+"earth_km": 801711436,
+"light_time_h": 0.743
+},
+{
+"date": "1974-12-04",
+"sun_au": 6.2451,
+"earth_au": 5.9397,
+"earth_km": 888568991,
+"light_time_h": 0.823
+},
+{
+"date": "1975-01-04",
+"sun_au": 6.4269,
+"earth_au": 6.6073,
+"earth_km": 988438592,
+"light_time_h": 0.916
+},
+{
+"date": "1975-02-04",
+"sun_au": 6.6166,
+"earth_au": 7.229,
+"earth_km": 1081440449,
+"light_time_h": 1.002
+},
+{
+"date": "1975-03-04",
+"sun_au": 6.794,
+"earth_au": 7.6766,
+"earth_km": 1148403617,
+"light_time_h": 1.064
+},
+{
+"date": "1975-04-04",
+"sun_au": 6.9964,
+"earth_au": 7.9958,
+"earth_km": 1196152915,
+"light_time_h": 1.108
+},
+{
+"date": "1975-05-04",
+"sun_au": 7.1977,
+"earth_au": 8.1107,
+"earth_km": 1213338473,
+"light_time_h": 1.124
+},
+{
+"date": "1975-06-04",
+"sun_au": 7.4107,
+"earth_au": 8.0432,
+"earth_km": 1203250194,
+"light_time_h": 1.115
+},
+{
+"date": "1975-07-04",
+"sun_au": 7.6211,
+"earth_au": 7.843,
+"earth_km": 1173290237,
+"light_time_h": 1.087
+},
+{
+"date": "1975-08-04",
+"sun_au": 7.8424,
+"earth_au": 7.5772,
+"earth_km": 1133527299,
+"light_time_h": 1.05
+},
+{
+"date": "1975-09-04",
+"sun_au": 8.0673,
+"earth_au": 7.3649,
+"earth_km": 1101777586,
+"light_time_h": 1.021
+},
+{
+"date": "1975-10-04",
+"sun_au": 8.2878,
+"earth_au": 7.3298,
+"earth_km": 1096528259,
+"light_time_h": 1.016
+},
+{
+"date": "1975-11-04",
+"sun_au": 8.5184,
+"earth_au": 7.5592,
+"earth_km": 1130845716,
+"light_time_h": 1.048
+},
+{
+"date": "1975-12-04",
+"sun_au": 8.7438,
+"earth_au": 8.0446,
+"earth_km": 1203456428,
+"light_time_h": 1.115
+},
+{
+"date": "1976-01-04",
+"sun_au": 8.9788,
+"earth_au": 8.7344,
+"earth_km": 1306647974,
+"light_time_h": 1.211
+},
+{
+"date": "1976-02-04",
+"sun_au": 9.2158,
+"earth_au": 9.481,
+"earth_km": 1418344183,
+"light_time_h": 1.314
+},
+{
+"date": "1976-03-04",
+"sun_au": 9.4389,
+"earth_au": 10.1132,
+"earth_km": 1512908570,
+"light_time_h": 1.402
+},
+{
+"date": "1976-04-04",
+"sun_au": 9.6789,
+"earth_au": 10.6249,
+"earth_km": 1589457027,
+"light_time_h": 1.473
+},
+{
+"date": "1976-05-04",
+"sun_au": 9.9124,
+"earth_au": 10.9098,
+"earth_km": 1632089350,
+"light_time_h": 1.512
+},
+{
+"date": "1976-06-04",
+"sun_au": 10.1548,
+"earth_au": 10.9796,
+"earth_km": 1642531682,
+"light_time_h": 1.522
+},
+{
+"date": "1976-07-04",
+"sun_au": 10.3903,
+"earth_au": 10.8625,
+"earth_km": 1625013328,
+"light_time_h": 1.506
+},
+{
+"date": "1976-08-04",
+"sun_au": 10.6345,
+"earth_au": 10.6244,
+"earth_km": 1589387428,
+"light_time_h": 1.473
+},
+{
+"date": "1976-09-04",
+"sun_au": 10.8795,
+"earth_au": 10.3785,
+"earth_km": 1552596177,
+"light_time_h": 1.439
+},
+{
+"date": "1976-10-04",
+"sun_au": 11.1171,
+"earth_au": 10.2591,
+"earth_km": 1534736984,
+"light_time_h": 1.422
+},
+{
+"date": "1976-11-04",
+"sun_au": 11.3633,
+"earth_au": 10.3731,
+"earth_km": 1551795349,
+"light_time_h": 1.438
+},
+{
+"date": "1976-12-04",
+"sun_au": 11.6019,
+"earth_au": 10.76,
+"earth_km": 1609671973,
+"light_time_h": 1.491
+},
+{
+"date": "1977-01-04",
+"sun_au": 11.8488,
+"earth_au": 11.3994,
+"earth_km": 1705322484,
+"light_time_h": 1.58
+},
+{
+"date": "1977-02-04",
+"sun_au": 12.0961,
+"earth_au": 12.1596,
+"earth_km": 1819044350,
+"light_time_h": 1.685
+},
+{
+"date": "1977-03-04",
+"sun_au": 12.3196,
+"earth_au": 12.8279,
+"earth_km": 1919021612,
+"light_time_h": 1.778
+},
+{
+"date": "1977-04-04",
+"sun_au": 12.5674,
+"earth_au": 13.4333,
+"earth_km": 2009596718,
+"light_time_h": 1.862
+},
+{
+"date": "1977-05-04",
+"sun_au": 12.8073,
+"earth_au": 13.8135,
+"earth_km": 2066469089,
+"light_time_h": 1.915
+},
+{
+"date": "1977-06-04",
+"sun_au": 13.0553,
+"earth_au": 13.9673,
+"earth_km": 2089478503,
+"light_time_h": 1.936
+},
+{
+"date": "1977-07-04",
+"sun_au": 13.2955,
+"earth_au": 13.9057,
+"earth_km": 2080270443,
+"light_time_h": 1.928
+},
+{
+"date": "1977-08-04",
+"sun_au": 13.5437,
+"earth_au": 13.6912,
+"earth_km": 2048170064,
+"light_time_h": 1.898
+},
+{
+"date": "1977-09-04",
+"sun_au": 13.7919,
+"earth_au": 13.4309,
+"earth_km": 2009227805,
+"light_time_h": 1.862
+},
+{
+"date": "1977-10-04",
+"sun_au": 14.0321,
+"earth_au": 13.2626,
+"earth_km": 1984063113,
+"light_time_h": 1.838
+},
+{
+"date": "1977-11-04",
+"sun_au": 14.2803,
+"earth_au": 13.3006,
+"earth_km": 1989742640,
+"light_time_h": 1.844
+},
+{
+"date": "1977-12-04",
+"sun_au": 14.5204,
+"earth_au": 13.6108,
+"earth_km": 2036153708,
+"light_time_h": 1.887
+},
+{
+"date": "1978-01-04",
+"sun_au": 14.7685,
+"earth_au": 14.195,
+"earth_km": 2123546019,
+"light_time_h": 1.968
+},
+{
+"date": "1978-02-04",
+"sun_au": 15.0164,
+"earth_au": 14.941,
+"earth_km": 2235139920,
+"light_time_h": 2.071
+},
+{
+"date": "1978-03-04",
+"sun_au": 15.2403,
+"earth_au": 15.6307,
+"earth_km": 2338315191,
+"light_time_h": 2.167
+},
+{
+"date": "1978-04-04",
+"sun_au": 15.488,
+"earth_au": 16.2851,
+"earth_km": 2436212189,
+"light_time_h": 2.257
+},
+{
+"date": "1978-05-04",
+"sun_au": 15.7276,
+"earth_au": 16.7221,
+"earth_km": 2501591792,
+"light_time_h": 2.318
+},
+{
+"date": "1978-06-04",
+"sun_au": 15.9751,
+"earth_au": 16.93,
+"earth_km": 2532694886,
+"light_time_h": 2.347
+},
+{
+"date": "1978-07-04",
+"sun_au": 16.2144,
+"earth_au": 16.9066,
+"earth_km": 2529186132,
+"light_time_h": 2.343
+},
+{
+"date": "1978-08-04",
+"sun_au": 16.4616,
+"earth_au": 16.7104,
+"earth_km": 2499835297,
+"light_time_h": 2.316
+},
+{
+"date": "1978-09-04",
+"sun_au": 16.7086,
+"earth_au": 16.4438,
+"earth_km": 2459961134,
+"light_time_h": 2.279
+},
+{
+"date": "1978-10-04",
+"sun_au": 16.9475,
+"earth_au": 16.246,
+"earth_km": 2430360863,
+"light_time_h": 2.252
+},
+{
+"date": "1978-11-04",
+"sun_au": 17.1941,
+"earth_au": 16.234,
+"earth_km": 2428566804,
+"light_time_h": 2.25
+},
+{
+"date": "1978-12-04",
+"sun_au": 17.4326,
+"earth_au": 16.4895,
+"earth_km": 2466789507,
+"light_time_h": 2.286
+},
+{
+"date": "1979-01-04",
+"sun_au": 17.6788,
+"earth_au": 17.0284,
+"earth_km": 2547414547,
+"light_time_h": 2.36
+},
+{
+"date": "1979-02-04",
+"sun_au": 17.9248,
+"earth_au": 17.7547,
+"earth_km": 2656067804,
+"light_time_h": 2.461
+},
+{
+"date": "1979-03-04",
+"sun_au": 18.1468,
+"earth_au": 18.4512,
+"earth_km": 2760263507,
+"light_time_h": 2.558
+},
+{
+"date": "1979-04-04",
+"sun_au": 18.3924,
+"earth_au": 19.1337,
+"earth_km": 2862365100,
+"light_time_h": 2.652
+},
+{
+"date": "1979-05-04",
+"sun_au": 18.6299,
+"earth_au": 19.6079,
+"earth_km": 2933297540,
+"light_time_h": 2.718
+},
+{
+"date": "1979-06-04",
+"sun_au": 18.8751,
+"earth_au": 19.8534,
+"earth_km": 2970033233,
+"light_time_h": 2.752
+},
+{
+"date": "1979-07-04",
+"sun_au": 19.1122,
+"earth_au": 19.8579,
+"earth_km": 2970696141,
+"light_time_h": 2.753
+},
+{
+"date": "1979-08-04",
+"sun_au": 19.357,
+"earth_au": 19.6764,
+"earth_km": 2943540752,
+"light_time_h": 2.727
+},
+{
+"date": "1979-09-04",
+"sun_au": 19.6016,
+"earth_au": 19.4072,
+"earth_km": 2903269917,
+"light_time_h": 2.69
+},
+{
+"date": "1979-10-04",
+"sun_au": 19.8381,
+"earth_au": 19.1896,
+"earth_km": 2870717369,
+"light_time_h": 2.66
+},
+{
+"date": "1979-11-04",
+"sun_au": 20.0822,
+"earth_au": 19.1423,
+"earth_km": 2863646782,
+"light_time_h": 2.653
+},
+{
+"date": "1979-12-04",
+"sun_au": 20.3182,
+"earth_au": 19.3571,
+"earth_km": 2895779081,
+"light_time_h": 2.683
+},
+{
+"date": "1980-01-04",
+"sun_au": 20.5619,
+"earth_au": 19.8597,
+"earth_km": 2970961505,
+"light_time_h": 2.753
+},
+{
+"date": "1980-02-04",
+"sun_au": 20.8054,
+"earth_au": 20.5667,
+"earth_km": 3076728384,
+"light_time_h": 2.851
+},
+{
+"date": "1980-03-04",
+"sun_au": 21.0329,
+"earth_au": 21.2884,
+"earth_km": 3184696837,
+"light_time_h": 2.951
+},
+{
+"date": "1980-04-04",
+"sun_au": 21.2759,
+"earth_au": 21.9839,
+"earth_km": 3288747646,
+"light_time_h": 3.047
+},
+{
+"date": "1980-05-04",
+"sun_au": 21.5109,
+"earth_au": 22.4771,
+"earth_km": 3362524360,
+"light_time_h": 3.116
+},
+{
+"date": "1980-06-04",
+"sun_au": 21.7535,
+"earth_au": 22.7423,
+"earth_km": 3402200489,
+"light_time_h": 3.152
+},
+{
+"date": "1980-07-04",
+"sun_au": 21.9881,
+"earth_au": 22.761,
+"earth_km": 3404998957,
+"light_time_h": 3.155
+},
+{
+"date": "1980-08-04",
+"sun_au": 22.2303,
+"earth_au": 22.5865,
+"earth_km": 3378888230,
+"light_time_h": 3.131
+},
+{
+"date": "1980-09-04",
+"sun_au": 22.4723,
+"earth_au": 22.3151,
+"earth_km": 3338291932,
+"light_time_h": 3.093
+},
+{
+"date": "1980-10-04",
+"sun_au": 22.7063,
+"earth_au": 22.0866,
+"earth_km": 3304113717,
+"light_time_h": 3.061
+},
+{
+"date": "1980-11-04",
+"sun_au": 22.9478,
+"earth_au": 22.0204,
+"earth_km": 3294207296,
+"light_time_h": 3.052
+},
+{
+"date": "1980-12-04",
+"sun_au": 23.1814,
+"earth_au": 22.213,
+"earth_km": 3323010289,
+"light_time_h": 3.079
+},
+{
+"date": "1981-01-04",
+"sun_au": 23.4225,
+"earth_au": 22.6946,
+"earth_km": 3395068542,
+"light_time_h": 3.146
+},
+{
+"date": "1981-02-04",
+"sun_au": 23.6634,
+"earth_au": 23.3892,
+"earth_km": 3498970868,
+"light_time_h": 3.242
+},
+{
+"date": "1981-03-04",
+"sun_au": 23.8808,
+"earth_au": 24.0849,
+"earth_km": 3603043985,
+"light_time_h": 3.338
+},
+{
+"date": "1981-04-04",
+"sun_au": 24.1213,
+"earth_au": 24.7924,
+"earth_km": 3708886460,
+"light_time_h": 3.437
+},
+{
+"date": "1981-05-04",
+"sun_au": 24.3538,
+"earth_au": 25.305,
+"earth_km": 3785580287,
+"light_time_h": 3.508
+},
+{
+"date": "1981-06-04",
+"sun_au": 24.5939,
+"earth_au": 25.5919,
+"earth_km": 3828491429,
+"light_time_h": 3.547
+},
+{
+"date": "1981-07-04",
+"sun_au": 24.8261,
+"earth_au": 25.6276,
+"earth_km": 3833838552,
+"light_time_h": 3.552
+},
+{
+"date": "1981-08-04",
+"sun_au": 25.0659,
+"earth_au": 25.4628,
+"earth_km": 3809187778,
+"light_time_h": 3.529
+},
+{
+"date": "1981-09-04",
+"sun_au": 25.3054,
+"earth_au": 25.191,
+"earth_km": 3768527114,
+"light_time_h": 3.492
+},
+{
+"date": "1981-10-04",
+"sun_au": 25.537,
+"earth_au": 24.9517,
+"earth_km": 3732727449,
+"light_time_h": 3.459
+},
+{
+"date": "1981-11-04",
+"sun_au": 25.7762,
+"earth_au": 24.8648,
+"earth_km": 3719725258,
+"light_time_h": 3.447
+},
+{
+"date": "1981-12-04",
+"sun_au": 26.0074,
+"earth_au": 25.0322,
+"earth_km": 3744765645,
+"light_time_h": 3.47
+},
+{
+"date": "1982-01-04",
+"sun_au": 26.2462,
+"earth_au": 25.4897,
+"earth_km": 3813205353,
+"light_time_h": 3.533
+},
+{
+"date": "1982-02-04",
+"sun_au": 26.4847,
+"earth_au": 26.1692,
+"earth_km": 3914851394,
+"light_time_h": 3.627
+},
+{
+"date": "1982-03-04",
+"sun_au": 26.7,
+"earth_au": 26.8623,
+"earth_km": 4018541368,
+"light_time_h": 3.723
+},
+{
+"date": "1982-04-04",
+"sun_au": 26.9382,
+"earth_au": 27.5781,
+"earth_km": 4125628951,
+"light_time_h": 3.823
+},
+{
+"date": "1982-05-04",
+"sun_au": 27.1686,
+"earth_au": 28.1059,
+"earth_km": 4204579386,
+"light_time_h": 3.896
+},
+{
+"date": "1982-06-04",
+"sun_au": 27.4064,
+"earth_au": 28.4101,
+"earth_km": 4250095382,
+"light_time_h": 3.938
+},
+{
+"date": "1982-07-04",
+"sun_au": 27.6365,
+"earth_au": 28.46,
+"earth_km": 4257556255,
+"light_time_h": 3.945
+},
+{
+"date": "1982-08-04",
+"sun_au": 27.874,
+"earth_au": 28.3037,
+"earth_km": 4234173946,
+"light_time_h": 3.923
+},
+{
+"date": "1982-09-04",
+"sun_au": 28.1113,
+"earth_au": 28.0321,
+"earth_km": 4193549100,
+"light_time_h": 3.886
+},
+{
+"date": "1982-10-04",
+"sun_au": 28.3408,
+"earth_au": 27.7845,
+"earth_km": 4156498848,
+"light_time_h": 3.851
+},
+{
+"date": "1982-11-04",
+"sun_au": 28.5778,
+"earth_au": 27.6809,
+"earth_km": 4141007479,
+"light_time_h": 3.837
+},
+{
+"date": "1982-12-04",
+"sun_au": 28.807,
+"earth_au": 27.8276,
+"earth_km": 4162951931,
+"light_time_h": 3.857
+},
+{
+"date": "1983-01-04",
+"sun_au": 29.0437,
+"earth_au": 28.2646,
+"earth_km": 4228331027,
+"light_time_h": 3.918
+},
+{
+"date": "1983-02-04",
+"sun_au": 29.2801,
+"earth_au": 28.9307,
+"earth_km": 4327975570,
+"light_time_h": 4.01
+},
+{
+"date": "1983-03-04",
+"sun_au": 29.4935,
+"earth_au": 29.6208,
+"earth_km": 4431207212,
+"light_time_h": 4.106
+},
+{
+"date": "1983-04-04",
+"sun_au": 29.7297,
+"earth_au": 30.3427,
+"earth_km": 4539208095,
+"light_time_h": 4.206
+},
+{
+"date": "1983-05-04",
+"sun_au": 29.9581,
+"earth_au": 30.8826,
+"earth_km": 4619977399,
+"light_time_h": 4.281
+},
+{
+"date": "1983-06-04",
+"sun_au": 30.1939,
+"earth_au": 31.2014,
+"earth_km": 4667666255,
+"light_time_h": 4.325
+},
+{
+"date": "1983-07-04",
+"sun_au": 30.4212,
+"earth_au": 31.2626,
+"earth_km": 4676811717,
+"light_time_h": 4.333
+},
+{
+"date": "1983-08-04",
+"sun_au": 30.6567,
+"earth_au": 31.1137,
+"earth_km": 4654542868,
+"light_time_h": 4.313
+},
+{
+"date": "1983-09-04",
+"sun_au": 30.8921,
+"earth_au": 30.8427,
+"earth_km": 4613997158,
+"light_time_h": 4.275
+},
+{
+"date": "1983-10-04",
+"sun_au": 31.1197,
+"earth_au": 30.5883,
+"earth_km": 4575938212,
+"light_time_h": 4.24
+},
+{
+"date": "1983-11-04",
+"sun_au": 31.3548,
+"earth_au": 30.4709,
+"earth_km": 4558381963,
+"light_time_h": 4.224
+},
+{
+"date": "1983-12-04",
+"sun_au": 31.5821,
+"earth_au": 30.6002,
+"earth_km": 4577723374,
+"light_time_h": 4.242
+},
+{
+"date": "1984-01-04",
+"sun_au": 31.8169,
+"earth_au": 31.0197,
+"earth_km": 4640485210,
+"light_time_h": 4.3
+},
+{
+"date": "1984-02-04",
+"sun_au": 32.0515,
+"earth_au": 31.674,
+"earth_km": 4738355638,
+"light_time_h": 4.39
+},
+{
+"date": "1984-03-04",
+"sun_au": 32.2708,
+"earth_au": 32.3855,
+"earth_km": 4844799313,
+"light_time_h": 4.489
+},
+{
+"date": "1984-04-04",
+"sun_au": 32.5051,
+"earth_au": 33.1086,
+"earth_km": 4952975081,
+"light_time_h": 4.589
+},
+{
+"date": "1984-05-04",
+"sun_au": 32.7317,
+"earth_au": 33.6519,
+"earth_km": 5034245340,
+"light_time_h": 4.665
+},
+{
+"date": "1984-06-04",
+"sun_au": 32.9657,
+"earth_au": 33.9745,
+"earth_km": 5082507298,
+"light_time_h": 4.709
+},
+{
+"date": "1984-07-04",
+"sun_au": 33.1921,
+"earth_au": 34.039,
+"earth_km": 5092162690,
+"light_time_h": 4.718
+},
+{
+"date": "1984-08-04",
+"sun_au": 33.4258,
+"earth_au": 33.8909,
+"earth_km": 5070011314,
+"light_time_h": 4.698
+},
+{
+"date": "1984-09-04",
+"sun_au": 33.6595,
+"earth_au": 33.6186,
+"earth_km": 5029272264,
+"light_time_h": 4.66
+},
+{
+"date": "1984-10-04",
+"sun_au": 33.8854,
+"earth_au": 33.3611,
+"earth_km": 4990748862,
+"light_time_h": 4.624
+},
+{
+"date": "1984-11-04",
+"sun_au": 34.1188,
+"earth_au": 33.2388,
+"earth_km": 4972457662,
+"light_time_h": 4.607
+},
+{
+"date": "1984-12-04",
+"sun_au": 34.3445,
+"earth_au": 33.3621,
+"earth_km": 4990904024,
+"light_time_h": 4.624
+},
+{
+"date": "1985-01-04",
+"sun_au": 34.5775,
+"earth_au": 33.7753,
+"earth_km": 5052720314,
+"light_time_h": 4.682
+},
+{
+"date": "1985-02-04",
+"sun_au": 34.8104,
+"earth_au": 34.4247,
+"earth_km": 5149865831,
+"light_time_h": 4.772
+},
+{
+"date": "1985-03-04",
+"sun_au": 35.0207,
+"earth_au": 35.1095,
+"earth_km": 5252305225,
+"light_time_h": 4.867
+},
+{
+"date": "1985-04-04",
+"sun_au": 35.2533,
+"earth_au": 35.8363,
+"earth_km": 5361031635,
+"light_time_h": 4.967
+},
+{
+"date": "1985-05-04",
+"sun_au": 35.4784,
+"earth_au": 36.3881,
+"earth_km": 5443579157,
+"light_time_h": 5.044
+},
+{
+"date": "1985-06-04",
+"sun_au": 35.7108,
+"earth_au": 36.7214,
+"earth_km": 5493438731,
+"light_time_h": 5.09
+},
+{
+"date": "1985-07-04",
+"sun_au": 35.9356,
+"earth_au": 36.7951,
+"earth_km": 5504462577,
+"light_time_h": 5.1
+},
+{
+"date": "1985-08-04",
+"sun_au": 36.1678,
+"earth_au": 36.6529,
+"earth_km": 5483191393,
+"light_time_h": 5.081
+},
+{
+"date": "1985-09-04",
+"sun_au": 36.3998,
+"earth_au": 36.3813,
+"earth_km": 5442563156,
+"light_time_h": 5.043
+},
+{
+"date": "1985-10-04",
+"sun_au": 36.6242,
+"earth_au": 36.119,
+"earth_km": 5403325217,
+"light_time_h": 5.007
+},
+{
+"date": "1985-11-04",
+"sun_au": 36.856,
+"earth_au": 35.9865,
+"earth_km": 5383510133,
+"light_time_h": 4.988
+},
+{
+"date": "1985-12-04",
+"sun_au": 37.0802,
+"earth_au": 36.0967,
+"earth_km": 5399993208,
+"light_time_h": 5.003
+},
+{
+"date": "1986-01-04",
+"sun_au": 37.3117,
+"earth_au": 36.4964,
+"earth_km": 5459782348,
+"light_time_h": 5.059
+},
+{
+"date": "1986-02-04",
+"sun_au": 37.5431,
+"earth_au": 37.1362,
+"earth_km": 5555494164,
+"light_time_h": 5.148
+},
+{
+"date": "1986-03-04",
+"sun_au": 37.752,
+"earth_au": 37.8179,
+"earth_km": 5657473705,
+"light_time_h": 5.242
+},
+{
+"date": "1986-04-04",
+"sun_au": 37.9832,
+"earth_au": 38.5476,
+"earth_km": 5766642793,
+"light_time_h": 5.343
+},
+{
+"date": "1986-05-04",
+"sun_au": 38.2067,
+"earth_au": 39.1068,
+"earth_km": 5850293953,
+"light_time_h": 5.421
+},
+{
+"date": "1986-06-04",
+"sun_au": 38.4376,
+"earth_au": 39.4495,
+"earth_km": 5901560654,
+"light_time_h": 5.468
+},
+{
+"date": "1986-07-04",
+"sun_au": 38.661,
+"earth_au": 39.5313,
+"earth_km": 5913803741,
+"light_time_h": 5.48
+},
+{
+"date": "1986-08-04",
+"sun_au": 38.8917,
+"earth_au": 39.3945,
+"earth_km": 5893327128,
+"light_time_h": 5.461
+},
+{
+"date": "1986-09-04",
+"sun_au": 39.1223,
+"earth_au": 39.1237,
+"earth_km": 5852815280,
+"light_time_h": 5.423
+},
+{
+"date": "1986-10-04",
+"sun_au": 39.3453,
+"earth_au": 38.8572,
+"earth_km": 5812960676,
+"light_time_h": 5.386
+},
+{
+"date": "1986-11-04",
+"sun_au": 39.5757,
+"earth_au": 38.7158,
+"earth_km": 5791805356,
+"light_time_h": 5.366
+},
+{
+"date": "1986-12-04",
+"sun_au": 39.7985,
+"earth_au": 38.8144,
+"earth_km": 5806546594,
+"light_time_h": 5.38
+},
+{
+"date": "1987-01-04",
+"sun_au": 40.0285,
+"earth_au": 39.2019,
+"earth_km": 5864522225,
+"light_time_h": 5.434
+},
+{
+"date": "1987-02-04",
+"sun_au": 40.2585,
+"earth_au": 39.8329,
+"earth_km": 5958922966,
+"light_time_h": 5.521
+},
+{
+"date": "1987-03-04",
+"sun_au": 40.4661,
+"earth_au": 40.5116,
+"earth_km": 6060447445,
+"light_time_h": 5.615
+},
+{
+"date": "1987-04-04",
+"sun_au": 40.6958,
+"earth_au": 41.2436,
+"earth_km": 6169957567,
+"light_time_h": 5.717
+},
+{
+"date": "1987-05-04",
+"sun_au": 40.918,
+"earth_au": 41.8091,
+"earth_km": 6254554112,
+"light_time_h": 5.795
+},
+{
+"date": "1987-06-04",
+"sun_au": 41.1475,
+"earth_au": 42.1601,
+"earth_km": 6307055347,
+"light_time_h": 5.844
+},
+{
+"date": "1987-07-04",
+"sun_au": 41.3695,
+"earth_au": 42.2492,
+"earth_km": 6320390519,
+"light_time_h": 5.856
+},
+{
+"date": "1987-08-04",
+"sun_au": 41.5988,
+"earth_au": 42.1172,
+"earth_km": 6300644732,
+"light_time_h": 5.838
+},
+{
+"date": "1987-09-04",
+"sun_au": 41.828,
+"earth_au": 41.8473,
+"earth_km": 6260267142,
+"light_time_h": 5.801
+},
+{
+"date": "1987-10-04",
+"sun_au": 42.0497,
+"earth_au": 41.5773,
+"earth_km": 6219882609,
+"light_time_h": 5.763
+},
+{
+"date": "1987-11-04",
+"sun_au": 42.2787,
+"earth_au": 41.428,
+"earth_km": 6197536039,
+"light_time_h": 5.742
+},
+{
+"date": "1987-12-04",
+"sun_au": 42.5001,
+"earth_au": 41.516,
+"earth_km": 6210703366,
+"light_time_h": 5.755
+},
+{
+"date": "1988-01-04",
+"sun_au": 42.7289,
+"earth_au": 41.8924,
+"earth_km": 6267015365,
+"light_time_h": 5.807
+},
+{
+"date": "1988-02-04",
+"sun_au": 42.9575,
+"earth_au": 42.5152,
+"earth_km": 6360184902,
+"light_time_h": 5.893
+},
+{
+"date": "1988-03-04",
+"sun_au": 43.1712,
+"earth_au": 43.2155,
+"earth_km": 6464940175,
+"light_time_h": 5.99
+},
+{
+"date": "1988-04-04",
+"sun_au": 43.3996,
+"earth_au": 43.9464,
+"earth_km": 6574294586,
+"light_time_h": 6.092
+},
+{
+"date": "1988-05-04",
+"sun_au": 43.6205,
+"earth_au": 44.5112,
+"earth_km": 6658782668,
+"light_time_h": 6.17
+},
+{
+"date": "1988-06-04",
+"sun_au": 43.8486,
+"earth_au": 44.8613,
+"earth_km": 6711150389,
+"light_time_h": 6.218
+},
+{
+"date": "1988-07-04",
+"sun_au": 44.0693,
+"earth_au": 44.9491,
+"earth_km": 6724293264,
+"light_time_h": 6.231
+},
+{
+"date": "1988-08-04",
+"sun_au": 44.2973,
+"earth_au": 44.8155,
+"earth_km": 6704296259,
+"light_time_h": 6.212
+},
+{
+"date": "1988-09-04",
+"sun_au": 44.5252,
+"earth_au": 44.5438,
+"earth_km": 6663663363,
+"light_time_h": 6.174
+},
+{
+"date": "1988-10-04",
+"sun_au": 44.7456,
+"earth_au": 44.2726,
+"earth_km": 6623079669,
+"light_time_h": 6.137
+},
+{
+"date": "1988-11-04",
+"sun_au": 44.9733,
+"earth_au": 44.1222,
+"earth_km": 6600584111,
+"light_time_h": 6.116
+},
+{
+"date": "1988-12-04",
+"sun_au": 45.1935,
+"earth_au": 44.2094,
+"earth_km": 6613628431,
+"light_time_h": 6.128
+},
+{
+"date": "1989-01-04",
+"sun_au": 45.4209,
+"earth_au": 44.5848,
+"earth_km": 6669788828,
+"light_time_h": 6.18
+},
+{
+"date": "1989-02-04",
+"sun_au": 45.6482,
+"earth_au": 45.2064,
+"earth_km": 6762777650,
+"light_time_h": 6.266
+},
+{
+"date": "1989-03-04",
+"sun_au": 45.8534,
+"earth_au": 45.8808,
+"earth_km": 6863673571,
+"light_time_h": 6.36
+},
+{
+"date": "1989-04-04",
+"sun_au": 46.0805,
+"earth_au": 46.6134,
+"earth_km": 6973266331,
+"light_time_h": 6.461
+},
+{
+"date": "1989-05-04",
+"sun_au": 46.3002,
+"earth_au": 47.1832,
+"earth_km": 7058510863,
+"light_time_h": 6.54
+},
+{
+"date": "1989-06-04",
+"sun_au": 46.5271,
+"earth_au": 47.5401,
+"earth_km": 7111895944,
+"light_time_h": 6.59
+},
+{
+"date": "1989-07-04",
+"sun_au": 46.7466,
+"earth_au": 47.634,
+"earth_km": 7125948608,
+"light_time_h": 6.603
+},
+{
+"date": "1989-08-04",
+"sun_au": 46.9734,
+"earth_au": 47.5044,
+"earth_km": 7106561495,
+"light_time_h": 6.585
+},
+{
+"date": "1989-09-04",
+"sun_au": 47.2,
+"earth_au": 47.2336,
+"earth_km": 7066038723,
+"light_time_h": 6.547
+},
+{
+"date": "1989-10-04",
+"sun_au": 47.4192,
+"earth_au": 46.9593,
+"earth_km": 7025013400,
+"light_time_h": 6.509
+},
+{
+"date": "1989-11-04",
+"sun_au": 47.6457,
+"earth_au": 46.8023,
+"earth_km": 7001526158,
+"light_time_h": 6.487
+},
+{
+"date": "1989-12-04",
+"sun_au": 47.8647,
+"earth_au": 46.8807,
+"earth_km": 7013258633,
+"light_time_h": 6.498
+},
+{
+"date": "1990-01-04",
+"sun_au": 48.0908,
+"earth_au": 47.2467,
+"earth_km": 7068003656,
+"light_time_h": 6.549
+},
+{
+"date": "1990-02-04",
+"sun_au": 48.3169,
+"earth_au": 47.8613,
+"earth_km": 7159947558,
+"light_time_h": 6.634
+},
+{
+"date": "1990-03-04",
+"sun_au": 48.5211,
+"earth_au": 48.533,
+"earth_km": 7260437877,
+"light_time_h": 6.727
+},
+{
+"date": "1990-04-04",
+"sun_au": 48.747,
+"earth_au": 49.2669,
+"earth_km": 7370221826,
+"light_time_h": 6.829
+},
+{
+"date": "1990-05-04",
+"sun_au": 48.9655,
+"earth_au": 49.8412,
+"earth_km": 7456141985,
+"light_time_h": 6.909
+},
+{
+"date": "1990-06-04",
+"sun_au": 49.1913,
+"earth_au": 50.2043,
+"earth_km": 7510452870,
+"light_time_h": 6.959
+},
+{
+"date": "1990-07-04",
+"sun_au": 49.4097,
+"earth_au": 50.3039,
+"earth_km": 7525349066,
+"light_time_h": 6.973
+},
+{
+"date": "1990-08-04",
+"sun_au": 49.6353,
+"earth_au": 50.1782,
+"earth_km": 7506545518,
+"light_time_h": 6.955
+},
+{
+"date": "1990-09-04",
+"sun_au": 49.8609,
+"earth_au": 49.9082,
+"earth_km": 7466153066,
+"light_time_h": 6.918
+},
+{
+"date": "1990-10-04",
+"sun_au": 50.079,
+"earth_au": 49.6314,
+"earth_km": 7424744489,
+"light_time_h": 6.88
+},
+{
+"date": "1990-11-04",
+"sun_au": 50.3044,
+"earth_au": 49.4683,
+"earth_km": 7400358708,
+"light_time_h": 6.857
+},
+{
+"date": "1990-12-04",
+"sun_au": 50.5223,
+"earth_au": 49.5387,
+"earth_km": 7410884426,
+"light_time_h": 6.867
+},
+{
+"date": "1991-01-04",
+"sun_au": 50.7475,
+"earth_au": 49.8961,
+"earth_km": 7464355897,
+"light_time_h": 6.916
+},
+{
+"date": "1991-02-04",
+"sun_au": 50.9725,
+"earth_au": 50.5042,
+"earth_km": 7555319618,
+"light_time_h": 7.001
+},
+{
+"date": "1991-03-04",
+"sun_au": 51.1757,
+"earth_au": 51.1733,
+"earth_km": 7655422816,
+"light_time_h": 7.093
+},
+{
+"date": "1991-04-04",
+"sun_au": 51.4006,
+"earth_au": 51.9083,
+"earth_km": 7765375810,
+"light_time_h": 7.195
+},
+{
+"date": "1991-05-04",
+"sun_au": 51.6182,
+"earth_au": 52.4869,
+"earth_km": 7851924808,
+"light_time_h": 7.275
+},
+{
+"date": "1991-06-04",
+"sun_au": 51.8429,
+"earth_au": 52.8558,
+"earth_km": 7907111830,
+"light_time_h": 7.326
+},
+{
+"date": "1991-07-04",
+"sun_au": 52.0603,
+"earth_au": 52.9607,
+"earth_km": 7922812822,
+"light_time_h": 7.341
+},
+{
+"date": "1991-08-04",
+"sun_au": 52.285,
+"earth_au": 52.8388,
+"earth_km": 7904574105,
+"light_time_h": 7.324
+},
+{
+"date": "1991-09-04",
+"sun_au": 52.5095,
+"earth_au": 52.5697,
+"earth_km": 7864316252,
+"light_time_h": 7.287
+},
+{
+"date": "1991-10-04",
+"sun_au": 52.7267,
+"earth_au": 52.2906,
+"earth_km": 7822558892,
+"light_time_h": 7.248
+},
+{
+"date": "1991-11-04",
+"sun_au": 52.9511,
+"earth_au": 52.122,
+"earth_km": 7797341483,
+"light_time_h": 7.225
+},
+{
+"date": "1991-12-04",
+"sun_au": 53.1681,
+"earth_au": 52.1849,
+"earth_km": 7806755527,
+"light_time_h": 7.233
+},
+{
+"date": "1992-01-04",
+"sun_au": 53.3923,
+"earth_au": 52.5344,
+"earth_km": 7859037050,
+"light_time_h": 7.282
+},
+{
+"date": "1992-02-04",
+"sun_au": 53.6164,
+"earth_au": 53.1364,
+"earth_km": 7949099468,
+"light_time_h": 7.365
+},
+{
+"date": "1992-03-04",
+"sun_au": 53.826,
+"earth_au": 53.8277,
+"earth_km": 8052506141,
+"light_time_h": 7.461
+},
+{
+"date": "1992-04-04",
+"sun_au": 54.05,
+"earth_au": 54.5613,
+"earth_km": 8162250489,
+"light_time_h": 7.563
+},
+{
+"date": "1992-05-04",
+"sun_au": 54.2667,
+"earth_au": 55.1376,
+"earth_km": 8248469216,
+"light_time_h": 7.643
+},
+{
+"date": "1992-06-04",
+"sun_au": 54.4905,
+"earth_au": 55.5036,
+"earth_km": 8303217885,
+"light_time_h": 7.693
+},
+{
+"date": "1992-07-04",
+"sun_au": 54.7071,
+"earth_au": 55.6055,
+"earth_km": 8318458611,
+"light_time_h": 7.708
+},
+{
+"date": "1992-08-04",
+"sun_au": 54.9308,
+"earth_au": 55.4807,
+"earth_km": 8299790396,
+"light_time_h": 7.69
+},
+{
+"date": "1992-09-04",
+"sun_au": 55.1544,
+"earth_au": 55.2097,
+"earth_km": 8259252153,
+"light_time_h": 7.653
+},
+{
+"date": "1992-10-04",
+"sun_au": 55.3708,
+"earth_au": 54.9301,
+"earth_km": 8217432547,
+"light_time_h": 7.614
+},
+{
+"date": "1992-11-04",
+"sun_au": 55.5944,
+"earth_au": 54.7626,
+"earth_km": 8192367007,
+"light_time_h": 7.591
+},
+{
+"date": "1992-12-04",
+"sun_au": 55.8106,
+"earth_au": 54.8273,
+"earth_km": 8202050741,
+"light_time_h": 7.6
+},
+{
+"date": "1993-01-04",
+"sun_au": 56.034,
+"earth_au": 55.1786,
+"earth_km": 8254603233,
+"light_time_h": 7.648
+},
+{
+"date": "1993-02-04",
+"sun_au": 56.2573,
+"earth_au": 55.7816,
+"earth_km": 8344804977,
+"light_time_h": 7.732
+},
+{
+"date": "1993-03-04",
+"sun_au": 56.4589,
+"earth_au": 56.4481,
+"earth_km": 8444510361,
+"light_time_h": 7.824
+},
+{
+"date": "1993-04-04",
+"sun_au": 56.682,
+"earth_au": 57.1826,
+"earth_km": 8554398065,
+"light_time_h": 7.926
+},
+{
+"date": "1993-05-04",
+"sun_au": 56.8979,
+"earth_au": 57.7626,
+"earth_km": 8641167500,
+"light_time_h": 8.007
+},
+{
+"date": "1993-06-04",
+"sun_au": 57.121,
+"earth_au": 58.1338,
+"earth_km": 8696691007,
+"light_time_h": 8.058
+},
+{
+"date": "1993-07-04",
+"sun_au": 57.3368,
+"earth_au": 58.2405,
+"earth_km": 8712654660,
+"light_time_h": 8.073
+},
+{
+"date": "1993-08-04",
+"sun_au": 57.5598,
+"earth_au": 58.1192,
+"earth_km": 8694507858,
+"light_time_h": 8.056
+},
+{
+"date": "1993-09-04",
+"sun_au": 57.7827,
+"earth_au": 57.8492,
+"earth_km": 8654119344,
+"light_time_h": 8.019
+},
+{
+"date": "1993-10-04",
+"sun_au": 57.9983,
+"earth_au": 57.5678,
+"earth_km": 8612023332,
+"light_time_h": 7.98
+},
+{
+"date": "1993-11-04",
+"sun_au": 58.2211,
+"earth_au": 57.3956,
+"earth_km": 8586255272,
+"light_time_h": 7.956
+},
+{
+"date": "1993-12-04",
+"sun_au": 58.4367,
+"earth_au": 57.4539,
+"earth_km": 8594980205,
+"light_time_h": 7.964
+},
+{
+"date": "1994-01-04",
+"sun_au": 58.6593,
+"earth_au": 57.7982,
+"earth_km": 8646493210,
+"light_time_h": 8.012
+},
+{
+"date": "1994-02-04",
+"sun_au": 58.8819,
+"earth_au": 58.3959,
+"earth_km": 8735902865,
+"light_time_h": 8.094
+},
+{
+"date": "1994-03-04",
+"sun_au": 59.0829,
+"earth_au": 59.0603,
+"earth_km": 8835290579,
+"light_time_h": 8.186
+},
+{
+"date": "1994-04-04",
+"sun_au": 59.3054,
+"earth_au": 59.7958,
+"earth_km": 8945321114,
+"light_time_h": 8.288
+},
+{
+"date": "1994-05-04",
+"sun_au": 59.5206,
+"earth_au": 60.3793,
+"earth_km": 9032619161,
+"light_time_h": 8.369
+},
+{
+"date": "1994-06-04",
+"sun_au": 59.743,
+"earth_au": 60.7555,
+"earth_km": 9088886595,
+"light_time_h": 8.421
+},
+{
+"date": "1994-07-04",
+"sun_au": 59.9581,
+"earth_au": 60.8668,
+"earth_km": 9105543734,
+"light_time_h": 8.437
+},
+{
+"date": "1994-08-04",
+"sun_au": 60.1804,
+"earth_au": 60.7489,
+"earth_km": 9087899318,
+"light_time_h": 8.421
+},
+{
+"date": "1994-09-04",
+"sun_au": 60.4027,
+"earth_au": 60.4799,
+"earth_km": 9047662257,
+"light_time_h": 8.383
+},
+{
+"date": "1994-10-04",
+"sun_au": 60.6177,
+"earth_au": 60.1968,
+"earth_km": 9005317542,
+"light_time_h": 8.344
+},
+{
+"date": "1994-11-04",
+"sun_au": 60.8399,
+"earth_au": 60.0202,
+"earth_km": 8978897988,
+"light_time_h": 8.32
+},
+{
+"date": "1994-12-04",
+"sun_au": 61.0548,
+"earth_au": 60.0726,
+"earth_km": 8986730010,
+"light_time_h": 8.327
+},
+{
+"date": "1995-01-04",
+"sun_au": 61.2768,
+"earth_au": 60.4105,
+"earth_km": 9037278420,
+"light_time_h": 8.374
+},
+{
+"date": "1995-02-04",
+"sun_au": 61.4987,
+"earth_au": 61.0032,
+"earth_km": 9125953255,
+"light_time_h": 8.456
+},
+{
+"date": "1995-03-04",
+"sun_au": 61.6992,
+"earth_au": 61.6656,
+"earth_km": 9225042820,
+"light_time_h": 8.548
+},
+{
+"date": "1995-04-04",
+"sun_au": 61.921,
+"earth_au": 62.402,
+"earth_km": 9335203237,
+"light_time_h": 8.65
+},
+{
+"date": "1995-05-04",
+"sun_au": 62.1357,
+"earth_au": 62.9888,
+"earth_km": 9422990201,
+"light_time_h": 8.731
+},
+{
+"date": "1995-06-04",
+"sun_au": 62.3575,
+"earth_au": 63.3696,
+"earth_km": 9479950191,
+"light_time_h": 8.784
+},
+{
+"date": "1995-07-04",
+"sun_au": 62.5721,
+"earth_au": 63.4853,
+"earth_km": 9497265029,
+"light_time_h": 8.8
+},
+{
+"date": "1995-08-04",
+"sun_au": 62.7938,
+"earth_au": 63.3706,
+"earth_km": 9480109006,
+"light_time_h": 8.784
+},
+{
+"date": "1995-09-04",
+"sun_au": 63.0154,
+"earth_au": 63.1028,
+"earth_km": 9440039762,
+"light_time_h": 8.747
+},
+{
+"date": "1995-10-04",
+"sun_au": 63.2299,
+"earth_au": 62.8183,
+"earth_km": 9397482766,
+"light_time_h": 8.707
+},
+{
+"date": "1995-11-04",
+"sun_au": 63.4515,
+"earth_au": 62.6377,
+"earth_km": 9370465793,
+"light_time_h": 8.682
+},
+{
+"date": "1995-12-04",
+"sun_au": 63.6659,
+"earth_au": 62.6844,
+"earth_km": 9377456292,
+"light_time_h": 8.689
+},
+{
+"date": "1996-01-04",
+"sun_au": 63.8873,
+"earth_au": 63.0161,
+"earth_km": 9427080441,
+"light_time_h": 8.735
+},
+{
+"date": "1996-02-04",
+"sun_au": 64.1087,
+"earth_au": 63.6041,
+"earth_km": 9515038760,
+"light_time_h": 8.816
+},
+{
+"date": "1996-03-04",
+"sun_au": 64.3158,
+"earth_au": 64.2889,
+"earth_km": 9617489764,
+"light_time_h": 8.911
+},
+{
+"date": "1996-04-04",
+"sun_au": 64.5371,
+"earth_au": 65.0239,
+"earth_km": 9727438979,
+"light_time_h": 9.013
+},
+{
+"date": "1996-05-04",
+"sun_au": 64.7512,
+"earth_au": 65.6079,
+"earth_km": 9814807689,
+"light_time_h": 9.094
+},
+{
+"date": "1996-06-04",
+"sun_au": 64.9725,
+"earth_au": 65.9849,
+"earth_km": 9871199280,
+"light_time_h": 9.146
+},
+{
+"date": "1996-07-04",
+"sun_au": 65.1865,
+"earth_au": 66.0968,
+"earth_km": 9887934829,
+"light_time_h": 9.162
+},
+{
+"date": "1996-08-04",
+"sun_au": 65.4077,
+"earth_au": 65.9787,
+"earth_km": 9870274992,
+"light_time_h": 9.145
+},
+{
+"date": "1996-09-04",
+"sun_au": 65.6288,
+"earth_au": 65.7089,
+"earth_km": 9829916886,
+"light_time_h": 9.108
+},
+{
+"date": "1996-10-04",
+"sun_au": 65.8428,
+"earth_au": 65.4245,
+"earth_km": 9787365117,
+"light_time_h": 9.069
+},
+{
+"date": "1996-11-04",
+"sun_au": 66.0638,
+"earth_au": 65.2459,
+"earth_km": 9760646794,
+"light_time_h": 9.044
+},
+{
+"date": "1996-12-04",
+"sun_au": 66.2777,
+"earth_au": 65.2958,
+"earth_km": 9768112759,
+"light_time_h": 9.051
+},
+{
+"date": "1997-01-04",
+"sun_au": 66.4986,
+"earth_au": 65.6309,
+"earth_km": 9818240426,
+"light_time_h": 9.097
+},
+{
+"date": "1997-02-04",
+"sun_au": 66.7195,
+"earth_au": 66.2211,
+"earth_km": 9906538502,
+"light_time_h": 9.179
+},
+{
+"date": "1997-03-04",
+"sun_au": 66.919,
+"earth_au": 66.882,
+"earth_km": 10005404299,
+"light_time_h": 9.271
+},
+{
+"date": "1997-04-04",
+"sun_au": 67.1398,
+"earth_au": 67.6178,
+"earth_km": 10115476875,
+"light_time_h": 9.373
+},
+{
+"date": "1997-05-04",
+"sun_au": 67.3534,
+"earth_au": 68.2049,
+"earth_km": 10203302551,
+"light_time_h": 9.454
+},
+{
+"date": "1997-06-04",
+"sun_au": 67.5741,
+"earth_au": 68.5862,
+"earth_km": 10260342794,
+"light_time_h": 9.507
+},
+{
+"date": "1997-07-04",
+"sun_au": 67.7877,
+"earth_au": 68.7021,
+"earth_km": 10277690444,
+"light_time_h": 9.523
+},
+{
+"date": "1997-08-04",
+"sun_au": 68.0083,
+"earth_au": 68.5871,
+"earth_km": 10260480423,
+"light_time_h": 9.507
+},
+{
+"date": "1997-09-04",
+"sun_au": 68.2289,
+"earth_au": 68.3183,
+"earth_km": 10220269768,
+"light_time_h": 9.47
+},
+{
+"date": "1997-10-04",
+"sun_au": 68.4424,
+"earth_au": 68.0325,
+"earth_km": 10177517378,
+"light_time_h": 9.43
+},
+{
+"date": "1997-11-04",
+"sun_au": 68.6629,
+"earth_au": 67.8502,
+"earth_km": 10150248039,
+"light_time_h": 9.405
+},
+{
+"date": "1997-12-04",
+"sun_au": 68.8763,
+"earth_au": 67.895,
+"earth_km": 10156945447,
+"light_time_h": 9.411
+},
+{
+"date": "1998-01-04",
+"sun_au": 69.0967,
+"earth_au": 68.2244,
+"earth_km": 10206231742,
+"light_time_h": 9.457
+},
+{
+"date": "1998-02-04",
+"sun_au": 69.3171,
+"earth_au": 68.8103,
+"earth_km": 10293876774,
+"light_time_h": 9.538
+},
+{
+"date": "1998-03-04",
+"sun_au": 69.516,
+"earth_au": 69.4694,
+"earth_km": 10392470957,
+"light_time_h": 9.629
+},
+{
+"date": "1998-04-04",
+"sun_au": 69.7363,
+"earth_au": 70.2058,
+"earth_km": 10502644880,
+"light_time_h": 9.731
+},
+{
+"date": "1998-05-04",
+"sun_au": 69.9494,
+"earth_au": 70.7957,
+"earth_km": 10590892878,
+"light_time_h": 9.813
+},
+{
+"date": "1998-06-04",
+"sun_au": 70.1696,
+"earth_au": 71.1811,
+"earth_km": 10648539058,
+"light_time_h": 9.867
+},
+{
+"date": "1998-07-04",
+"sun_au": 70.3827,
+"earth_au": 71.3009,
+"earth_km": 10666467237,
+"light_time_h": 9.883
+},
+{
+"date": "1998-08-04",
+"sun_au": 70.6028,
+"earth_au": 71.1888,
+"earth_km": 10649693533,
+"light_time_h": 9.868
+},
+{
+"date": "1998-09-04",
+"sun_au": 70.8229,
+"earth_au": 70.921,
+"earth_km": 10609637621,
+"light_time_h": 9.831
+},
+{
+"date": "1998-10-04",
+"sun_au": 71.0358,
+"earth_au": 70.634,
+"earth_km": 10566702620,
+"light_time_h": 9.791
+},
+{
+"date": "1998-11-04",
+"sun_au": 71.2558,
+"earth_au": 70.4483,
+"earth_km": 10538908292,
+"light_time_h": 9.765
+},
+{
+"date": "1998-12-04",
+"sun_au": 71.4686,
+"earth_au": 70.488,
+"earth_km": 10544860761,
+"light_time_h": 9.771
+},
+{
+"date": "1999-01-04",
+"sun_au": 71.6885,
+"earth_au": 70.812,
+"earth_km": 10593319777,
+"light_time_h": 9.815
+},
+{
+"date": "1999-02-04",
+"sun_au": 71.9083,
+"earth_au": 71.3935,
+"earth_km": 10680313842,
+"light_time_h": 9.896
+},
+{
+"date": "1999-03-04",
+"sun_au": 72.1068,
+"earth_au": 72.0507,
+"earth_km": 10778630216,
+"light_time_h": 9.987
+},
+{
+"date": "1999-04-04",
+"sun_au": 72.3265,
+"earth_au": 72.7877,
+"earth_km": 10888884108,
+"light_time_h": 10.089
+},
+{
+"date": "1999-05-04",
+"sun_au": 72.539,
+"earth_au": 73.3803,
+"earth_km": 10977532057,
+"light_time_h": 10.171
+},
+{
+"date": "1999-06-04",
+"sun_au": 72.7587,
+"earth_au": 73.7696,
+"earth_km": 11035767775,
+"light_time_h": 10.225
+},
+{
+"date": "1999-07-04",
+"sun_au": 72.9712,
+"earth_au": 73.8932,
+"earth_km": 11054262961,
+"light_time_h": 10.243
+},
+{
+"date": "1999-08-04",
+"sun_au": 73.1907,
+"earth_au": 73.7839,
+"earth_km": 11037916185,
+"light_time_h": 10.227
+},
+{
+"date": "1999-09-04",
+"sun_au": 73.4102,
+"earth_au": 73.5171,
+"earth_km": 10998004262,
+"light_time_h": 10.19
+},
+{
+"date": "1999-10-04",
+"sun_au": 73.6226,
+"earth_au": 73.2288,
+"earth_km": 10954879928,
+"light_time_h": 10.15
+},
+{
+"date": "1999-11-04",
+"sun_au": 73.842,
+"earth_au": 73.0395,
+"earth_km": 10926558736,
+"light_time_h": 10.124
+},
+{
+"date": "1999-12-04",
+"sun_au": 74.0543,
+"earth_au": 73.0744,
+"earth_km": 10931780730,
+"light_time_h": 10.129
+},
+{
+"date": "2000-01-04",
+"sun_au": 74.2735,
+"earth_au": 73.393,
+"earth_km": 10979439290,
+"light_time_h": 10.173
+},
+{
+"date": "2000-02-04",
+"sun_au": 74.4928,
+"earth_au": 73.9704,
+"earth_km": 11065807128,
+"light_time_h": 10.253
+},
+{
+"date": "2000-03-04",
+"sun_au": 74.6978,
+"earth_au": 74.65,
+"earth_km": 11167486423,
+"light_time_h": 10.347
+},
+{
+"date": "2000-04-04",
+"sun_au": 74.9169,
+"earth_au": 75.3855,
+"earth_km": 11277513364,
+"light_time_h": 10.449
+},
+{
+"date": "2000-05-04",
+"sun_au": 75.1289,
+"earth_au": 75.9748,
+"earth_km": 11365664096,
+"light_time_h": 10.531
+},
+{
+"date": "2000-06-04",
+"sun_au": 75.3479,
+"earth_au": 76.3595,
+"earth_km": 11423211817,
+"light_time_h": 10.584
+},
+{
+"date": "2000-07-04",
+"sun_au": 75.5598,
+"earth_au": 76.4784,
+"earth_km": 11441006885,
+"light_time_h": 10.601
+},
+{
+"date": "2000-08-04",
+"sun_au": 75.7788,
+"earth_au": 76.3651,
+"earth_km": 11424050932,
+"light_time_h": 10.585
+},
+{
+"date": "2000-09-04",
+"sun_au": 75.9977,
+"earth_au": 76.096,
+"earth_km": 11383792761,
+"light_time_h": 10.548
+},
+{
+"date": "2000-10-04",
+"sun_au": 76.2095,
+"earth_au": 75.8077,
+"earth_km": 11340673284,
+"light_time_h": 10.508
+},
+{
+"date": "2000-11-04",
+"sun_au": 76.4283,
+"earth_au": 75.6208,
+"earth_km": 11312705944,
+"light_time_h": 10.482
+},
+{
+"date": "2000-12-04",
+"sun_au": 76.64,
+"earth_au": 75.6594,
+"earth_km": 11318492270,
+"light_time_h": 10.487
+},
+{
+"date": "2001-01-04",
+"sun_au": 76.8586,
+"earth_au": 75.9821,
+"earth_km": 11366761099,
+"light_time_h": 10.532
+},
+{
+"date": "2001-02-04",
+"sun_au": 77.0772,
+"earth_au": 76.5622,
+"earth_km": 11453547059,
+"light_time_h": 10.612
+},
+{
+"date": "2001-03-04",
+"sun_au": 77.2746,
+"earth_au": 77.2182,
+"earth_km": 11551679823,
+"light_time_h": 10.703
+},
+{
+"date": "2001-04-04",
+"sun_au": 77.4932,
+"earth_au": 77.9541,
+"earth_km": 11661761486,
+"light_time_h": 10.805
+},
+{
+"date": "2001-05-04",
+"sun_au": 77.7046,
+"earth_au": 78.5457,
+"earth_km": 11750265232,
+"light_time_h": 10.887
+},
+{
+"date": "2001-06-04",
+"sun_au": 77.923,
+"earth_au": 78.9339,
+"earth_km": 11808343708,
+"light_time_h": 10.941
+},
+{
+"date": "2001-07-04",
+"sun_au": 78.1343,
+"earth_au": 79.0563,
+"earth_km": 11826655099,
+"light_time_h": 10.958
+},
+{
+"date": "2001-08-04",
+"sun_au": 78.3527,
+"earth_au": 78.9456,
+"earth_km": 11810087027,
+"light_time_h": 10.943
+},
+{
+"date": "2001-09-04",
+"sun_au": 78.571,
+"earth_au": 78.6773,
+"earth_km": 11769957778,
+"light_time_h": 10.906
+},
+{
+"date": "2001-10-04",
+"sun_au": 78.7822,
+"earth_au": 78.3879,
+"earth_km": 11726659401,
+"light_time_h": 10.866
+},
+{
+"date": "2001-11-04",
+"sun_au": 79.0004,
+"earth_au": 78.1976,
+"earth_km": 11698201530,
+"light_time_h": 10.839
+},
+{
+"date": "2001-12-04",
+"sun_au": 79.2115,
+"earth_au": 78.2317,
+"earth_km": 11703300747,
+"light_time_h": 10.844
+},
+{
+"date": "2002-01-04",
+"sun_au": 79.4296,
+"earth_au": 78.5493,
+"earth_km": 11750807914,
+"light_time_h": 10.888
+},
+{
+"date": "2002-02-04",
+"sun_au": 79.6477,
+"earth_au": 79.1254,
+"earth_km": 11836992965,
+"light_time_h": 10.968
+},
+{
+"date": "2002-03-04",
+"sun_au": 79.8445,
+"earth_au": 79.7796,
+"earth_km": 11934860621,
+"light_time_h": 11.058
+},
+{
+"date": "2002-04-04",
+"sun_au": 80.0625,
+"earth_au": 80.5159,
+"earth_km": 12045001529,
+"light_time_h": 11.161
+},
+{
+"date": "2002-05-04",
+"sun_au": 80.2733,
+"earth_au": 81.1098,
+"earth_km": 12133855223,
+"light_time_h": 11.243
+},
+{
+"date": "2002-06-04",
+"sun_au": 80.4912,
+"earth_au": 81.5016,
+"earth_km": 12192458592,
+"light_time_h": 11.297
+},
+{
+"date": "2002-07-04",
+"sun_au": 80.702,
+"earth_au": 81.6273,
+"earth_km": 12211277225,
+"light_time_h": 11.315
+},
+{
+"date": "2002-08-04",
+"sun_au": 80.9198,
+"earth_au": 81.5191,
+"earth_km": 12195089568,
+"light_time_h": 11.3
+},
+{
+"date": "2002-09-04",
+"sun_au": 81.1376,
+"earth_au": 81.2517,
+"earth_km": 12155085530,
+"light_time_h": 11.263
+},
+{
+"date": "2002-10-04",
+"sun_au": 81.3483,
+"earth_au": 80.9611,
+"earth_km": 12111614427,
+"light_time_h": 11.222
+},
+{
+"date": "2002-11-04",
+"sun_au": 81.5659,
+"earth_au": 80.7677,
+"earth_km": 12082681353,
+"light_time_h": 11.195
+},
+{
+"date": "2002-12-04",
+"sun_au": 81.7765,
+"earth_au": 80.7974,
+"earth_km": 12087121295,
+"light_time_h": 11.2
+},
+{
+"date": "2003-01-04",
+"sun_au": 81.9941,
+"earth_au": 81.1102,
+"earth_km": 12133906301,
+"light_time_h": 11.243
+},
+{
+"date": "2003-02-04",
+"sun_au": 82.2116,
+"earth_au": 81.6825,
+"earth_km": 12219526901,
+"light_time_h": 11.322
+},
+{
+"date": "2003-03-04",
+"sun_au": 82.408,
+"earth_au": 82.335,
+"earth_km": 12317143529,
+"light_time_h": 11.413
+},
+{
+"date": "2003-04-04",
+"sun_au": 82.6254,
+"earth_au": 83.0717,
+"earth_km": 12427345510,
+"light_time_h": 11.515
+},
+{
+"date": "2003-05-04",
+"sun_au": 82.8358,
+"earth_au": 83.6679,
+"earth_km": 12516532764,
+"light_time_h": 11.597
+},
+{
+"date": "2003-06-04",
+"sun_au": 83.0532,
+"earth_au": 84.0629,
+"earth_km": 12575634495,
+"light_time_h": 11.652
+},
+{
+"date": "2003-07-04",
+"sun_au": 83.2635,
+"earth_au": 84.192,
+"earth_km": 12594942802,
+"light_time_h": 11.67
+},
+{
+"date": "2003-08-04",
+"sun_au": 83.4808,
+"earth_au": 84.0863,
+"earth_km": 12579130283,
+"light_time_h": 11.655
+},
+{
+"date": "2003-09-04",
+"sun_au": 83.6981,
+"earth_au": 83.8198,
+"earth_km": 12539266146,
+"light_time_h": 11.618
+},
+{
+"date": "2003-10-04",
+"sun_au": 83.9083,
+"earth_au": 83.5282,
+"earth_km": 12495647968,
+"light_time_h": 11.578
+},
+{
+"date": "2003-11-04",
+"sun_au": 84.1255,
+"earth_au": 83.3319,
+"earth_km": 12466275079,
+"light_time_h": 11.551
+},
+{
+"date": "2003-12-04",
+"sun_au": 84.3356,
+"earth_au": 83.3574,
+"earth_km": 12470085286,
+"light_time_h": 11.554
+},
+{
+"date": "2004-01-04",
+"sun_au": 84.5527,
+"earth_au": 83.6654,
+"earth_km": 12516168835,
+"light_time_h": 11.597
+},
+{
+"date": "2004-02-04",
+"sun_au": 84.7698,
+"earth_au": 84.234,
+"earth_km": 12601229491,
+"light_time_h": 11.676
+},
+{
+"date": "2004-03-04",
+"sun_au": 84.9728,
+"earth_au": 84.9091,
+"earth_km": 12702226590,
+"light_time_h": 11.769
+},
+{
+"date": "2004-04-04",
+"sun_au": 85.1898,
+"earth_au": 85.6443,
+"earth_km": 12812207788,
+"light_time_h": 11.871
+},
+{
+"date": "2004-05-04",
+"sun_au": 85.3997,
+"earth_au": 86.237,
+"earth_km": 12900871656,
+"light_time_h": 11.954
+},
+{
+"date": "2004-06-04",
+"sun_au": 85.6167,
+"earth_au": 86.6272,
+"earth_km": 12959241132,
+"light_time_h": 12.008
+},
+{
+"date": "2004-07-04",
+"sun_au": 85.8266,
+"earth_au": 86.7513,
+"earth_km": 12977809862,
+"light_time_h": 12.025
+},
+{
+"date": "2004-08-04",
+"sun_au": 86.0435,
+"earth_au": 86.6414,
+"earth_km": 12961369312,
+"light_time_h": 12.01
+},
+{
+"date": "2004-09-04",
+"sun_au": 86.2603,
+"earth_au": 86.3726,
+"earth_km": 12921162611,
+"light_time_h": 11.972
+},
+{
+"date": "2004-10-04",
+"sun_au": 86.4702,
+"earth_au": 86.0813,
+"earth_km": 12877576837,
+"light_time_h": 11.932
+},
+{
+"date": "2004-11-04",
+"sun_au": 86.6869,
+"earth_au": 85.8877,
+"earth_km": 12848615593,
+"light_time_h": 11.905
+},
+{
+"date": "2004-12-04",
+"sun_au": 86.8967,
+"earth_au": 85.9175,
+"earth_km": 12853077941,
+"light_time_h": 11.909
+},
+{
+"date": "2005-01-04",
+"sun_au": 87.1134,
+"earth_au": 86.2304,
+"earth_km": 12899876939,
+"light_time_h": 11.953
+},
+{
+"date": "2005-02-04",
+"sun_au": 87.3301,
+"earth_au": 86.8024,
+"earth_km": 12985458348,
+"light_time_h": 12.032
+},
+{
+"date": "2005-03-04",
+"sun_au": 87.5258,
+"earth_au": 87.4544,
+"earth_km": 13082988893,
+"light_time_h": 12.122
+},
+{
+"date": "2005-04-04",
+"sun_au": 87.7424,
+"earth_au": 88.19,
+"earth_km": 13193043439,
+"light_time_h": 12.224
+},
+{
+"date": "2005-05-04",
+"sun_au": 87.952,
+"earth_au": 88.785,
+"earth_km": 13282047040,
+"light_time_h": 12.307
+},
+{
+"date": "2005-06-04",
+"sun_au": 88.1686,
+"earth_au": 89.1785,
+"earth_km": 13340919821,
+"light_time_h": 12.361
+},
+{
+"date": "2005-07-04",
+"sun_au": 88.3781,
+"earth_au": 89.3059,
+"earth_km": 13359977928,
+"light_time_h": 12.379
+},
+{
+"date": "2005-08-04",
+"sun_au": 88.5947,
+"earth_au": 89.1985,
+"earth_km": 13343912470,
+"light_time_h": 12.364
+},
+{
+"date": "2005-09-04",
+"sun_au": 88.8112,
+"earth_au": 88.9307,
+"earth_km": 13303849364,
+"light_time_h": 12.327
+},
+{
+"date": "2005-10-04",
+"sun_au": 89.0207,
+"earth_au": 88.6385,
+"earth_km": 13260133502,
+"light_time_h": 12.286
+},
+{
+"date": "2005-11-04",
+"sun_au": 89.2372,
+"earth_au": 88.4422,
+"earth_km": 13230764894,
+"light_time_h": 12.259
+},
+{
+"date": "2005-12-04",
+"sun_au": 89.4466,
+"earth_au": 88.4681,
+"earth_km": 13234646812,
+"light_time_h": 12.263
+},
+{
+"date": "2006-01-04",
+"sun_au": 89.663,
+"earth_au": 88.7767,
+"earth_km": 13280805781,
+"light_time_h": 12.306
+},
+{
+"date": "2006-02-04",
+"sun_au": 89.8794,
+"earth_au": 89.3454,
+"earth_km": 13365886222,
+"light_time_h": 12.384
+},
+{
+"date": "2006-03-04",
+"sun_au": 90.0748,
+"earth_au": 89.9959,
+"earth_km": 13463201637,
+"light_time_h": 12.475
+},
+{
+"date": "2006-04-04",
+"sun_au": 90.2911,
+"earth_au": 90.7321,
+"earth_km": 13573329059,
+"light_time_h": 12.577
+},
+{
+"date": "2006-05-04",
+"sun_au": 90.5004,
+"earth_au": 91.3292,
+"earth_km": 13662660393,
+"light_time_h": 12.659
+},
+{
+"date": "2006-06-04",
+"sun_au": 90.7167,
+"earth_au": 91.726,
+"earth_km": 13722016125,
+"light_time_h": 12.714
+},
+{
+"date": "2006-07-04",
+"sun_au": 90.926,
+"earth_au": 91.8566,
+"earth_km": 13741551202,
+"light_time_h": 12.732
+},
+{
+"date": "2006-08-04",
+"sun_au": 91.1423,
+"earth_au": 91.7517,
+"earth_km": 13725861753,
+"light_time_h": 12.718
+},
+{
+"date": "2006-09-04",
+"sun_au": 91.3585,
+"earth_au": 91.485,
+"earth_km": 13685961265,
+"light_time_h": 12.681
+},
+{
+"date": "2006-10-04",
+"sun_au": 91.5678,
+"earth_au": 91.1921,
+"earth_km": 13642142374,
+"light_time_h": 12.64
+},
+{
+"date": "2006-11-04",
+"sun_au": 91.784,
+"earth_au": 90.9933,
+"earth_km": 13612398867,
+"light_time_h": 12.613
+},
+{
+"date": "2006-12-04",
+"sun_au": 91.9932,
+"earth_au": 91.0155,
+"earth_km": 13615724708,
+"light_time_h": 12.616
+},
+{
+"date": "2007-01-04",
+"sun_au": 92.2093,
+"earth_au": 91.3199,
+"earth_km": 13661257624,
+"light_time_h": 12.658
+},
+{
+"date": "2007-02-04",
+"sun_au": 92.4254,
+"earth_au": 91.8853,
+"earth_km": 13745842766,
+"light_time_h": 12.736
+},
+{
+"date": "2007-03-04",
+"sun_au": 92.6206,
+"earth_au": 92.5344,
+"earth_km": 13842949749,
+"light_time_h": 12.826
+},
+{
+"date": "2007-04-04",
+"sun_au": 92.8366,
+"earth_au": 93.271,
+"earth_km": 13953145893,
+"light_time_h": 12.929
+},
+{
+"date": "2007-05-04",
+"sun_au": 93.0457,
+"earth_au": 93.8703,
+"earth_km": 14042803133,
+"light_time_h": 13.012
+},
+{
+"date": "2007-06-04",
+"sun_au": 93.2618,
+"earth_au": 94.2704,
+"earth_km": 14102647950,
+"light_time_h": 13.067
+},
+{
+"date": "2007-07-04",
+"sun_au": 93.4708,
+"earth_au": 94.4042,
+"earth_km": 14122668772,
+"light_time_h": 13.086
+},
+{
+"date": "2007-08-04",
+"sun_au": 93.6868,
+"earth_au": 94.3019,
+"earth_km": 14107367326,
+"light_time_h": 13.071
+},
+{
+"date": "2007-09-04",
+"sun_au": 93.9029,
+"earth_au": 94.0363,
+"earth_km": 14067634365,
+"light_time_h": 13.035
+},
+{
+"date": "2007-10-04",
+"sun_au": 94.1119,
+"earth_au": 93.7427,
+"earth_km": 14023713521,
+"light_time_h": 12.994
+},
+{
+"date": "2007-11-04",
+"sun_au": 94.3279,
+"earth_au": 93.5414,
+"earth_km": 13993594768,
+"light_time_h": 12.966
+},
+{
+"date": "2007-12-04",
+"sun_au": 94.5369,
+"earth_au": 93.56,
+"earth_km": 13996375387,
+"light_time_h": 12.969
+},
+{
+"date": "2008-01-04",
+"sun_au": 94.7528,
+"earth_au": 93.8603,
+"earth_km": 14041302358,
+"light_time_h": 13.01
+},
+{
+"date": "2008-02-04",
+"sun_au": 94.9687,
+"earth_au": 94.4226,
+"earth_km": 14125416531,
+"light_time_h": 13.088
+},
+{
+"date": "2008-03-04",
+"sun_au": 95.1706,
+"earth_au": 95.0946,
+"earth_km": 14225943700,
+"light_time_h": 13.181
+},
+{
+"date": "2008-04-04",
+"sun_au": 95.3864,
+"earth_au": 95.83,
+"earth_km": 14335962019,
+"light_time_h": 13.283
+},
+{
+"date": "2008-05-04",
+"sun_au": 95.5953,
+"earth_au": 96.4258,
+"earth_km": 14425098706,
+"light_time_h": 13.366
+},
+{
+"date": "2008-06-04",
+"sun_au": 95.8111,
+"earth_au": 96.8208,
+"earth_km": 14484189042,
+"light_time_h": 13.421
+},
+{
+"date": "2008-07-04",
+"sun_au": 96.02,
+"earth_au": 96.9495,
+"earth_km": 14503438907,
+"light_time_h": 13.438
+},
+{
+"date": "2008-08-04",
+"sun_au": 96.2358,
+"earth_au": 96.8428,
+"earth_km": 14487480252,
+"light_time_h": 13.424
+},
+{
+"date": "2008-09-04",
+"sun_au": 96.4516,
+"earth_au": 96.5749,
+"earth_km": 14447399473,
+"light_time_h": 13.386
+},
+{
+"date": "2008-10-04",
+"sun_au": 96.6604,
+"earth_au": 96.2817,
+"earth_km": 14403538938,
+"light_time_h": 13.346
+},
+{
+"date": "2008-11-04",
+"sun_au": 96.8762,
+"earth_au": 96.0835,
+"earth_km": 14373891873,
+"light_time_h": 13.318
+},
+{
+"date": "2008-12-04",
+"sun_au": 97.085,
+"earth_au": 96.107,
+"earth_km": 14377400060,
+"light_time_h": 13.322
+},
+{
+"date": "2009-01-04",
+"sun_au": 97.3007,
+"earth_au": 96.4127,
+"earth_km": 14423129776,
+"light_time_h": 13.364
+},
+{
+"date": "2009-02-04",
+"sun_au": 97.5164,
+"earth_au": 96.9789,
+"earth_km": 14507839468,
+"light_time_h": 13.442
+},
+{
+"date": "2009-03-04",
+"sun_au": 97.7111,
+"earth_au": 97.6281,
+"earth_km": 14604954650,
+"light_time_h": 13.532
+},
+{
+"date": "2009-04-04",
+"sun_au": 97.9268,
+"earth_au": 98.364,
+"earth_km": 14715044438,
+"light_time_h": 13.634
+},
+{
+"date": "2009-05-04",
+"sun_au": 98.1354,
+"earth_au": 98.9619,
+"earth_km": 14804495169,
+"light_time_h": 13.717
+},
+{
+"date": "2009-06-04",
+"sun_au": 98.3511,
+"earth_au": 99.36,
+"earth_km": 14864050573,
+"light_time_h": 13.773
+},
+{
+"date": "2009-07-04",
+"sun_au": 98.5597,
+"earth_au": 99.4918,
+"earth_km": 14883762407,
+"light_time_h": 13.791
+},
+{
+"date": "2009-08-04",
+"sun_au": 98.7753,
+"earth_au": 99.3876,
+"earth_km": 14868170490,
+"light_time_h": 13.776
+},
+{
+"date": "2009-09-04",
+"sun_au": 98.9909,
+"earth_au": 99.1207,
+"earth_km": 14828249282,
+"light_time_h": 13.739
+},
+{
+"date": "2009-10-04",
+"sun_au": 99.1995,
+"earth_au": 98.8269,
+"earth_km": 14784293460,
+"light_time_h": 13.699
+},
+{
+"date": "2009-11-04",
+"sun_au": 99.415,
+"earth_au": 98.6264,
+"earth_km": 14754294046,
+"light_time_h": 13.671
+},
+{
+"date": "2009-12-04",
+"sun_au": 99.6236,
+"earth_au": 98.6463,
+"earth_km": 14757280023,
+"light_time_h": 13.674
+},
+{
+"date": "2010-01-04",
+"sun_au": 99.839,
+"earth_au": 98.9481,
+"earth_km": 14802417775,
+"light_time_h": 13.715
+},
+{
+"date": "2010-02-04",
+"sun_au": 100.0545,
+"earth_au": 99.5112,
+"earth_km": 14886656705,
+"light_time_h": 13.793
+},
+{
+"date": "2010-03-04",
+"sun_au": 100.2491,
+"earth_au": 100.159,
+"earth_km": 14983571510,
+"light_time_h": 13.883
+},
+{
+"date": "2010-04-04",
+"sun_au": 100.4644,
+"earth_au": 100.8953,
+"earth_km": 15093727708,
+"light_time_h": 13.985
+},
+{
+"date": "2010-05-04",
+"sun_au": 100.6729,
+"earth_au": 101.4954,
+"earth_km": 15183488942,
+"light_time_h": 14.069
+},
+{
+"date": "2010-06-04",
+"sun_au": 100.8882,
+"earth_au": 101.8966,
+"earth_km": 15243508001,
+"light_time_h": 14.124
+},
+{
+"date": "2010-07-04",
+"sun_au": 101.0966,
+"earth_au": 102.0314,
+"earth_km": 15263676260,
+"light_time_h": 14.143
+},
+{
+"date": "2010-08-04",
+"sun_au": 101.312,
+"earth_au": 101.9296,
+"earth_km": 15248444187,
+"light_time_h": 14.129
+},
+{
+"date": "2010-09-04",
+"sun_au": 101.5273,
+"earth_au": 101.6637,
+"earth_km": 15208671680,
+"light_time_h": 14.092
+},
+{
+"date": "2010-10-04",
+"sun_au": 101.7356,
+"earth_au": 101.3692,
+"earth_km": 15164610422,
+"light_time_h": 14.051
+},
+{
+"date": "2010-11-04",
+"sun_au": 101.9509,
+"earth_au": 101.1662,
+"earth_km": 15134247405,
+"light_time_h": 14.023
+},
+{
+"date": "2010-12-04",
+"sun_au": 102.1592,
+"earth_au": 101.1827,
+"earth_km": 15136709594,
+"light_time_h": 14.025
+},
+{
+"date": "2011-01-04",
+"sun_au": 102.3744,
+"earth_au": 101.4805,
+"earth_km": 15181265179,
+"light_time_h": 14.066
+},
+{
+"date": "2011-02-04",
+"sun_au": 102.5895,
+"earth_au": 102.0405,
+"earth_km": 15265046438,
+"light_time_h": 14.144
+},
+{
+"date": "2011-03-04",
+"sun_au": 102.7838,
+"earth_au": 102.687,
+"earth_km": 15361757255,
+"light_time_h": 14.234
+},
+{
+"date": "2011-04-04",
+"sun_au": 102.9989,
+"earth_au": 103.4237,
+"earth_km": 15471971074,
+"light_time_h": 14.336
+},
+{
+"date": "2011-05-04",
+"sun_au": 103.207,
+"earth_au": 104.0257,
+"earth_km": 15562020844,
+"light_time_h": 14.419
+},
+{
+"date": "2011-06-04",
+"sun_au": 103.4221,
+"earth_au": 104.4298,
+"earth_km": 15622473100,
+"light_time_h": 14.475
+},
+{
+"date": "2011-07-04",
+"sun_au": 103.6302,
+"earth_au": 104.5675,
+"earth_km": 15643072338,
+"light_time_h": 14.494
+},
+{
+"date": "2011-08-04",
+"sun_au": 103.8452,
+"earth_au": 104.4679,
+"earth_km": 15628179868,
+"light_time_h": 14.481
+},
+{
+"date": "2011-09-04",
+"sun_au": 104.0602,
+"earth_au": 104.203,
+"earth_km": 15588550705,
+"light_time_h": 14.444
+},
+{
+"date": "2011-10-04",
+"sun_au": 104.2682,
+"earth_au": 103.9078,
+"earth_km": 15544388246,
+"light_time_h": 14.403
+},
+{
+"date": "2011-11-04",
+"sun_au": 104.4832,
+"earth_au": 103.7025,
+"earth_km": 15513672321,
+"light_time_h": 14.374
+},
+{
+"date": "2011-12-04",
+"sun_au": 104.6911,
+"earth_au": 103.7155,
+"earth_km": 15515615178,
+"light_time_h": 14.376
+},
+{
+"date": "2012-01-04",
+"sun_au": 104.906,
+"earth_au": 104.0094,
+"earth_km": 15559586177,
+"light_time_h": 14.417
+},
+{
+"date": "2012-02-04",
+"sun_au": 105.1208,
+"earth_au": 104.5663,
+"earth_km": 15642893913,
+"light_time_h": 14.494
+},
+{
+"date": "2012-03-04",
+"sun_au": 105.3217,
+"earth_au": 105.2355,
+"earth_km": 15742999312,
+"light_time_h": 14.587
+},
+{
+"date": "2012-04-04",
+"sun_au": 105.5365,
+"earth_au": 105.9708,
+"earth_km": 15853002728,
+"light_time_h": 14.689
+},
+{
+"date": "2012-05-04",
+"sun_au": 105.7442,
+"earth_au": 106.569,
+"earth_km": 15942489377,
+"light_time_h": 14.772
+},
+{
+"date": "2012-06-04",
+"sun_au": 105.9589,
+"earth_au": 106.9677,
+"earth_km": 16002136230,
+"light_time_h": 14.827
+},
+{
+"date": "2012-07-04",
+"sun_au": 106.1667,
+"earth_au": 107.0999,
+"earth_km": 16021918373,
+"light_time_h": 14.845
+},
+{
+"date": "2012-08-04",
+"sun_au": 106.3813,
+"earth_au": 106.9957,
+"earth_km": 16006332203,
+"light_time_h": 14.831
+},
+{
+"date": "2012-09-04",
+"sun_au": 106.596,
+"earth_au": 106.7283,
+"earth_km": 15966326897,
+"light_time_h": 14.794
+},
+{
+"date": "2012-10-04",
+"sun_au": 106.8037,
+"earth_au": 106.4333,
+"earth_km": 15922202131,
+"light_time_h": 14.753
+},
+{
+"date": "2012-11-04",
+"sun_au": 107.0182,
+"earth_au": 106.2311,
+"earth_km": 15891943051,
+"light_time_h": 14.725
+},
+{
+"date": "2012-12-04",
+"sun_au": 107.2258,
+"earth_au": 106.2489,
+"earth_km": 15894611679,
+"light_time_h": 14.727
+},
+{
+"date": "2013-01-04",
+"sun_au": 107.4403,
+"earth_au": 106.5482,
+"earth_km": 15939389129,
+"light_time_h": 14.769
+},
+{
+"date": "2013-02-04",
+"sun_au": 107.6548,
+"earth_au": 107.1091,
+"earth_km": 16023298185,
+"light_time_h": 14.847
+},
+{
+"date": "2013-03-04",
+"sun_au": 107.8484,
+"earth_au": 107.7555,
+"earth_km": 16119996210,
+"light_time_h": 14.936
+},
+{
+"date": "2013-04-04",
+"sun_au": 108.0628,
+"earth_au": 108.4911,
+"earth_km": 16230039472,
+"light_time_h": 15.038
+},
+{
+"date": "2013-05-04",
+"sun_au": 108.2702,
+"earth_au": 109.0911,
+"earth_km": 16319799658,
+"light_time_h": 15.121
+},
+{
+"date": "2013-06-04",
+"sun_au": 108.4845,
+"earth_au": 109.4927,
+"earth_km": 16379869362,
+"light_time_h": 15.177
+},
+{
+"date": "2013-07-04",
+"sun_au": 108.6919,
+"earth_au": 109.6277,
+"earth_km": 16400069975,
+"light_time_h": 15.196
+},
+{
+"date": "2013-08-04",
+"sun_au": 108.9062,
+"earth_au": 109.5257,
+"earth_km": 16384807431,
+"light_time_h": 15.182
+},
+{
+"date": "2013-09-04",
+"sun_au": 109.1205,
+"earth_au": 109.2591,
+"earth_km": 16344924640,
+"light_time_h": 15.145
+},
+{
+"date": "2013-10-04",
+"sun_au": 109.3278,
+"earth_au": 108.9633,
+"earth_km": 16300683583,
+"light_time_h": 15.104
+},
+{
+"date": "2013-11-04",
+"sun_au": 109.542,
+"earth_au": 108.7587,
+"earth_km": 16270064468,
+"light_time_h": 15.075
+},
+{
+"date": "2013-12-04",
+"sun_au": 109.7493,
+"earth_au": 108.7731,
+"earth_km": 16272220395,
+"light_time_h": 15.077
+},
+{
+"date": "2014-01-04",
+"sun_au": 109.9634,
+"earth_au": 109.0686,
+"earth_km": 16316429417,
+"light_time_h": 15.118
+},
+{
+"date": "2014-02-04",
+"sun_au": 110.1775,
+"earth_au": 109.6265,
+"earth_km": 16399887904,
+"light_time_h": 15.196
+},
+{
+"date": "2014-03-04",
+"sun_au": 110.3708,
+"earth_au": 110.2715,
+"earth_km": 16496380176,
+"light_time_h": 15.285
+},
+{
+"date": "2014-04-04",
+"sun_au": 110.5849,
+"earth_au": 111.0074,
+"earth_km": 16606464853,
+"light_time_h": 15.387
+},
+{
+"date": "2014-05-04",
+"sun_au": 110.792,
+"earth_au": 111.6091,
+"earth_km": 16696488209,
+"light_time_h": 15.47
+},
+{
+"date": "2014-06-04",
+"sun_au": 111.0059,
+"earth_au": 112.0134,
+"earth_km": 16756959738,
+"light_time_h": 15.526
+},
+{
+"date": "2014-07-04",
+"sun_au": 111.213,
+"earth_au": 112.1511,
+"earth_km": 16777563954,
+"light_time_h": 15.546
+},
+{
+"date": "2014-08-04",
+"sun_au": 111.427,
+"earth_au": 112.0512,
+"earth_km": 16762620947,
+"light_time_h": 15.532
+},
+{
+"date": "2014-09-04",
+"sun_au": 111.6409,
+"earth_au": 111.7855,
+"earth_km": 16722873539,
+"light_time_h": 15.495
+},
+{
+"date": "2014-10-04",
+"sun_au": 111.8479,
+"earth_au": 111.4891,
+"earth_km": 16678536500,
+"light_time_h": 15.454
+},
+{
+"date": "2014-11-04",
+"sun_au": 112.0618,
+"earth_au": 111.2822,
+"earth_km": 16647583607,
+"light_time_h": 15.425
+},
+{
+"date": "2014-12-04",
+"sun_au": 112.2687,
+"earth_au": 111.2933,
+"earth_km": 16649245558,
+"light_time_h": 15.427
+},
+{
+"date": "2015-01-04",
+"sun_au": 112.4825,
+"earth_au": 111.5851,
+"earth_km": 16692895289,
+"light_time_h": 15.467
+},
+{
+"date": "2015-02-04",
+"sun_au": 112.6963,
+"earth_au": 112.14,
+"earth_km": 16775902267,
+"light_time_h": 15.544
+},
+{
+"date": "2015-03-04",
+"sun_au": 112.8894,
+"earth_au": 112.7836,
+"earth_km": 16872192305,
+"light_time_h": 15.633
+},
+{
+"date": "2015-04-04",
+"sun_au": 113.1031,
+"earth_au": 113.5197,
+"earth_km": 16982312323,
+"light_time_h": 15.735
+},
+{
+"date": "2015-05-04",
+"sun_au": 113.3099,
+"earth_au": 114.1233,
+"earth_km": 17072599197,
+"light_time_h": 15.819
+},
+{
+"date": "2015-06-04",
+"sun_au": 113.5236,
+"earth_au": 114.5303,
+"earth_km": 17133482604,
+"light_time_h": 15.875
+},
+{
+"date": "2015-07-04",
+"sun_au": 113.7304,
+"earth_au": 114.6708,
+"earth_km": 17154505325,
+"light_time_h": 15.895
+},
+{
+"date": "2015-08-04",
+"sun_au": 113.944,
+"earth_au": 114.5732,
+"earth_km": 17139901835,
+"light_time_h": 15.881
+},
+{
+"date": "2015-09-04",
+"sun_au": 114.1577,
+"earth_au": 114.3085,
+"earth_km": 17100301743,
+"light_time_h": 15.845
+},
+{
+"date": "2015-10-04",
+"sun_au": 114.3644,
+"earth_au": 114.0115,
+"earth_km": 17055871684,
+"light_time_h": 15.803
+},
+{
+"date": "2015-11-04",
+"sun_au": 114.578,
+"earth_au": 113.8023,
+"earth_km": 17024582222,
+"light_time_h": 15.774
+},
+{
+"date": "2015-12-04",
+"sun_au": 114.7847,
+"earth_au": 113.8102,
+"earth_km": 17025756240,
+"light_time_h": 15.776
+},
+{
+"date": "2016-01-04",
+"sun_au": 114.9983,
+"earth_au": 114.0983,
+"earth_km": 17068860945,
+"light_time_h": 15.815
+},
+{
+"date": "2016-02-04",
+"sun_au": 115.2118,
+"earth_au": 114.6503,
+"earth_km": 17151437268,
+"light_time_h": 15.892
+},
+{
+"date": "2016-03-04",
+"sun_au": 115.4115,
+"earth_au": 115.3167,
+"earth_km": 17251138198,
+"light_time_h": 15.984
+},
+{
+"date": "2016-04-04",
+"sun_au": 115.625,
+"earth_au": 116.0516,
+"earth_km": 17361078913,
+"light_time_h": 16.086
+},
+{
+"date": "2016-05-04",
+"sun_au": 115.8315,
+"earth_au": 116.6515,
+"earth_km": 17450810943,
+"light_time_h": 16.169
+},
+{
+"date": "2016-06-04",
+"sun_au": 116.045,
+"earth_au": 117.053,
+"earth_km": 17510882585,
+"light_time_h": 16.225
+},
+{
+"date": "2016-07-04",
+"sun_au": 116.2516,
+"earth_au": 117.188,
+"earth_km": 17531072887,
+"light_time_h": 16.244
+},
+{
+"date": "2016-08-04",
+"sun_au": 116.465,
+"earth_au": 117.0856,
+"earth_km": 17515758642,
+"light_time_h": 16.23
+},
+{
+"date": "2016-09-04",
+"sun_au": 116.6784,
+"earth_au": 116.8184,
+"earth_km": 17475776592,
+"light_time_h": 16.192
+},
+{
+"date": "2016-10-04",
+"sun_au": 116.885,
+"earth_au": 116.5217,
+"earth_km": 17431398780,
+"light_time_h": 16.151
+},
+{
+"date": "2016-11-04",
+"sun_au": 117.0984,
+"earth_au": 116.3158,
+"earth_km": 17400601708,
+"light_time_h": 16.123
+},
+{
+"date": "2016-12-04",
+"sun_au": 117.3049,
+"earth_au": 116.3289,
+"earth_km": 17402552330,
+"light_time_h": 16.125
+},
+{
+"date": "2017-01-04",
+"sun_au": 117.5182,
+"earth_au": 116.6228,
+"earth_km": 17446529510,
+"light_time_h": 16.165
+},
+{
+"date": "2017-02-04",
+"sun_au": 117.7315,
+"earth_au": 117.1793,
+"earth_km": 17529769075,
+"light_time_h": 16.243
+},
+{
+"date": "2017-03-04",
+"sun_au": 117.9242,
+"earth_au": 117.8233,
+"earth_km": 17626112626,
+"light_time_h": 16.332
+},
+{
+"date": "2017-04-04",
+"sun_au": 118.1375,
+"earth_au": 118.5586,
+"earth_km": 17736107064,
+"light_time_h": 16.434
+},
+{
+"date": "2017-05-04",
+"sun_au": 118.3439,
+"earth_au": 119.1602,
+"earth_km": 17826109553,
+"light_time_h": 16.517
+},
+{
+"date": "2017-06-04",
+"sun_au": 118.5572,
+"earth_au": 119.5645,
+"earth_km": 17886590186,
+"light_time_h": 16.573
+},
+{
+"date": "2017-07-04",
+"sun_au": 118.7636,
+"earth_au": 119.7022,
+"earth_km": 17907194063,
+"light_time_h": 16.592
+},
+{
+"date": "2017-08-04",
+"sun_au": 118.9769,
+"earth_au": 119.6021,
+"earth_km": 17892215712,
+"light_time_h": 16.578
+},
+{
+"date": "2017-09-04",
+"sun_au": 119.1901,
+"earth_au": 119.3359,
+"earth_km": 17852391073,
+"light_time_h": 16.541
+},
+{
+"date": "2017-10-04",
+"sun_au": 119.3965,
+"earth_au": 119.0388,
+"earth_km": 17807944534,
+"light_time_h": 16.5
+},
+{
+"date": "2017-11-04",
+"sun_au": 119.6098,
+"earth_au": 118.8309,
+"earth_km": 17776849545,
+"light_time_h": 16.471
+},
+{
+"date": "2017-12-04",
+"sun_au": 119.8161,
+"earth_au": 118.8409,
+"earth_km": 17778348814,
+"light_time_h": 16.473
+},
+{
+"date": "2018-01-04",
+"sun_au": 120.0293,
+"earth_au": 119.1315,
+"earth_km": 17821812146,
+"light_time_h": 16.513
+},
+{
+"date": "2018-02-04",
+"sun_au": 120.2425,
+"earth_au": 119.6851,
+"earth_km": 17904641482,
+"light_time_h": 16.59
+},
+{
+"date": "2018-03-04",
+"sun_au": 120.435,
+"earth_au": 120.328,
+"earth_km": 18000810970,
+"light_time_h": 16.679
+},
+{
+"date": "2018-04-04",
+"sun_au": 120.6482,
+"earth_au": 121.0636,
+"earth_km": 18110863698,
+"light_time_h": 16.781
+},
+{
+"date": "2018-05-04",
+"sun_au": 120.8545,
+"earth_au": 121.6671,
+"earth_km": 18201144094,
+"light_time_h": 16.865
+},
+{
+"date": "2018-06-04",
+"sun_au": 121.0676,
+"earth_au": 122.0742,
+"earth_km": 18262046313,
+"light_time_h": 16.921
+},
+{
+"date": "2018-07-04",
+"sun_au": 121.2739,
+"earth_au": 122.2148,
+"earth_km": 18283073839,
+"light_time_h": 16.94
+},
+{
+"date": "2018-08-04",
+"sun_au": 121.4871,
+"earth_au": 122.117,
+"earth_km": 18268441839,
+"light_time_h": 16.927
+},
+{
+"date": "2018-09-04",
+"sun_au": 121.7002,
+"earth_au": 121.8519,
+"earth_km": 18228779863,
+"light_time_h": 16.89
+},
+{
+"date": "2018-10-04",
+"sun_au": 121.9065,
+"earth_au": 121.5543,
+"earth_km": 18184268147,
+"light_time_h": 16.849
+},
+{
+"date": "2018-11-04",
+"sun_au": 122.1197,
+"earth_au": 121.3445,
+"earth_km": 18152874731,
+"light_time_h": 16.82
+},
+{
+"date": "2018-12-04",
+"sun_au": 122.3259,
+"earth_au": 121.3515,
+"earth_km": 18153928305,
+"light_time_h": 16.821
+},
+{
+"date": "2019-01-04",
+"sun_au": 122.539,
+"earth_au": 121.6387,
+"earth_km": 18196893376,
+"light_time_h": 16.861
+},
+{
+"date": "2019-02-04",
+"sun_au": 122.7521,
+"earth_au": 122.1898,
+"earth_km": 18279337099,
+"light_time_h": 16.937
+},
+{
+"date": "2019-03-04",
+"sun_au": 122.9446,
+"earth_au": 122.8316,
+"earth_km": 18375343871,
+"light_time_h": 17.026
+},
+{
+"date": "2019-04-04",
+"sun_au": 123.1577,
+"earth_au": 123.5677,
+"earth_km": 18485467315,
+"light_time_h": 17.128
+},
+{
+"date": "2019-05-04",
+"sun_au": 123.3638,
+"earth_au": 124.173,
+"earth_km": 18576023317,
+"light_time_h": 17.212
+},
+{
+"date": "2019-06-04",
+"sun_au": 123.5769,
+"earth_au": 124.5829,
+"earth_km": 18637335349,
+"light_time_h": 17.269
+},
+{
+"date": "2019-07-04",
+"sun_au": 123.7831,
+"earth_au": 124.7262,
+"earth_km": 18658775371,
+"light_time_h": 17.289
+},
+{
+"date": "2019-08-04",
+"sun_au": 123.9962,
+"earth_au": 124.6307,
+"earth_km": 18644479986,
+"light_time_h": 17.275
+},
+{
+"date": "2019-09-04",
+"sun_au": 124.2093,
+"earth_au": 124.3666,
+"earth_km": 18604981931,
+"light_time_h": 17.239
+},
+{
+"date": "2019-10-04",
+"sun_au": 124.4155,
+"earth_au": 124.0687,
+"earth_km": 18560416292,
+"light_time_h": 17.197
+},
+{
+"date": "2019-11-04",
+"sun_au": 124.6286,
+"earth_au": 123.857,
+"earth_km": 18528744671,
+"light_time_h": 17.168
+},
+{
+"date": "2019-12-04",
+"sun_au": 124.8347,
+"earth_au": 123.8612,
+"earth_km": 18529368722,
+"light_time_h": 17.169
+},
+{
+"date": "2020-01-04",
+"sun_au": 125.0478,
+"earth_au": 124.1451,
+"earth_km": 18571846159,
+"light_time_h": 17.208
+},
+{
+"date": "2020-02-04",
+"sun_au": 125.2608,
+"earth_au": 124.6936,
+"earth_km": 18653901022,
+"light_time_h": 17.284
+},
+{
+"date": "2020-03-04",
+"sun_au": 125.46,
+"earth_au": 125.3583,
+"earth_km": 18753341778,
+"light_time_h": 17.376
+},
+{
+"date": "2020-04-04",
+"sun_au": 125.673,
+"earth_au": 126.0934,
+"earth_km": 18863303722,
+"light_time_h": 17.478
+},
+{
+"date": "2020-05-04",
+"sun_au": 125.8792,
+"earth_au": 126.6951,
+"earth_km": 18953309971,
+"light_time_h": 17.562
+},
+{
+"date": "2020-06-04",
+"sun_au": 126.0922,
+"earth_au": 127.0994,
+"earth_km": 19013806328,
+"light_time_h": 17.618
+},
+{
+"date": "2020-07-04",
+"sun_au": 126.2983,
+"earth_au": 127.2372,
+"earth_km": 19034413765,
+"light_time_h": 17.637
+},
+{
+"date": "2020-08-04",
+"sun_au": 126.5113,
+"earth_au": 127.137,
+"earth_km": 19019417726,
+"light_time_h": 17.623
+},
+{
+"date": "2020-09-04",
+"sun_au": 126.7243,
+"earth_au": 126.8705,
+"earth_km": 18979557513,
+"light_time_h": 17.586
+},
+{
+"date": "2020-10-04",
+"sun_au": 126.9304,
+"earth_au": 126.5731,
+"earth_km": 18935067611,
+"light_time_h": 17.545
+},
+{
+"date": "2020-11-04",
+"sun_au": 127.1434,
+"earth_au": 126.3649,
+"earth_km": 18903918652,
+"light_time_h": 17.516
+},
+{
+"date": "2020-12-04",
+"sun_au": 127.3495,
+"earth_au": 126.3745,
+"earth_km": 18905351393,
+"light_time_h": 17.517
+},
+{
+"date": "2021-01-04",
+"sun_au": 127.5625,
+"earth_au": 126.6644,
+"earth_km": 18948730441,
+"light_time_h": 17.557
+},
+{
+"date": "2021-02-04",
+"sun_au": 127.7754,
+"earth_au": 127.2176,
+"earth_km": 19031477126,
+"light_time_h": 17.634
+},
+{
+"date": "2021-03-04",
+"sun_au": 127.9677,
+"earth_au": 127.8601,
+"earth_km": 19127591781,
+"light_time_h": 17.723
+},
+{
+"date": "2021-04-04",
+"sun_au": 128.1807,
+"earth_au": 128.5955,
+"earth_km": 19237619924,
+"light_time_h": 17.825
+},
+{
+"date": "2021-05-04",
+"sun_au": 128.3867,
+"earth_au": 129.1991,
+"earth_km": 19327904107,
+"light_time_h": 17.909
+},
+{
+"date": "2021-06-04",
+"sun_au": 128.5996,
+"earth_au": 129.6062,
+"earth_km": 19388817349,
+"light_time_h": 17.965
+},
+{
+"date": "2021-07-04",
+"sun_au": 128.8057,
+"earth_au": 129.7468,
+"earth_km": 19409840162,
+"light_time_h": 17.985
+},
+{
+"date": "2021-08-04",
+"sun_au": 129.0186,
+"earth_au": 129.6488,
+"earth_km": 19395178659,
+"light_time_h": 17.971
+},
+{
+"date": "2021-09-04",
+"sun_au": 129.2315,
+"earth_au": 129.3833,
+"earth_km": 19355470753,
+"light_time_h": 17.934
+},
+{
+"date": "2021-10-04",
+"sun_au": 129.4375,
+"earth_au": 129.0855,
+"earth_km": 19310913221,
+"light_time_h": 17.893
+},
+{
+"date": "2021-11-04",
+"sun_au": 129.6504,
+"earth_au": 128.8753,
+"earth_km": 19279473348,
+"light_time_h": 17.864
+},
+{
+"date": "2021-12-04",
+"sun_au": 129.8564,
+"earth_au": 128.882,
+"earth_km": 19280472748,
+"light_time_h": 17.865
+},
+{
+"date": "2022-01-04",
+"sun_au": 130.0692,
+"earth_au": 129.1687,
+"earth_km": 19323364495,
+"light_time_h": 17.904
+},
+{
+"date": "2022-02-04",
+"sun_au": 130.282,
+"earth_au": 129.7193,
+"earth_km": 19405727651,
+"light_time_h": 17.981
+},
+{
+"date": "2022-03-04",
+"sun_au": 130.4742,
+"earth_au": 130.3607,
+"earth_km": 19501675824,
+"light_time_h": 18.07
+},
+{
+"date": "2022-04-04",
+"sun_au": 130.687,
+"earth_au": 131.0966,
+"earth_km": 19611766287,
+"light_time_h": 18.172
+},
+{
+"date": "2022-05-04",
+"sun_au": 130.8929,
+"earth_au": 131.7018,
+"earth_km": 19702313676,
+"light_time_h": 18.256
+},
+{
+"date": "2022-06-04",
+"sun_au": 131.1057,
+"earth_au": 132.1116,
+"earth_km": 19763617173,
+"light_time_h": 18.312
+},
+{
+"date": "2022-07-04",
+"sun_au": 131.3116,
+"earth_au": 132.2548,
+"earth_km": 19785031642,
+"light_time_h": 18.332
+},
+{
+"date": "2022-08-04",
+"sun_au": 131.5244,
+"earth_au": 132.1589,
+"earth_km": 19770687456,
+"light_time_h": 18.319
+},
+{
+"date": "2022-09-04",
+"sun_au": 131.7371,
+"earth_au": 131.8945,
+"earth_km": 19731130305,
+"light_time_h": 18.282
+},
+{
+"date": "2022-10-04",
+"sun_au": 131.943,
+"earth_au": 131.5962,
+"earth_km": 19686511252,
+"light_time_h": 18.241
+},
+{
+"date": "2022-11-04",
+"sun_au": 132.1557,
+"earth_au": 131.3842,
+"earth_km": 19654791548,
+"light_time_h": 18.211
+},
+{
+"date": "2022-12-04",
+"sun_au": 132.3615,
+"earth_au": 131.388,
+"earth_km": 19655360929,
+"light_time_h": 18.212
+},
+{
+"date": "2023-01-04",
+"sun_au": 132.5742,
+"earth_au": 131.6714,
+"earth_km": 19697759330,
+"light_time_h": 18.251
+},
+{
+"date": "2023-02-04",
+"sun_au": 132.7868,
+"earth_au": 132.2193,
+"earth_km": 19779719874,
+"light_time_h": 18.327
+},
+{
+"date": "2023-03-04",
+"sun_au": 132.9788,
+"earth_au": 132.8594,
+"earth_km": 19875487001,
+"light_time_h": 18.416
+},
+{
+"date": "2023-04-04",
+"sun_au": 133.1914,
+"earth_au": 133.5956,
+"earth_km": 19985612320,
+"light_time_h": 18.518
+},
+{
+"date": "2023-05-04",
+"sun_au": 133.3971,
+"earth_au": 134.2025,
+"earth_km": 20076405443,
+"light_time_h": 18.602
+},
+{
+"date": "2023-06-04",
+"sun_au": 133.6097,
+"earth_au": 134.6148,
+"earth_km": 20138093364,
+"light_time_h": 18.659
+},
+{
+"date": "2023-07-04",
+"sun_au": 133.8154,
+"earth_au": 134.7606,
+"earth_km": 20159901579,
+"light_time_h": 18.679
+},
+{
+"date": "2023-08-04",
+"sun_au": 134.0279,
+"earth_au": 134.6669,
+"earth_km": 20145882003,
+"light_time_h": 18.667
+},
+{
+"date": "2023-09-04",
+"sun_au": 134.2405,
+"earth_au": 134.4035,
+"earth_km": 20106475020,
+"light_time_h": 18.63
+},
+{
+"date": "2023-10-04",
+"sun_au": 134.4461,
+"earth_au": 134.1047,
+"earth_km": 20061782597,
+"light_time_h": 18.589
+},
+{
+"date": "2023-11-04",
+"sun_au": 134.6586,
+"earth_au": 133.8907,
+"earth_km": 20029761317,
+"light_time_h": 18.559
+},
+{
+"date": "2023-12-04",
+"sun_au": 134.8642,
+"earth_au": 133.8915,
+"earth_km": 20029883822,
+"light_time_h": 18.559
+},
+{
+"date": "2024-01-04",
+"sun_au": 135.0766,
+"earth_au": 134.1715,
+"earth_km": 20071777432,
+"light_time_h": 18.598
+},
+{
+"date": "2024-02-04",
+"sun_au": 135.289,
+"earth_au": 134.7167,
+"earth_km": 20153333010,
+"light_time_h": 18.673
+},
+{
+"date": "2024-03-04",
+"sun_au": 135.4877,
+"earth_au": 135.3796,
+"earth_km": 20252505761,
+"light_time_h": 18.765
+},
+{
+"date": "2024-04-04",
+"sun_au": 135.7,
+"earth_au": 136.1146,
+"earth_km": 20362452223,
+"light_time_h": 18.867
+},
+{
+"date": "2024-05-04",
+"sun_au": 135.9055,
+"earth_au": 136.7177,
+"earth_km": 20452671501,
+"light_time_h": 18.951
+},
+{
+"date": "2024-06-04",
+"sun_au": 136.1178,
+"earth_au": 137.1244,
+"earth_km": 20513514411,
+"light_time_h": 19.007
+},
+{
+"date": "2024-07-04",
+"sun_au": 136.3232,
+"earth_au": 137.2643,
+"earth_km": 20534451059,
+"light_time_h": 19.027
+},
+{
+"date": "2024-08-04",
+"sun_au": 136.5355,
+"earth_au": 137.1656,
+"earth_km": 20519681803,
+"light_time_h": 19.013
+},
+{
+"date": "2024-09-04",
+"sun_au": 136.7477,
+"earth_au": 136.8994,
+"earth_km": 20479862488,
+"light_time_h": 18.976
+},
+{
+"date": "2024-10-04",
+"sun_au": 136.9531,
+"earth_au": 136.6009,
+"earth_km": 20435207278,
+"light_time_h": 18.935
+},
+{
+"date": "2024-11-04",
+"sun_au": 137.1653,
+"earth_au": 136.3902,
+"earth_km": 20403678748,
+"light_time_h": 18.905
+},
+{
+"date": "2024-12-04",
+"sun_au": 137.3706,
+"earth_au": 136.3963,
+"earth_km": 20404592844,
+"light_time_h": 18.906
+},
+{
+"date": "2025-01-04",
+"sun_au": 137.5828,
+"earth_au": 136.6823,
+"earth_km": 20447383836,
+"light_time_h": 18.946
+},
+{
+"date": "2025-02-04",
+"sun_au": 137.7949,
+"earth_au": 137.2321,
+"earth_km": 20529628037,
+"light_time_h": 19.022
+},
+{
+"date": "2025-03-04",
+"sun_au": 137.9864,
+"earth_au": 137.8727,
+"earth_km": 20625463719,
+"light_time_h": 19.111
+},
+{
+"date": "2025-04-04",
+"sun_au": 138.1985,
+"earth_au": 138.6078,
+"earth_km": 20735437738,
+"light_time_h": 19.213
+},
+{
+"date": "2025-05-04",
+"sun_au": 138.4037,
+"earth_au": 139.2125,
+"earth_km": 20825886141,
+"light_time_h": 19.297
+},
+{
+"date": "2025-06-04",
+"sun_au": 138.6157,
+"earth_au": 139.6216,
+"earth_km": 20887088830,
+"light_time_h": 19.353
+},
+{
+"date": "2025-07-04",
+"sun_au": 138.8209,
+"earth_au": 139.764,
+"earth_km": 20908393188,
+"light_time_h": 19.373
+},
+{
+"date": "2025-08-04",
+"sun_au": 139.0328,
+"earth_au": 139.6672,
+"earth_km": 20893919361,
+"light_time_h": 19.36
+},
+{
+"date": "2025-09-04",
+"sun_au": 139.2448,
+"earth_au": 139.4019,
+"earth_km": 20854229888,
+"light_time_h": 19.323
+},
+{
+"date": "2025-10-04",
+"sun_au": 139.4499,
+"earth_au": 139.1029,
+"earth_km": 20809495354,
+"light_time_h": 19.281
+},
+{
+"date": "2025-11-04",
+"sun_au": 139.6619,
+"earth_au": 138.8902,
+"earth_km": 20777674402,
+"light_time_h": 19.252
+},
+{
+"date": "2025-12-04",
+"sun_au": 139.8669,
+"earth_au": 138.8934,
+"earth_km": 20778151568,
+"light_time_h": 19.252
+},
+{
+"date": "2026-01-04",
+"sun_au": 140.0788,
+"earth_au": 139.1761,
+"earth_km": 20820443441,
+"light_time_h": 19.292
+},
+{
+"date": "2026-02-04",
+"sun_au": 140.2906,
+"earth_au": 139.7231,
+"earth_km": 20902280525,
+"light_time_h": 19.367
+},
+{
+"date": "2026-03-04",
+"sun_au": 140.4819,
+"earth_au": 140.3625,
+"earth_km": 20997930198,
+"light_time_h": 19.456
+},
+{
+"date": "2026-04-04",
+"sun_au": 140.6937,
+"earth_au": 141.0978,
+"earth_km": 21107929587,
+"light_time_h": 19.558
+},
+{
+"date": "2026-05-04",
+"sun_au": 140.8987,
+"earth_au": 141.704,
+"earth_km": 21198610300,
+"light_time_h": 19.642
+},
+{
+"date": "2026-06-04",
+"sun_au": 141.1104,
+"earth_au": 142.1155,
+"earth_km": 21260182382,
+"light_time_h": 19.699
+},
+{
+"date": "2026-07-04",
+"sun_au": 141.3153,
+"earth_au": 142.2605,
+"earth_km": 21281864266,
+"light_time_h": 19.719
+},
+{
+"date": "2026-08-04",
+"sun_au": 141.5271,
+"earth_au": 142.1658,
+"earth_km": 21267698475,
+"light_time_h": 19.706
+},
+{
+"date": "2026-09-04",
+"sun_au": 141.7388,
+"earth_au": 141.9014,
+"earth_km": 21228144761,
+"light_time_h": 19.669
+},
+{
+"date": "2026-10-04",
+"sun_au": 141.9437,
+"earth_au": 141.6018,
+"earth_km": 21183330849,
+"light_time_h": 19.628
+},
+{
+"date": "2026-11-04",
+"sun_au": 142.1553,
+"earth_au": 141.3871,
+"earth_km": 21151210359,
+"light_time_h": 19.598
+},
+{
+"date": "2026-12-04",
+"sun_au": 142.3602,
+"earth_au": 141.3874,
+"earth_km": 21151250039,
+"light_time_h": 19.598
+}
+]

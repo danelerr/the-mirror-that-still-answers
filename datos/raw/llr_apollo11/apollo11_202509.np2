@@ -1,0 +1,87 @@
+h1 CRD  2 2025 11  5 16
+h2       APOL 7045 95  1  4       ILRS
+h3 apollo11        100  100       na 0 1  3
+h4  1 2025  9  9  7 45 19 2025  9  9  7 49 31  0 0 0 0 1 0 2 0
+h5  0 25 090907 JPL   430
+c0 0     532.0 std3 lpd apd4 cesm  na  na  na  na
+c1 0 lpd  Nd-YAG 1064.00 10.00 100.00 100.0 0.5 1
+c2 0 apd4 APD-array 532.000    na 30.5 100.0 ECL   na 16.00 90.0 1.4 Functional_fit   na   na 0
+c3 0 cesm Symmetricom_5071A_GPS CS-C001 ACM_CS_PS7186H na 0.0
+11 28075.0000000 2.3918177586062 std3 2  252.0      6     172.6      na      na       na    na 0   0.8
+20 28075.000  732.85 288.65 47.0 1
+40   126.0000000 0 std3 11243 5841      na        na      na  140.2      na      na    na 3 0 0 4    na
+50 std3  172.6     na     na   na 4
+00 run.refl.shots.thresh.yield.net 250909e.r0.s05000.t01.y6.n6
+00 Git commit be6a962aa2c636553095f53acedb85d6d96f80e5
+00 ACS Git commit 1d568d1eaebb3ad9b8317693fea841524d0605db
+00 LUN Gate width 9
+00 Longterm offsets data not present. 0 ps used for all channels.
+00 No 1st photon bias.
+00 Cesium used as timebase; Clock allan deviation suggests no...
+00 uncertainty inflation is needed relative to the scale of NP uncertainty.
+00 Run contains inadequate or no contemporaneous ACS data.
+00 Applied ACS differential correction of -6.5 +/- 6.3 [ps]...
+00 to final normal point round trip time based on distributions of...
+00 historic ACS differential correction estimates.
+00 We estimate a total (excepting a potential scale factor or RSS value,
+00 which will follow) normal point uncertainty of 96.9 [ps].
+00 Internal studies suggest no additional uncertainty inflation is needed.
+h8
+h1 CRD  2 2025 11  5 16
+h2       APOL 7045 95  1  4       ILRS
+h3 apollo11        100  100       na 0 1  3
+h4  1 2025  9  9  7 54 21 2025  9  9  7 58 13  0 0 0 0 1 0 2 0
+h5  0 25 090907 JPL   430
+c0 0     532.0 std3 lpd apd4 cesm  na  na  na  na
+c1 0 lpd  Nd-YAG 1064.00 10.00 100.00 100.0 0.5 1
+c2 0 apd4 APD-array 532.000    na 30.5 100.0 ECL   na 16.00 90.0 1.4 Functional_fit   na   na 0
+c3 0 cesm Symmetricom_5071A_GPS CS-C001 ACM_CS_PS7186H na 0.0
+11 28575.0000000 2.3916174256895 std3 2  232.0     87     154.6      na      na       na    na 0  12.6
+20 28575.000  732.85 289.03 46.0 1
+40   116.0000000 0 std3 10090 5093      na        na      na  137.7      na      na    na 3 0 0 4    na
+50 std3  154.6     na     na   na 1
+00 run.refl.shots.thresh.yield.net 250909g.r0.s04609.t01.y94.n87
+00 Git commit be6a962aa2c636553095f53acedb85d6d96f80e5
+00 ACS Git commit 1d568d1eaebb3ad9b8317693fea841524d0605db
+00 LUN Gate width 9
+00 Longterm offsets data not present. 0 ps used for all channels.
+00 No 1st photon bias.
+00 Cesium used as timebase; Clock allan deviation suggests no...
+00 uncertainty inflation is needed relative to the scale of NP uncertainty.
+00 Run contains inadequate or no contemporaneous ACS data.
+00 Applied ACS differential correction of 21.8 +/- 6.3 [ps]...
+00 to final normal point round trip time based on distributions of...
+00 historic ACS differential correction estimates.
+00 We estimate a total (excepting a potential scale factor or RSS value,
+00 which will follow) normal point uncertainty of 17.6 [ps].
+00 Internal studies suggest no additional uncertainty inflation is needed.
+h8
+H1 CRD  2 2026 04 24 11
+H2 GRSM       7845 78  1  7 ILRS
+H3 apollo11   0000100 0100 na 0 1 3
+H4  1 2025 09 10 21 40 48 2025 09 10 23 42 02  0 0 0 0 1 0 2 0
+H5  0 25 090900 OPA 7531
+C0 0 1064.200 me09 las6 det2 tim2 none nm01 met1 na
+C1 0 las6 Nd-Yag 1064.20 10.00 240.00 150.0 0.00 1
+C2 0 det2 SPAD 1064.20 20.00 80.0 12.0 ECL 999.9 0.14 60.0 70.0 none 0.0 0.0 na
+C3 0 tim2 Maser_T4S36_Oca Maser_T4S36_Oca Dassault na 0.0
+C5 0 nm01 station_meo version_1.0 telemetrie_laser version_1.0
+C6 0 met1 VAISALA PTU303 na VAISALA PTU303 na VAISALA PTU303 na
+20 78048.134382885488 869.55 286.35 64  0
+40 78403.781508922111 0 me09 269 253 3.716 102574.5 696.0 141.8 0.108 -0.364 na 3 3 0 4 7.9
+41 78403.781508922111 0 me09 269 253 3.716 102574.5 696.0 141.8 0.108 -0.364 na 3 3 0 0 7.9
+30 78393.186 96.9653 28.4128 0 2 0 0.0029168 0.0029532
+11 78393.185556431507 2.403091781023 me09 2 712.0 38 260.2 0.121 0.359  na 0.6 0 11.5
+20 78825.558772724151 869.75 286.15 65  0
+40 79183.575032615743 0 me09 266 260 3.716 102568.7 707.0 151.6 0.103 -0.390 na 3 3 0 4 8.1
+41 79183.575032615743 0 me09 266 260 3.716 102568.7 707.0 151.6 0.103 -0.390 na 3 3 0 0 8.1
+30 79137.242 99.1660 30.6055 0 2 0 0.0030010 0.0029395
+11 79137.242166175710 2.401711996290 me09 2 716.0 26 156.8 0.395 -0.904  na 0.4 0 12.2
+20 84647.555321366061 869.05 286.05 65  0
+40 84986.258832136111 0 me09 508 486 3.716 102565.8 758.0 158.0 0.012 -0.432 na 3 3 0 4 15.2
+41 84986.258832136111 0 me09 508 486 3.716 102565.8 758.0 158.0 0.012 -0.432 na 3 3 0 0 15.2
+30 85018.755 120.0184 47.1372 0 2 0 0.0043140 0.0025995
+11 85018.754528303462 2.392511256879 me09 2 679.0 48 196.1 0.631 -0.364  na 0.8 0 17.8
+50 me09 204.4 0.382 -0.303 na 0
+H8
+H9 

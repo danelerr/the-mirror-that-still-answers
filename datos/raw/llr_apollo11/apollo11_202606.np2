@@ -1,0 +1,77 @@
+h1 CRD  2 2026  8 20 20
+h2       APOL 7045 95  1  4       ILRS
+h3 apollo11        100  100       na 0 1  3
+h4  1 2026  6  6 11 28 48 2026  6  6 11 33  0  0 0 0 0 1 0 2 0
+h5  0 26 060611 JPL   430
+c0 0     532.0 std3 lpd apd4 cesm  na  na  na  na
+c1 0 lpd  Nd-YAG 1064.00 10.00 100.00 100.0 0.5 1
+c2 0 apd4 APD-array 532.000    na 30.5 100.0 ECL   na 16.00 90.0 1.4 Functional_fit   na   na 0
+c3 0 cesm Symmetricom_5071A_GPS CS-C001 ACM_CS_PS7186H na 0.0
+11 41460.0000000 2.5993597936361 std3 2  251.0    124     184.6      na      na       na    na 0 389.5
+20 41460.000  726.81 283.81 41.0 1
+40   126.0000000 0 std3 4990 2433      na        na      na  134.5      na      na    na 3 0 0 4    na
+50 std3  184.6     na     na   na 1
+00 run.refl.shots.thresh.yield.net 260606f.r0.s05000.t01.y131.n124
+00 Git commit 96c7ed84920f47506632c82225abb7bb7045c1bf
+00 ACS Git commit af1f54297db0fefb44fde49ca1b6ba56094ce7d5
+00 LUN Gate width 9
+00 Longterm offsets data not present. 0 ps used for all channels.
+00 No 1st photon bias.
+00 Cesium used as timebase; Clock allan deviation suggests no...
+00 uncertainty inflation is needed relative to the scale of NP uncertainty.
+00 Run contains inadequate or no contemporaneous ACS data.
+00 Applied ACS differential correction of 25.4 +/- 6.4 [ps]...
+00 to final normal point round trip time based on distributions of...
+00 historic ACS differential correction estimates.
+00 We estimate a total (excepting a potential scale factor or RSS value,
+00 which will follow) normal point uncertainty of 16.5 [ps].
+00 Internal studies suggest no additional uncertainty inflation is needed.
+h8
+H1 CRD  2 2026 06 12 09
+H2 GRSM       7845 78  1  7 ILRS
+H3 apollo11   0000100 0100 na 0 1 3
+H4  1 2026 06 12 09 28 18 2026 06 12 09 38 17  0 0 0 0 1 0 2 0
+H5  0 26 061000 OPA 6621
+C0 0 532.100 me08 las5 det1 tim2 none nm01 met1 na
+C1 0 las5 Nd-Yag 1064.20 10.00 150.00 150.0 5.00 1
+C2 0 det1 spad_SSO 532.100 20.00 256.0 100.0 ECL 9000.0 0.12 60.0 15.0 none 0.0 0.0 na
+C3 0 tim2 Maser_T4S36_Oca Maser_T4S36_Oca Dassault na 0.0
+C5 0 nm01 station_meo version_1.0 telemetrie_laser version_1.0
+C6 0 met1 VAISALA PTU303 na VAISALA PTU303 na VAISALA PTU303 na
+20 34098.779220999997 881.65 291.45 40  0
+40 34399.974388000002 0 me08 209 201 3.716 103404.3 318.0 68.8 0.288 -0.461 na 3 3 0 4 10.3
+41 34399.974388000002 0 me08 209 201 3.716 103404.3 318.0 68.8 0.288 -0.461 na 3 3 0 0 10.3
+30 34405.133 207.4795 63.8455 0 2 0 0.0081525 -0.0013020
+11 34405.133062 2.375067393994 me08 2 602.0 56 158.4 -0.012 -0.540  na 0.9 0 5.5
+50 me08 158.4 -0.012 -0.540 na 1
+H8
+h1 CRD  2 2026  8 20 20
+h2       APOL 7045 95  1  4       ILRS
+h3 apollo11        100  100       na 0 1  3
+h4  1 2026  6 21  3 13 11 2026  6 21  3 17 21  0 0 0 0 1 0 2 0
+h5  0 26 062103 JPL   430
+c0 0     532.0 std3 lpd apd4 cesm  na  na  na  na
+c1 0 lpd  Nd-YAG 1064.00 10.00 100.00 100.0 0.5 1
+c2 0 apd4 APD-array 532.000    na 30.5 100.0 ECL   na 16.00 90.0 1.4 Functional_fit   na   na 0
+c3 0 cesm Symmetricom_5071A_GPS CS-C001 ACM_CS_PS7186H na 0.0
+11 11715.0000000 2.5227084649874 std3 2  250.0     48     236.0      na      na       na    na 0  17.0
+20 11715.000  729.74 293.35 27.0 1
+40   125.0000000 0 std3 6413 3116      na        na      na  132.2      na      na    na 3 0 0 4    na
+50 std3  236.0     na     na   na 1
+00 run.refl.shots.thresh.yield.net 260621g.r0.s05000.t01.y48.n48
+00 Git commit 96c7ed84920f47506632c82225abb7bb7045c1bf
+00 ACS Git commit af1f54297db0fefb44fde49ca1b6ba56094ce7d5
+00 LUN Gate width 9
+00 Longterm offsets data not present. 0 ps used for all channels.
+00 No 1st photon bias.
+00 Cesium used as timebase; Clock allan deviation suggests no...
+00 uncertainty inflation is needed relative to the scale of NP uncertainty.
+00 Run contains inadequate or no contemporaneous ACS data.
+00 Applied ACS differential correction of 22.8 +/- 6.4 [ps]...
+00 to final normal point round trip time based on distributions of...
+00 historic ACS differential correction estimates.
+00 We estimate a total (excepting a potential scale factor or RSS value,
+00 which will follow) normal point uncertainty of 31.5 [ps].
+00 Internal studies suggest no additional uncertainty inflation is needed.
+h8
+H9 

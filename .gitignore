@@ -1,0 +1,18 @@
+# Only the project itself is public. Planning notes and working files stay local.
+/*
+!/.gitignore
+!/README.md
+!/LICENSE
+!/web/
+!/datos/
+!/dibujos/
+
+# Working files inside the public folders
+/datos/DATOS.md
+/datos/raw/*.json
+/datos/raw/*.html
+/datos/raw/horizons_pioneer10_today.txt
+/dibujos/variantes/
+/dibujos/PROMPTS.md
+__pycache__/
+*.pyc

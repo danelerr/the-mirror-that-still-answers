@@ -1,0 +1,2752 @@
+[
+ {
+  "utc": "2025-01-03T00:56:10Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.4803462368283,
+  "one_way_km": 371794.548,
+  "photons": 238,
+  "window_s": 246.0,
+  "file": "apollo11_202501.np2"
+ },
+ {
+  "utc": "2025-01-06T01:18:15Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.429967614784,
+  "one_way_km": 364242.982,
+  "photons": 326,
+  "window_s": 251.0,
+  "file": "apollo11_202501.np2"
+ },
+ {
+  "utc": "2025-01-07T15:30:40Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.428891475832,
+  "one_way_km": 364081.673,
+  "photons": 32,
+  "window_s": 865.0,
+  "file": "apollo11_202501.np2"
+ },
+ {
+  "utc": "2025-01-07T16:51:33Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.424079885611,
+  "one_way_km": 363360.434,
+  "photons": 63,
+  "window_s": 629.0,
+  "file": "apollo11_202501.np2"
+ },
+ {
+  "utc": "2025-01-08T14:18:36Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.43892501591,
+  "one_way_km": 365585.663,
+  "photons": 86,
+  "window_s": 897.0,
+  "file": "apollo11_202501.np2"
+ },
+ {
+  "utc": "2025-01-09T18:10:31Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.426963451695,
+  "one_way_km": 363792.669,
+  "photons": 57,
+  "window_s": 678.0,
+  "file": "apollo11_202501.np2"
+ },
+ {
+  "utc": "2025-01-12T06:55:20Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.4556868879494,
+  "one_way_km": 368098.204,
+  "photons": 46,
+  "window_s": 348.0,
+  "file": "apollo11_202501.np2"
+ },
+ {
+  "utc": "2025-01-12T07:06:40Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.4563510833181,
+  "one_way_km": 368197.764,
+  "photons": 89,
+  "window_s": 199.0,
+  "file": "apollo11_202501.np2"
+ },
+ {
+  "utc": "2025-01-20T12:56:10Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.6534578505252,
+  "one_way_km": 397743.326,
+  "photons": 465,
+  "window_s": 147.0,
+  "file": "apollo11_202501.np2"
+ },
+ {
+  "utc": "2025-02-01T01:35:05Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.430988993736,
+  "one_way_km": 364396.083,
+  "photons": 123,
+  "window_s": 250.0,
+  "file": "apollo11_202502.np2"
+ },
+ {
+  "utc": "2025-02-02T01:17:10Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.4162136338295,
+  "one_way_km": 362181.312,
+  "photons": 30,
+  "window_s": 248.0,
+  "file": "apollo11_202502.np2"
+ },
+ {
+  "utc": "2025-02-03T12:30:06Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.422198436802,
+  "one_way_km": 363078.412,
+  "photons": 67,
+  "window_s": 608.0,
+  "file": "apollo11_202502.np2"
+ },
+ {
+  "utc": "2025-02-03T13:58:20Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.41528356318,
+  "one_way_km": 362041.898,
+  "photons": 89,
+  "window_s": 556.0,
+  "file": "apollo11_202502.np2"
+ },
+ {
+  "utc": "2025-02-03T15:31:32Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.412007233801,
+  "one_way_km": 361550.789,
+  "photons": 125,
+  "window_s": 607.0,
+  "file": "apollo11_202502.np2"
+ },
+ {
+  "utc": "2025-02-03T16:28:24Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.412298757116,
+  "one_way_km": 361594.487,
+  "photons": 130,
+  "window_s": 593.0,
+  "file": "apollo11_202502.np2"
+ },
+ {
+  "utc": "2025-02-03T16:28:29Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.412300544204,
+  "one_way_km": 361594.755,
+  "photons": 124,
+  "window_s": 593.0,
+  "file": "apollo11_202502.np2"
+ },
+ {
+  "utc": "2025-02-03T17:23:57Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.41426999105,
+  "one_way_km": 361889.967,
+  "photons": 72,
+  "window_s": 584.0,
+  "file": "apollo11_202502.np2"
+ },
+ {
+  "utc": "2025-02-03T17:24:20Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.414289327128,
+  "one_way_km": 361892.866,
+  "photons": 133,
+  "window_s": 584.0,
+  "file": "apollo11_202502.np2"
+ },
+ {
+  "utc": "2025-02-03T18:20:28Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.417878836611,
+  "one_way_km": 362430.92,
+  "photons": 70,
+  "window_s": 626.0,
+  "file": "apollo11_202502.np2"
+ },
+ {
+  "utc": "2025-02-03T18:20:51Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.417908406021,
+  "one_way_km": 362435.352,
+  "photons": 130,
+  "window_s": 626.0,
+  "file": "apollo11_202502.np2"
+ },
+ {
+  "utc": "2025-02-03T19:19:38Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.423170102338,
+  "one_way_km": 363224.061,
+  "photons": 93,
+  "window_s": 578.0,
+  "file": "apollo11_202502.np2"
+ },
+ {
+  "utc": "2025-02-03T20:11:58Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.428886077935,
+  "one_way_km": 364080.864,
+  "photons": 61,
+  "window_s": 624.0,
+  "file": "apollo11_202502.np2"
+ },
+ {
+  "utc": "2025-02-03T20:14:00Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.429123898226,
+  "one_way_km": 364116.512,
+  "photons": 51,
+  "window_s": 624.0,
+  "file": "apollo11_202502.np2"
+ },
+ {
+  "utc": "2025-02-03T21:14:24Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.436578349349,
+  "one_way_km": 365233.906,
+  "photons": 136,
+  "window_s": 584.0,
+  "file": "apollo11_202502.np2"
+ },
+ {
+  "utc": "2025-02-03T22:08:02Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.443569702221,
+  "one_way_km": 366281.884,
+  "photons": 56,
+  "window_s": 576.0,
+  "file": "apollo11_202502.np2"
+ },
+ {
+  "utc": "2025-02-04T14:54:51Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.422917952541,
+  "one_way_km": 363186.264,
+  "photons": 34,
+  "window_s": 851.0,
+  "file": "apollo11_202502.np2"
+ },
+ {
+  "utc": "2025-02-04T19:27:37Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.427905115976,
+  "one_way_km": 363933.821,
+  "photons": 43,
+  "window_s": 614.0,
+  "file": "apollo11_202502.np2"
+ },
+ {
+  "utc": "2025-02-04T19:28:25Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.427973164992,
+  "one_way_km": 363944.022,
+  "photons": 83,
+  "window_s": 614.0,
+  "file": "apollo11_202502.np2"
+ },
+ {
+  "utc": "2025-02-04T20:51:56Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.43635105524,
+  "one_way_km": 365199.836,
+  "photons": 88,
+  "window_s": 632.0,
+  "file": "apollo11_202502.np2"
+ },
+ {
+  "utc": "2025-02-04T21:48:23Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.44311826442,
+  "one_way_km": 366214.215,
+  "photons": 80,
+  "window_s": 700.0,
+  "file": "apollo11_202502.np2"
+ },
+ {
+  "utc": "2025-02-04T22:58:57Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.452203929277,
+  "one_way_km": 367576.122,
+  "photons": 96,
+  "window_s": 652.0,
+  "file": "apollo11_202502.np2"
+ },
+ {
+  "utc": "2025-02-05T13:17:35Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.446656150209,
+  "one_way_km": 366744.531,
+  "photons": 35,
+  "window_s": 605.0,
+  "file": "apollo11_202502.np2"
+ },
+ {
+  "utc": "2025-02-05T14:18:39Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.441030863905,
+  "one_way_km": 365901.321,
+  "photons": 20,
+  "window_s": 631.0,
+  "file": "apollo11_202502.np2"
+ },
+ {
+  "utc": "2025-02-05T14:19:08Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.440990702157,
+  "one_way_km": 365895.301,
+  "photons": 84,
+  "window_s": 631.0,
+  "file": "apollo11_202502.np2"
+ },
+ {
+  "utc": "2025-02-05T15:19:22Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.436674133625,
+  "one_way_km": 365248.264,
+  "photons": 173,
+  "window_s": 594.0,
+  "file": "apollo11_202502.np2"
+ },
+ {
+  "utc": "2025-02-05T16:17:48Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.433944088062,
+  "one_way_km": 364839.04,
+  "photons": 49,
+  "window_s": 596.0,
+  "file": "apollo11_202502.np2"
+ },
+ {
+  "utc": "2025-02-05T16:18:51Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.433909653257,
+  "one_way_km": 364833.879,
+  "photons": 94,
+  "window_s": 596.0,
+  "file": "apollo11_202502.np2"
+ },
+ {
+  "utc": "2025-02-05T17:30:14Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.432843600179,
+  "one_way_km": 364674.081,
+  "photons": 104,
+  "window_s": 635.0,
+  "file": "apollo11_202502.np2"
+ },
+ {
+  "utc": "2025-02-05T17:33:57Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.43285867506,
+  "one_way_km": 364676.341,
+  "photons": 26,
+  "window_s": 635.0,
+  "file": "apollo11_202502.np2"
+ },
+ {
+  "utc": "2025-02-05T18:37:06Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.434191462739,
+  "one_way_km": 364876.121,
+  "photons": 28,
+  "window_s": 698.0,
+  "file": "apollo11_202502.np2"
+ },
+ {
+  "utc": "2025-02-05T18:38:15Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.434234226902,
+  "one_way_km": 364882.531,
+  "photons": 30,
+  "window_s": 698.0,
+  "file": "apollo11_202502.np2"
+ },
+ {
+  "utc": "2025-02-05T20:00:45Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.438954854573,
+  "one_way_km": 365590.135,
+  "photons": 210,
+  "window_s": 744.0,
+  "file": "apollo11_202502.np2"
+ },
+ {
+  "utc": "2025-02-05T20:00:57Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.438970495986,
+  "one_way_km": 365592.48,
+  "photons": 17,
+  "window_s": 744.0,
+  "file": "apollo11_202502.np2"
+ },
+ {
+  "utc": "2025-02-05T21:31:04Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.447351376673,
+  "one_way_km": 366848.742,
+  "photons": 41,
+  "window_s": 684.0,
+  "file": "apollo11_202502.np2"
+ },
+ {
+  "utc": "2025-02-05T22:37:16Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.455032356789,
+  "one_way_km": 368000.092,
+  "photons": 164,
+  "window_s": 666.0,
+  "file": "apollo11_202502.np2"
+ },
+ {
+  "utc": "2025-02-06T13:45:31Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.464131484239,
+  "one_way_km": 369364.017,
+  "photons": 45,
+  "window_s": 647.0,
+  "file": "apollo11_202502.np2"
+ },
+ {
+  "utc": "2025-02-06T15:28:25Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.455015821969,
+  "one_way_km": 367997.614,
+  "photons": 156,
+  "window_s": 673.0,
+  "file": "apollo11_202502.np2"
+ },
+ {
+  "utc": "2025-02-06T15:38:36Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.454281318984,
+  "one_way_km": 367887.515,
+  "photons": 33,
+  "window_s": 609.0,
+  "file": "apollo11_202502.np2"
+ },
+ {
+  "utc": "2025-02-06T15:40:13Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.454169051145,
+  "one_way_km": 367870.686,
+  "photons": 35,
+  "window_s": 609.0,
+  "file": "apollo11_202502.np2"
+ },
+ {
+  "utc": "2025-02-06T17:01:43Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.449811294244,
+  "one_way_km": 367217.475,
+  "photons": 40,
+  "window_s": 600.0,
+  "file": "apollo11_202502.np2"
+ },
+ {
+  "utc": "2025-02-06T17:02:38Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.449778046637,
+  "one_way_km": 367212.491,
+  "photons": 33,
+  "window_s": 600.0,
+  "file": "apollo11_202502.np2"
+ },
+ {
+  "utc": "2025-02-06T22:15:33Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.461659111332,
+  "one_way_km": 368993.418,
+  "photons": 70,
+  "window_s": 1288.0,
+  "file": "apollo11_202502.np2"
+ },
+ {
+  "utc": "2025-02-07T01:24:38Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.484390524216,
+  "one_way_km": 372400.771,
+  "photons": 22,
+  "window_s": 886.0,
+  "file": "apollo11_202502.np2"
+ },
+ {
+  "utc": "2025-02-07T06:51:05Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.4730049984844,
+  "one_way_km": 370694.124,
+  "photons": 837,
+  "window_s": 250.0,
+  "file": "apollo11_202502.np2"
+ },
+ {
+  "utc": "2025-03-03T13:11:20Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.382330313447,
+  "one_way_km": 357102.33,
+  "photons": 114,
+  "window_s": 605.0,
+  "file": "apollo11_202503.np2"
+ },
+ {
+  "utc": "2025-03-03T16:06:29Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.383649680789,
+  "one_way_km": 357300.098,
+  "photons": 59,
+  "window_s": 591.0,
+  "file": "apollo11_202503.np2"
+ },
+ {
+  "utc": "2025-03-04T11:22:02Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.410616924217,
+  "one_way_km": 361342.387,
+  "photons": 38,
+  "window_s": 641.0,
+  "file": "apollo11_202503.np2"
+ },
+ {
+  "utc": "2025-03-04T14:22:00Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.399324864678,
+  "one_way_km": 359649.749,
+  "photons": 349,
+  "window_s": 667.0,
+  "file": "apollo11_202503.np2"
+ },
+ {
+  "utc": "2025-03-04T17:03:34Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.402139430389,
+  "one_way_km": 360071.642,
+  "photons": 217,
+  "window_s": 652.0,
+  "file": "apollo11_202503.np2"
+ },
+ {
+  "utc": "2025-03-04T19:23:14Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.414448903005,
+  "one_way_km": 361916.786,
+  "photons": 55,
+  "window_s": 601.0,
+  "file": "apollo11_202503.np2"
+ },
+ {
+  "utc": "2025-03-04T19:23:36Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.414490605845,
+  "one_way_km": 361923.037,
+  "photons": 68,
+  "window_s": 601.0,
+  "file": "apollo11_202503.np2"
+ },
+ {
+  "utc": "2025-03-04T21:39:49Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.431852789688,
+  "one_way_km": 364525.563,
+  "photons": 65,
+  "window_s": 595.0,
+  "file": "apollo11_202503.np2"
+ },
+ {
+  "utc": "2025-03-06T05:05:45Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.4553754196265,
+  "one_way_km": 368051.516,
+  "photons": 201,
+  "window_s": 248.0,
+  "file": "apollo11_202503.np2"
+ },
+ {
+  "utc": "2025-03-06T13:28:30Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.459822781024,
+  "one_way_km": 368718.159,
+  "photons": 24,
+  "window_s": 681.0,
+  "file": "apollo11_202503.np2"
+ },
+ {
+  "utc": "2025-03-06T16:10:25Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.451228216101,
+  "one_way_km": 367429.866,
+  "photons": 116,
+  "window_s": 591.0,
+  "file": "apollo11_202503.np2"
+ },
+ {
+  "utc": "2025-03-07T16:15:14Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.482196530951,
+  "one_way_km": 372071.9,
+  "photons": 130,
+  "window_s": 591.0,
+  "file": "apollo11_202503.np2"
+ },
+ {
+  "utc": "2025-03-07T18:59:26Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.481029573011,
+  "one_way_km": 371896.977,
+  "photons": 98,
+  "window_s": 681.0,
+  "file": "apollo11_202503.np2"
+ },
+ {
+  "utc": "2025-03-07T19:00:33Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.481065090439,
+  "one_way_km": 371902.301,
+  "photons": 85,
+  "window_s": 681.0,
+  "file": "apollo11_202503.np2"
+ },
+ {
+  "utc": "2025-03-07T19:46:51Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.483059734709,
+  "one_way_km": 372201.291,
+  "photons": 80,
+  "window_s": 610.0,
+  "file": "apollo11_202503.np2"
+ },
+ {
+  "utc": "2025-03-07T19:47:05Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.483072163527,
+  "one_way_km": 372203.154,
+  "photons": 128,
+  "window_s": 610.0,
+  "file": "apollo11_202503.np2"
+ },
+ {
+  "utc": "2025-03-07T20:29:29Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.485765483697,
+  "one_way_km": 372606.872,
+  "photons": 123,
+  "window_s": 598.0,
+  "file": "apollo11_202503.np2"
+ },
+ {
+  "utc": "2025-03-07T20:29:36Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.485773320438,
+  "one_way_km": 372608.047,
+  "photons": 50,
+  "window_s": 598.0,
+  "file": "apollo11_202503.np2"
+ },
+ {
+  "utc": "2025-03-07T21:14:49Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.489486601572,
+  "one_way_km": 373164.654,
+  "photons": 115,
+  "window_s": 731.0,
+  "file": "apollo11_202503.np2"
+ },
+ {
+  "utc": "2025-03-07T21:15:40Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.489564097863,
+  "one_way_km": 373176.27,
+  "photons": 71,
+  "window_s": 731.0,
+  "file": "apollo11_202503.np2"
+ },
+ {
+  "utc": "2025-03-07T22:37:32Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.49815838903,
+  "one_way_km": 374464.522,
+  "photons": 20,
+  "window_s": 644.0,
+  "file": "apollo11_202503.np2"
+ },
+ {
+  "utc": "2025-03-07T23:57:26Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.508145473087,
+  "one_way_km": 375961.548,
+  "photons": 17,
+  "window_s": 275.0,
+  "file": "apollo11_202503.np2"
+ },
+ {
+  "utc": "2025-03-07T23:57:40Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.508174146744,
+  "one_way_km": 375965.846,
+  "photons": 19,
+  "window_s": 275.0,
+  "file": "apollo11_202503.np2"
+ },
+ {
+  "utc": "2025-03-08T00:37:37Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.513466438413,
+  "one_way_km": 376759.141,
+  "photons": 29,
+  "window_s": 616.0,
+  "file": "apollo11_202503.np2"
+ },
+ {
+  "utc": "2025-03-09T07:47:55Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.5396944297603,
+  "one_way_km": 380690.618,
+  "photons": 342,
+  "window_s": 252.0,
+  "file": "apollo11_202503.np2"
+ },
+ {
+  "utc": "2025-03-09T07:53:50Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.5405325937355,
+  "one_way_km": 380816.255,
+  "photons": 150,
+  "window_s": 252.0,
+  "file": "apollo11_202503.np2"
+ },
+ {
+  "utc": "2025-03-20T11:06:45Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.649637805359,
+  "one_way_km": 397170.715,
+  "photons": 123,
+  "window_s": 249.0,
+  "file": "apollo11_202503.np2"
+ },
+ {
+  "utc": "2025-03-27T08:07:14Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.40759608196,
+  "one_way_km": 360889.574,
+  "photons": 38,
+  "window_s": 607.0,
+  "file": "apollo11_202503.np2"
+ },
+ {
+  "utc": "2025-03-31T12:16:53Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.351447130389,
+  "one_way_km": 352473.058,
+  "photons": 35,
+  "window_s": 602.0,
+  "file": "apollo11_202503.np2"
+ },
+ {
+  "utc": "2025-03-31T16:19:18Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.360365702505,
+  "one_way_km": 353809.918,
+  "photons": 45,
+  "window_s": 591.0,
+  "file": "apollo11_202503.np2"
+ },
+ {
+  "utc": "2025-03-31T17:49:55Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.370212551777,
+  "one_way_km": 355285.923,
+  "photons": 29,
+  "window_s": 426.0,
+  "file": "apollo11_202503.np2"
+ },
+ {
+  "utc": "2025-03-31T19:55:02Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.386438924503,
+  "one_way_km": 357718.196,
+  "photons": 25,
+  "window_s": 474.0,
+  "file": "apollo11_202503.np2"
+ },
+ {
+  "utc": "2025-04-06T19:28:37Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.549091424407,
+  "one_way_km": 382099.192,
+  "photons": 296,
+  "window_s": 619.0,
+  "file": "apollo11_202504.np2"
+ },
+ {
+  "utc": "2025-04-06T20:54:05Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.553398121321,
+  "one_way_km": 382744.75,
+  "photons": 182,
+  "window_s": 595.0,
+  "file": "apollo11_202504.np2"
+ },
+ {
+  "utc": "2025-04-06T21:26:58Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.555995101721,
+  "one_way_km": 383134.027,
+  "photons": 214,
+  "window_s": 637.0,
+  "file": "apollo11_202504.np2"
+ },
+ {
+  "utc": "2025-04-09T06:56:05Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.6200611912958,
+  "one_way_km": 392737.292,
+  "photons": 83,
+  "window_s": 199.0,
+  "file": "apollo11_202504.np2"
+ },
+ {
+  "utc": "2025-04-18T10:35:15Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.6288906029115,
+  "one_way_km": 394060.788,
+  "photons": 34,
+  "window_s": 96.0,
+  "file": "apollo11_202504.np2"
+ },
+ {
+  "utc": "2025-04-18T11:03:05Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.6281253217069,
+  "one_way_km": 393946.075,
+  "photons": 8,
+  "window_s": 112.0,
+  "file": "apollo11_202504.np2"
+ },
+ {
+  "utc": "2025-04-22T11:28:25Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.4941328117081,
+  "one_way_km": 373861.103,
+  "photons": 139,
+  "window_s": 251.0,
+  "file": "apollo11_202504.np2"
+ },
+ {
+  "utc": "2025-04-22T12:02:10Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.4898453973286,
+  "one_way_km": 373218.436,
+  "photons": 114,
+  "window_s": 251.0,
+  "file": "apollo11_202504.np2"
+ },
+ {
+  "utc": "2025-04-25T07:30:45Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.379695109297,
+  "one_way_km": 356707.323,
+  "photons": 33,
+  "window_s": 637.0,
+  "file": "apollo11_202504.np2"
+ },
+ {
+  "utc": "2025-04-25T12:35:42Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.379822524355,
+  "one_way_km": 356726.422,
+  "photons": 90,
+  "window_s": 661.0,
+  "file": "apollo11_202504.np2"
+ },
+ {
+  "utc": "2025-04-25T13:49:36Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.38629186036,
+  "one_way_km": 357696.151,
+  "photons": 23,
+  "window_s": 638.0,
+  "file": "apollo11_202504.np2"
+ },
+ {
+  "utc": "2025-04-29T08:14:57Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.367704636166,
+  "one_way_km": 354909.996,
+  "photons": 29,
+  "window_s": 607.0,
+  "file": "apollo11_202504.np2"
+ },
+ {
+  "utc": "2025-04-30T09:23:39Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.393536778708,
+  "one_way_km": 358782.137,
+  "photons": 55,
+  "window_s": 1014.0,
+  "file": "apollo11_202504.np2"
+ },
+ {
+  "utc": "2025-05-09T06:41:00Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.6635322775254,
+  "one_way_km": 399253.444,
+  "photons": 13,
+  "window_s": 149.0,
+  "file": "apollo11_202505.np2"
+ },
+ {
+  "utc": "2025-05-09T06:48:55Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.6642514869195,
+  "one_way_km": 399361.251,
+  "photons": 39,
+  "window_s": 199.0,
+  "file": "apollo11_202505.np2"
+ },
+ {
+  "utc": "2025-05-19T11:32:20Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.5273365267308,
+  "one_way_km": 378838.215,
+  "photons": 82,
+  "window_s": 200.0,
+  "file": "apollo11_202505.np2"
+ },
+ {
+  "utc": "2025-06-03T16:33:00Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.613349167907,
+  "one_way_km": 391731.185,
+  "photons": 41,
+  "window_s": 609.0,
+  "file": "apollo11_202506.np2"
+ },
+ {
+  "utc": "2025-06-03T19:31:55Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.616638625156,
+  "one_way_km": 392224.263,
+  "photons": 50,
+  "window_s": 589.0,
+  "file": "apollo11_202506.np2"
+ },
+ {
+  "utc": "2025-06-05T21:51:52Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.666179001016,
+  "one_way_km": 399650.178,
+  "photons": 45,
+  "window_s": 605.0,
+  "file": "apollo11_202506.np2"
+ },
+ {
+  "utc": "2025-06-05T22:29:47Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.669731024617,
+  "one_way_km": 400182.613,
+  "photons": 56,
+  "window_s": 636.0,
+  "file": "apollo11_202506.np2"
+ },
+ {
+  "utc": "2025-06-06T20:58:20Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.671377964729,
+  "one_way_km": 400429.483,
+  "photons": 38,
+  "window_s": 630.0,
+  "file": "apollo11_202506.np2"
+ },
+ {
+  "utc": "2025-06-19T05:00:29Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.43988845982,
+  "one_way_km": 365730.079,
+  "photons": 99,
+  "window_s": 636.0,
+  "file": "apollo11_202506.np2"
+ },
+ {
+  "utc": "2025-06-19T06:00:14Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.437971583291,
+  "one_way_km": 365442.747,
+  "photons": 42,
+  "window_s": 602.0,
+  "file": "apollo11_202506.np2"
+ },
+ {
+  "utc": "2025-06-19T07:44:18Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.439316879808,
+  "one_way_km": 365644.402,
+  "photons": 101,
+  "window_s": 627.0,
+  "file": "apollo11_202506.np2"
+ },
+ {
+  "utc": "2025-07-16T02:36:51Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.456905927953,
+  "one_way_km": 368280.934,
+  "photons": 37,
+  "window_s": 599.0,
+  "file": "apollo11_202507.np2"
+ },
+ {
+  "utc": "2025-07-16T03:48:59Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.454380855784,
+  "one_way_km": 367902.435,
+  "photons": 25,
+  "window_s": 805.0,
+  "file": "apollo11_202507.np2"
+ },
+ {
+  "utc": "2025-07-16T04:51:55Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.454533634627,
+  "one_way_km": 367925.336,
+  "photons": 133,
+  "window_s": 662.0,
+  "file": "apollo11_202507.np2"
+ },
+ {
+  "utc": "2025-07-16T06:29:50Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.458920048322,
+  "one_way_km": 368582.843,
+  "photons": 96,
+  "window_s": 620.0,
+  "file": "apollo11_202507.np2"
+ },
+ {
+  "utc": "2025-07-16T07:54:08Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.466045987394,
+  "one_way_km": 369650.994,
+  "photons": 55,
+  "window_s": 618.0,
+  "file": "apollo11_202507.np2"
+ },
+ {
+  "utc": "2025-07-17T02:32:09Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.441768734605,
+  "one_way_km": 366011.925,
+  "photons": 29,
+  "window_s": 1248.0,
+  "file": "apollo11_202507.np2"
+ },
+ {
+  "utc": "2025-07-17T03:25:32Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.438302768031,
+  "one_way_km": 365492.39,
+  "photons": 47,
+  "window_s": 1038.0,
+  "file": "apollo11_202507.np2"
+ },
+ {
+  "utc": "2025-07-18T04:39:01Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.422164632635,
+  "one_way_km": 363073.344,
+  "photons": 88,
+  "window_s": 626.0,
+  "file": "apollo11_202507.np2"
+ },
+ {
+  "utc": "2025-07-18T05:34:25Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.421048328425,
+  "one_way_km": 362906.015,
+  "photons": 58,
+  "window_s": 621.0,
+  "file": "apollo11_202507.np2"
+ },
+ {
+  "utc": "2025-07-18T07:25:19Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.423712835698,
+  "one_way_km": 363305.414,
+  "photons": 74,
+  "window_s": 650.0,
+  "file": "apollo11_202507.np2"
+ },
+ {
+  "utc": "2025-07-19T02:03:35Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.427507557373,
+  "one_way_km": 363874.229,
+  "photons": 21,
+  "window_s": 590.0,
+  "file": "apollo11_202507.np2"
+ },
+ {
+  "utc": "2025-07-21T08:35:17Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.405656643633,
+  "one_way_km": 360598.859,
+  "photons": 22,
+  "window_s": 610.0,
+  "file": "apollo11_202507.np2"
+ },
+ {
+  "utc": "2025-07-22T06:18:10Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.419676964473,
+  "one_way_km": 362700.452,
+  "photons": 26,
+  "window_s": 578.0,
+  "file": "apollo11_202507.np2"
+ },
+ {
+  "utc": "2025-07-22T07:07:09Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.416561892788,
+  "one_way_km": 362233.515,
+  "photons": 20,
+  "window_s": 882.0,
+  "file": "apollo11_202507.np2"
+ },
+ {
+  "utc": "2025-07-29T14:03:28Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.614235164421,
+  "one_way_km": 391863.993,
+  "photons": 14,
+  "window_s": 1056.0,
+  "file": "apollo11_202507.np2"
+ },
+ {
+  "utc": "2025-08-11T23:17:25Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.4479821729,
+  "one_way_km": 366943.296,
+  "photons": 28,
+  "window_s": 610.0,
+  "file": "apollo11_202508.np2"
+ },
+ {
+  "utc": "2025-08-12T00:05:12Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.444193893601,
+  "one_way_km": 366375.448,
+  "photons": 50,
+  "window_s": 586.0,
+  "file": "apollo11_202508.np2"
+ },
+ {
+  "utc": "2025-08-12T01:04:21Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.441102705541,
+  "one_way_km": 365912.09,
+  "photons": 36,
+  "window_s": 632.0,
+  "file": "apollo11_202508.np2"
+ },
+ {
+  "utc": "2025-08-12T01:36:22Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.44022083203,
+  "one_way_km": 365779.901,
+  "photons": 24,
+  "window_s": 601.0,
+  "file": "apollo11_202508.np2"
+ },
+ {
+  "utc": "2025-08-13T00:36:36Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.430693058826,
+  "one_way_km": 364351.723,
+  "photons": 52,
+  "window_s": 591.0,
+  "file": "apollo11_202508.np2"
+ },
+ {
+  "utc": "2025-08-13T01:35:33Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.427367496928,
+  "one_way_km": 363853.234,
+  "photons": 65,
+  "window_s": 623.0,
+  "file": "apollo11_202508.np2"
+ },
+ {
+  "utc": "2025-08-13T01:56:10Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.426637780389,
+  "one_way_km": 363743.852,
+  "photons": 49,
+  "window_s": 574.0,
+  "file": "apollo11_202508.np2"
+ },
+ {
+  "utc": "2025-08-13T02:31:43Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.425929119056,
+  "one_way_km": 363637.627,
+  "photons": 29,
+  "window_s": 576.0,
+  "file": "apollo11_202508.np2"
+ },
+ {
+  "utc": "2025-08-13T03:41:22Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.426570276846,
+  "one_way_km": 363733.734,
+  "photons": 55,
+  "window_s": 609.0,
+  "file": "apollo11_202508.np2"
+ },
+ {
+  "utc": "2025-08-13T23:12:04Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.434557686192,
+  "one_way_km": 364931.016,
+  "photons": 47,
+  "window_s": 771.0,
+  "file": "apollo11_202508.np2"
+ },
+ {
+  "utc": "2025-08-14T01:07:39Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.423264876223,
+  "one_way_km": 363238.267,
+  "photons": 61,
+  "window_s": 601.0,
+  "file": "apollo11_202508.np2"
+ },
+ {
+  "utc": "2025-08-14T02:14:07Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.419369599343,
+  "one_way_km": 362654.379,
+  "photons": 69,
+  "window_s": 515.0,
+  "file": "apollo11_202508.np2"
+ },
+ {
+  "utc": "2025-08-14T03:11:19Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.417846842367,
+  "one_way_km": 362426.124,
+  "photons": 15,
+  "window_s": 603.0,
+  "file": "apollo11_202508.np2"
+ },
+ {
+  "utc": "2025-08-14T04:17:28Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.418298113637,
+  "one_way_km": 362493.768,
+  "photons": 68,
+  "window_s": 640.0,
+  "file": "apollo11_202508.np2"
+ },
+ {
+  "utc": "2025-08-14T06:48:19Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.427543826296,
+  "one_way_km": 363879.665,
+  "photons": 12,
+  "window_s": 639.0,
+  "file": "apollo11_202508.np2"
+ },
+ {
+  "utc": "2025-08-15T10:15:15Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.4161187425637,
+  "one_way_km": 362167.088,
+  "photons": 39,
+  "window_s": 239.0,
+  "file": "apollo11_202508.np2"
+ },
+ {
+  "utc": "2025-08-19T11:46:15Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.4660002629739,
+  "one_way_km": 369644.14,
+  "photons": 42,
+  "window_s": 235.0,
+  "file": "apollo11_202508.np2"
+ },
+ {
+  "utc": "2025-08-31T02:08:35Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.6605886504448,
+  "one_way_km": 398812.206,
+  "photons": 5,
+  "window_s": 249.0,
+  "file": "apollo11_202508.np2"
+ },
+ {
+  "utc": "2025-09-09T07:47:55Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.3918177586062,
+  "one_way_km": 358524.462,
+  "photons": 6,
+  "window_s": 252.0,
+  "file": "apollo11_202509.np2"
+ },
+ {
+  "utc": "2025-09-09T07:56:15Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.3916174256895,
+  "one_way_km": 358494.433,
+  "photons": 87,
+  "window_s": 232.0,
+  "file": "apollo11_202509.np2"
+ },
+ {
+  "utc": "2025-09-10T21:46:33Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.403091781023,
+  "one_way_km": 360214.396,
+  "photons": 38,
+  "window_s": 712.0,
+  "file": "apollo11_202509.np2"
+ },
+ {
+  "utc": "2025-09-10T21:58:57Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.40171199629,
+  "one_way_km": 360007.571,
+  "photons": 26,
+  "window_s": 716.0,
+  "file": "apollo11_202509.np2"
+ },
+ {
+  "utc": "2025-09-10T23:36:58Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.392511256879,
+  "one_way_km": 358628.415,
+  "photons": 48,
+  "window_s": 679.0,
+  "file": "apollo11_202509.np2"
+ },
+ {
+  "utc": "2025-10-04T05:42:35Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.4589577891813,
+  "one_way_km": 368588.5,
+  "photons": 71,
+  "window_s": 100.0,
+  "file": "apollo11_202510.np2"
+ },
+ {
+  "utc": "2025-10-04T05:53:25Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.4591893770856,
+  "one_way_km": 368623.214,
+  "photons": 105,
+  "window_s": 249.0,
+  "file": "apollo11_202510.np2"
+ },
+ {
+  "utc": "2025-10-07T23:54:09Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.355029132787,
+  "one_way_km": 353009.986,
+  "photons": 79,
+  "window_s": 626.0,
+  "file": "apollo11_202510.np2"
+ },
+ {
+  "utc": "2025-10-08T00:50:01Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.3553991819,
+  "one_way_km": 353065.455,
+  "photons": 93,
+  "window_s": 596.0,
+  "file": "apollo11_202510.np2"
+ },
+ {
+  "utc": "2025-10-08T01:34:41Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.356884255064,
+  "one_way_km": 353288.062,
+  "photons": 60,
+  "window_s": 605.0,
+  "file": "apollo11_202510.np2"
+ },
+ {
+  "utc": "2025-10-08T02:34:20Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.360390337055,
+  "one_way_km": 353813.61,
+  "photons": 127,
+  "window_s": 651.0,
+  "file": "apollo11_202510.np2"
+ },
+ {
+  "utc": "2025-10-08T03:12:24Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.363434309008,
+  "one_way_km": 354269.89,
+  "photons": 95,
+  "window_s": 639.0,
+  "file": "apollo11_202510.np2"
+ },
+ {
+  "utc": "2025-10-08T04:32:28Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.371438966737,
+  "one_way_km": 355469.758,
+  "photons": 97,
+  "window_s": 662.0,
+  "file": "apollo11_202510.np2"
+ },
+ {
+  "utc": "2025-10-08T21:24:49Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.362837973044,
+  "one_way_km": 354180.502,
+  "photons": 46,
+  "window_s": 829.0,
+  "file": "apollo11_202510.np2"
+ },
+ {
+  "utc": "2025-10-11T00:55:14Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.385167114583,
+  "one_way_km": 357527.556,
+  "photons": 19,
+  "window_s": 607.0,
+  "file": "apollo11_202510.np2"
+ },
+ {
+  "utc": "2025-10-11T02:17:47Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.383378971492,
+  "one_way_km": 357259.52,
+  "photons": 16,
+  "window_s": 626.0,
+  "file": "apollo11_202510.np2"
+ },
+ {
+  "utc": "2025-10-11T02:18:03Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.383378349949,
+  "one_way_km": 357259.427,
+  "photons": 67,
+  "window_s": 626.0,
+  "file": "apollo11_202510.np2"
+ },
+ {
+  "utc": "2025-10-11T03:19:01Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.384146970628,
+  "one_way_km": 357374.64,
+  "photons": 125,
+  "window_s": 564.0,
+  "file": "apollo11_202510.np2"
+ },
+ {
+  "utc": "2025-10-11T04:21:56Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.386820183715,
+  "one_way_km": 357775.345,
+  "photons": 61,
+  "window_s": 589.0,
+  "file": "apollo11_202510.np2"
+ },
+ {
+  "utc": "2025-10-13T07:24:06Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.452849955288,
+  "one_way_km": 367672.959,
+  "photons": 98,
+  "window_s": 619.0,
+  "file": "apollo11_202510.np2"
+ },
+ {
+  "utc": "2025-10-16T07:14:57Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.545222476232,
+  "one_way_km": 381519.251,
+  "photons": 109,
+  "window_s": 618.0,
+  "file": "apollo11_202510.np2"
+ },
+ {
+  "utc": "2025-10-16T07:16:09Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.545230750035,
+  "one_way_km": 381520.491,
+  "photons": 28,
+  "window_s": 618.0,
+  "file": "apollo11_202510.np2"
+ },
+ {
+  "utc": "2025-10-16T09:06:09Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.549251264036,
+  "one_way_km": 382123.151,
+  "photons": 24,
+  "window_s": 606.0,
+  "file": "apollo11_202510.np2"
+ },
+ {
+  "utc": "2025-10-17T08:32:49Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.575379702927,
+  "one_way_km": 386039.706,
+  "photons": 24,
+  "window_s": 473.0,
+  "file": "apollo11_202510.np2"
+ },
+ {
+  "utc": "2025-10-18T12:16:15Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.6223631198178,
+  "one_way_km": 393082.343,
+  "photons": 21,
+  "window_s": 248.0,
+  "file": "apollo11_202510.np2"
+ },
+ {
+  "utc": "2025-10-27T01:12:15Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.6574332761733,
+  "one_way_km": 398339.227,
+  "photons": 177,
+  "window_s": 247.0,
+  "file": "apollo11_202510.np2"
+ },
+ {
+  "utc": "2025-11-01T06:50:50Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.4744466277934,
+  "one_way_km": 370910.218,
+  "photons": 63,
+  "window_s": 200.0,
+  "file": "apollo11_202511.np2"
+ },
+ {
+  "utc": "2025-11-03T18:43:38Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.373883062362,
+  "one_way_km": 355836.119,
+  "photons": 54,
+  "window_s": 827.0,
+  "file": "apollo11_202511.np2"
+ },
+ {
+  "utc": "2025-11-04T07:52:45Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.3536610174122,
+  "one_way_km": 352804.911,
+  "photons": 32,
+  "window_s": 198.0,
+  "file": "apollo11_202511.np2"
+ },
+ {
+  "utc": "2025-11-04T19:51:39Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.34775737731,
+  "one_way_km": 351919.977,
+  "photons": 54,
+  "window_s": 606.0,
+  "file": "apollo11_202511.np2"
+ },
+ {
+  "utc": "2025-11-04T20:30:34Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.344497597414,
+  "one_way_km": 351431.349,
+  "photons": 92,
+  "window_s": 615.0,
+  "file": "apollo11_202511.np2"
+ },
+ {
+  "utc": "2025-11-04T21:16:24Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.341566358844,
+  "one_way_km": 350991.967,
+  "photons": 96,
+  "window_s": 594.0,
+  "file": "apollo11_202511.np2"
+ },
+ {
+  "utc": "2025-11-04T22:50:16Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.338937144499,
+  "one_way_km": 350597.858,
+  "photons": 94,
+  "window_s": 606.0,
+  "file": "apollo11_202511.np2"
+ },
+ {
+  "utc": "2025-11-04T23:34:18Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.33931882737,
+  "one_way_km": 350655.071,
+  "photons": 75,
+  "window_s": 636.0,
+  "file": "apollo11_202511.np2"
+ },
+ {
+  "utc": "2025-11-05T00:57:16Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.342701627587,
+  "one_way_km": 351162.14,
+  "photons": 52,
+  "window_s": 617.0,
+  "file": "apollo11_202511.np2"
+ },
+ {
+  "utc": "2025-11-05T01:41:20Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.345761713596,
+  "one_way_km": 351620.835,
+  "photons": 50,
+  "window_s": 599.0,
+  "file": "apollo11_202511.np2"
+ },
+ {
+  "utc": "2025-11-05T03:11:39Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.354126227253,
+  "one_way_km": 352874.644,
+  "photons": 43,
+  "window_s": 611.0,
+  "file": "apollo11_202511.np2"
+ },
+ {
+  "utc": "2025-11-06T01:23:50Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.333451703879,
+  "one_way_km": 349775.611,
+  "photons": 24,
+  "window_s": 667.0,
+  "file": "apollo11_202511.np2"
+ },
+ {
+  "utc": "2025-11-07T07:56:30Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.3404691083588,
+  "one_way_km": 350827.493,
+  "photons": 73,
+  "window_s": 252.0,
+  "file": "apollo11_202511.np2"
+ },
+ {
+  "utc": "2025-11-09T05:03:35Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.4177603975551,
+  "one_way_km": 362413.166,
+  "photons": 34,
+  "window_s": 249.0,
+  "file": "apollo11_202511.np2"
+ },
+ {
+  "utc": "2025-11-11T12:50:20Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.4812343367258,
+  "one_way_km": 371927.67,
+  "photons": 27,
+  "window_s": 145.0,
+  "file": "apollo11_202511.np2"
+ },
+ {
+  "utc": "2025-11-13T03:30:21Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.555330667133,
+  "one_way_km": 383034.431,
+  "photons": 17,
+  "window_s": 640.0,
+  "file": "apollo11_202511.np2"
+ },
+ {
+  "utc": "2025-11-13T03:31:34Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.555256907124,
+  "one_way_km": 383023.375,
+  "photons": 32,
+  "window_s": 640.0,
+  "file": "apollo11_202511.np2"
+ },
+ {
+  "utc": "2025-11-15T13:09:20Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.624723026016,
+  "one_way_km": 393436.084,
+  "photons": 100,
+  "window_s": 142.0,
+  "file": "apollo11_202511.np2"
+ },
+ {
+  "utc": "2025-11-25T00:53:00Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.6307258362319,
+  "one_way_km": 394335.882,
+  "photons": 36,
+  "window_s": 246.0,
+  "file": "apollo11_202511.np2"
+ },
+ {
+  "utc": "2025-11-28T19:54:16Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.501313297781,
+  "one_way_km": 374937.431,
+  "photons": 26,
+  "window_s": 619.0,
+  "file": "apollo11_202511.np2"
+ },
+ {
+  "utc": "2025-11-29T00:47:40Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.4839863177939,
+  "one_way_km": 372340.182,
+  "photons": 216,
+  "window_s": 201.0,
+  "file": "apollo11_202511.np2"
+ },
+ {
+  "utc": "2025-12-02T00:38:15Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.3803509845303,
+  "one_way_km": 356805.636,
+  "photons": 59,
+  "window_s": 250.0,
+  "file": "apollo11_202512.np2"
+ },
+ {
+  "utc": "2025-12-09T07:47:45Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.4715043862953,
+  "one_way_km": 370469.187,
+  "photons": 60,
+  "window_s": 250.0,
+  "file": "apollo11_202512.np2"
+ },
+ {
+  "utc": "2025-12-11T00:32:17Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.554926640243,
+  "one_way_km": 382973.869,
+  "photons": 21,
+  "window_s": 749.0,
+  "file": "apollo11_202512.np2"
+ },
+ {
+  "utc": "2025-12-11T03:10:28Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.54485247265,
+  "one_way_km": 381463.789,
+  "photons": 80,
+  "window_s": 804.0,
+  "file": "apollo11_202512.np2"
+ },
+ {
+  "utc": "2025-12-11T08:04:02Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.558409301264,
+  "one_way_km": 383495.906,
+  "photons": 48,
+  "window_s": 561.0,
+  "file": "apollo11_202512.np2"
+ },
+ {
+  "utc": "2025-12-11T09:42:47Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.571822109379,
+  "one_way_km": 385506.436,
+  "photons": 26,
+  "window_s": 757.0,
+  "file": "apollo11_202512.np2"
+ },
+ {
+  "utc": "2025-12-11T13:25:05Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.5549051103793,
+  "one_way_km": 382970.641,
+  "photons": 196,
+  "window_s": 199.0,
+  "file": "apollo11_202512.np2"
+ },
+ {
+  "utc": "2025-12-13T04:01:34Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.622550915736,
+  "one_way_km": 393110.493,
+  "photons": 16,
+  "window_s": 602.0,
+  "file": "apollo11_202512.np2"
+ },
+ {
+  "utc": "2025-12-13T06:33:32Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.620088304645,
+  "one_way_km": 392741.357,
+  "photons": 76,
+  "window_s": 619.0,
+  "file": "apollo11_202512.np2"
+ },
+ {
+  "utc": "2025-12-13T07:41:17Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.623027182743,
+  "one_way_km": 393181.883,
+  "photons": 23,
+  "window_s": 737.0,
+  "file": "apollo11_202512.np2"
+ },
+ {
+  "utc": "2025-12-26T01:41:55Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.5254962035232,
+  "one_way_km": 378562.357,
+  "photons": 664,
+  "window_s": 250.0,
+  "file": "apollo11_202512.np2"
+ },
+ {
+  "utc": "2025-12-26T01:47:45Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.5258208326469,
+  "one_way_km": 378611.018,
+  "photons": 631,
+  "window_s": 250.0,
+  "file": "apollo11_202512.np2"
+ },
+ {
+  "utc": "2025-12-31T00:59:30Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.3778113508703,
+  "one_way_km": 356424.955,
+  "photons": 100,
+  "window_s": 250.0,
+  "file": "apollo11_202512.np2"
+ },
+ {
+  "utc": "2026-01-26T15:08:01Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.43050056196,
+  "one_way_km": 364322.869,
+  "photons": 44,
+  "window_s": 656.0,
+  "file": "apollo11_202601.np2"
+ },
+ {
+  "utc": "2026-01-26T16:45:39Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.423881557255,
+  "one_way_km": 363330.705,
+  "photons": 85,
+  "window_s": 594.0,
+  "file": "apollo11_202601.np2"
+ },
+ {
+  "utc": "2026-01-26T17:38:29Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.422248967761,
+  "one_way_km": 363085.986,
+  "photons": 18,
+  "window_s": 595.0,
+  "file": "apollo11_202601.np2"
+ },
+ {
+  "utc": "2026-01-26T18:33:53Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.422087981042,
+  "one_way_km": 363061.855,
+  "photons": 40,
+  "window_s": 565.0,
+  "file": "apollo11_202601.np2"
+ },
+ {
+  "utc": "2026-01-26T19:43:43Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.424081534613,
+  "one_way_km": 363360.681,
+  "photons": 59,
+  "window_s": 614.0,
+  "file": "apollo11_202601.np2"
+ },
+ {
+  "utc": "2026-02-05T01:20:39Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.536186523729,
+  "one_way_km": 380164.796,
+  "photons": 67,
+  "window_s": 666.0,
+  "file": "apollo11_202602.np2"
+ },
+ {
+  "utc": "2026-02-09T12:14:30Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.6585424611003,
+  "one_way_km": 398505.49,
+  "photons": 14,
+  "window_s": 187.0,
+  "file": "apollo11_202602.np2"
+ },
+ {
+  "utc": "2026-02-09T13:10:25Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.658705125944,
+  "one_way_km": 398529.872,
+  "photons": 27,
+  "window_s": 134.0,
+  "file": "apollo11_202602.np2"
+ },
+ {
+  "utc": "2026-02-24T01:51:00Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.4198531520665,
+  "one_way_km": 362726.862,
+  "photons": 482,
+  "window_s": 200.0,
+  "file": "apollo11_202602.np2"
+ },
+ {
+  "utc": "2026-02-24T17:44:25Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.41815574164,
+  "one_way_km": 362472.427,
+  "photons": 73,
+  "window_s": 600.0,
+  "file": "apollo11_202602.np2"
+ },
+ {
+  "utc": "2026-02-24T19:00:43Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.419706585234,
+  "one_way_km": 362704.892,
+  "photons": 98,
+  "window_s": 629.0,
+  "file": "apollo11_202602.np2"
+ },
+ {
+  "utc": "2026-02-24T21:16:57Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.428779943423,
+  "one_way_km": 364064.955,
+  "photons": 78,
+  "window_s": 599.0,
+  "file": "apollo11_202602.np2"
+ },
+ {
+  "utc": "2026-02-27T01:28:15Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.4280484587373,
+  "one_way_km": 363955.308,
+  "photons": 62,
+  "window_s": 251.0,
+  "file": "apollo11_202602.np2"
+ },
+ {
+  "utc": "2026-02-27T01:33:50Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.4277057056103,
+  "one_way_km": 363903.93,
+  "photons": 16,
+  "window_s": 250.0,
+  "file": "apollo11_202602.np2"
+ },
+ {
+  "utc": "2026-02-27T01:48:00Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.4269056671765,
+  "one_way_km": 363784.008,
+  "photons": 529,
+  "window_s": 250.0,
+  "file": "apollo11_202602.np2"
+ },
+ {
+  "utc": "2026-03-03T10:32:05Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.5150301145554,
+  "one_way_km": 376993.53,
+  "photons": 45,
+  "window_s": 145.0,
+  "file": "apollo11_202603.np2"
+ },
+ {
+  "utc": "2026-03-03T10:36:40Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.5156573765724,
+  "one_way_km": 377087.554,
+  "photons": 100,
+  "window_s": 199.0,
+  "file": "apollo11_202603.np2"
+ },
+ {
+  "utc": "2026-03-03T10:40:55Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.516246575993,
+  "one_way_km": 377175.873,
+  "photons": 88,
+  "window_s": 147.0,
+  "file": "apollo11_202603.np2"
+ },
+ {
+  "utc": "2026-03-03T11:21:15Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.5221671409243,
+  "one_way_km": 378063.343,
+  "photons": 108,
+  "window_s": 149.0,
+  "file": "apollo11_202603.np2"
+ },
+ {
+  "utc": "2026-03-03T12:04:05Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.5289830515058,
+  "one_way_km": 379085.023,
+  "photons": 27,
+  "window_s": 147.0,
+  "file": "apollo11_202603.np2"
+ },
+ {
+  "utc": "2026-03-03T12:21:25Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.5318521748072,
+  "one_way_km": 379515.093,
+  "photons": 11,
+  "window_s": 147.0,
+  "file": "apollo11_202603.np2"
+ },
+ {
+  "utc": "2026-03-08T13:01:30Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.6507980127021,
+  "one_way_km": 397344.626,
+  "photons": 45,
+  "window_s": 197.0,
+  "file": "apollo11_202603.np2"
+ },
+ {
+  "utc": "2026-03-13T12:40:20Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.6340597478984,
+  "one_way_km": 394835.623,
+  "photons": 43,
+  "window_s": 204.0,
+  "file": "apollo11_202603.np2"
+ },
+ {
+  "utc": "2026-03-22T02:12:20Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.4180493063768,
+  "one_way_km": 362456.473,
+  "photons": 183,
+  "window_s": 151.0,
+  "file": "apollo11_202603.np2"
+ },
+ {
+  "utc": "2026-03-23T17:53:02Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.40590770739,
+  "one_way_km": 360636.493,
+  "photons": 27,
+  "window_s": 583.0,
+  "file": "apollo11_202603.np2"
+ },
+ {
+  "utc": "2026-03-23T18:45:47Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.41011464466,
+  "one_way_km": 361267.097,
+  "photons": 21,
+  "window_s": 582.0,
+  "file": "apollo11_202603.np2"
+ },
+ {
+  "utc": "2026-03-23T19:42:47Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.415695011866,
+  "one_way_km": 362103.573,
+  "photons": 13,
+  "window_s": 587.0,
+  "file": "apollo11_202603.np2"
+ },
+ {
+  "utc": "2026-03-23T20:35:50Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.421590778793,
+  "one_way_km": 362987.326,
+  "photons": 27,
+  "window_s": 587.0,
+  "file": "apollo11_202603.np2"
+ },
+ {
+  "utc": "2026-03-24T01:50:35Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.4081562847696,
+  "one_way_km": 360973.546,
+  "photons": 36,
+  "window_s": 251.0,
+  "file": "apollo11_202603.np2"
+ },
+ {
+  "utc": "2026-03-24T16:35:13Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.409946827046,
+  "one_way_km": 361241.941,
+  "photons": 53,
+  "window_s": 600.0,
+  "file": "apollo11_202603.np2"
+ },
+ {
+  "utc": "2026-03-24T18:48:49Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.415233140075,
+  "one_way_km": 362034.34,
+  "photons": 46,
+  "window_s": 638.0,
+  "file": "apollo11_202603.np2"
+ },
+ {
+  "utc": "2026-03-24T19:46:05Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.419832980565,
+  "one_way_km": 362723.839,
+  "photons": 102,
+  "window_s": 603.0,
+  "file": "apollo11_202603.np2"
+ },
+ {
+  "utc": "2026-03-27T18:42:36Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.461220241102,
+  "one_way_km": 368927.633,
+  "photons": 24,
+  "window_s": 586.0,
+  "file": "apollo11_202603.np2"
+ },
+ {
+  "utc": "2026-03-27T20:06:03Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.461912202726,
+  "one_way_km": 369031.355,
+  "photons": 79,
+  "window_s": 647.0,
+  "file": "apollo11_202603.np2"
+ },
+ {
+  "utc": "2026-03-27T21:09:22Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.464787991003,
+  "one_way_km": 369462.425,
+  "photons": 83,
+  "window_s": 637.0,
+  "file": "apollo11_202603.np2"
+ },
+ {
+  "utc": "2026-03-27T22:27:08Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.470880055164,
+  "one_way_km": 370375.603,
+  "photons": 39,
+  "window_s": 713.0,
+  "file": "apollo11_202603.np2"
+ },
+ {
+  "utc": "2026-03-27T23:33:02Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.477883149047,
+  "one_way_km": 371425.34,
+  "photons": 53,
+  "window_s": 640.0,
+  "file": "apollo11_202603.np2"
+ },
+ {
+  "utc": "2026-04-09T12:13:00Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.6520499629027,
+  "one_way_km": 397532.289,
+  "photons": 71,
+  "window_s": 244.0,
+  "file": "apollo11_202604.np2"
+ },
+ {
+  "utc": "2026-04-24T15:21:59Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.475658913668,
+  "one_way_km": 371091.935,
+  "photons": 41,
+  "window_s": 587.0,
+  "file": "apollo11_202604.np2"
+ },
+ {
+  "utc": "2026-04-24T17:35:35Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.47080598782,
+  "one_way_km": 370364.5,
+  "photons": 20,
+  "window_s": 610.0,
+  "file": "apollo11_202604.np2"
+ },
+ {
+  "utc": "2026-04-24T18:57:42Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.472186823584,
+  "one_way_km": 370571.482,
+  "photons": 108,
+  "window_s": 642.0,
+  "file": "apollo11_202604.np2"
+ },
+ {
+  "utc": "2026-04-24T20:05:56Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.475990264524,
+  "one_way_km": 371141.604,
+  "photons": 31,
+  "window_s": 648.0,
+  "file": "apollo11_202604.np2"
+ },
+ {
+  "utc": "2026-04-24T20:07:20Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.476092440943,
+  "one_way_km": 371156.92,
+  "photons": 124,
+  "window_s": 648.0,
+  "file": "apollo11_202604.np2"
+ },
+ {
+  "utc": "2026-04-24T21:13:01Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.481894177489,
+  "one_way_km": 372026.578,
+  "photons": 124,
+  "window_s": 671.0,
+  "file": "apollo11_202604.np2"
+ },
+ {
+  "utc": "2026-04-24T22:16:21Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.489119806164,
+  "one_way_km": 373109.672,
+  "photons": 100,
+  "window_s": 614.0,
+  "file": "apollo11_202604.np2"
+ },
+ {
+  "utc": "2026-04-24T22:16:25Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.489127480283,
+  "one_way_km": 373110.823,
+  "photons": 73,
+  "window_s": 614.0,
+  "file": "apollo11_202604.np2"
+ },
+ {
+  "utc": "2026-04-24T23:17:29Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.497212020414,
+  "one_way_km": 374322.665,
+  "photons": 181,
+  "window_s": 699.0,
+  "file": "apollo11_202604.np2"
+ },
+ {
+  "utc": "2026-04-27T21:43:14Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.565160314734,
+  "one_way_km": 384507.858,
+  "photons": 55,
+  "window_s": 715.0,
+  "file": "apollo11_202604.np2"
+ },
+ {
+  "utc": "2026-04-28T00:21:01Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.579550420203,
+  "one_way_km": 386664.881,
+  "photons": 24,
+  "window_s": 815.0,
+  "file": "apollo11_202604.np2"
+ },
+ {
+  "utc": "2026-04-28T23:01:36Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.594634835451,
+  "one_way_km": 388925.977,
+  "photons": 41,
+  "window_s": 610.0,
+  "file": "apollo11_202604.np2"
+ },
+ {
+  "utc": "2026-04-28T23:42:42Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.597935695675,
+  "one_way_km": 389420.764,
+  "photons": 44,
+  "window_s": 614.0,
+  "file": "apollo11_202604.np2"
+ },
+ {
+  "utc": "2026-04-29T00:27:09Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.602373530943,
+  "one_way_km": 390085.979,
+  "photons": 32,
+  "window_s": 651.0,
+  "file": "apollo11_202604.np2"
+ },
+ {
+  "utc": "2026-04-29T01:23:46Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.609118443992,
+  "one_way_km": 391097.016,
+  "photons": 29,
+  "window_s": 610.0,
+  "file": "apollo11_202604.np2"
+ },
+ {
+  "utc": "2026-05-06T11:41:45Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.6696830971925,
+  "one_way_km": 400175.429,
+  "photons": 12,
+  "window_s": 247.0,
+  "file": "apollo11_202605.np2"
+ },
+ {
+  "utc": "2026-05-09T11:37:40Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.6030665545787,
+  "one_way_km": 390189.86,
+  "photons": 22,
+  "window_s": 241.0,
+  "file": "apollo11_202605.np2"
+ },
+ {
+  "utc": "2026-05-19T02:59:05Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.3794945698417,
+  "one_way_km": 356677.263,
+  "photons": 8,
+  "window_s": 249.0,
+  "file": "apollo11_202605.np2"
+ },
+ {
+  "utc": "2026-05-21T12:55:55Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.430975589638,
+  "one_way_km": 364394.074,
+  "photons": 21,
+  "window_s": 681.0,
+  "file": "apollo11_202605.np2"
+ },
+ {
+  "utc": "2026-05-21T15:11:01Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.425626523477,
+  "one_way_km": 363592.269,
+  "photons": 52,
+  "window_s": 1059.0,
+  "file": "apollo11_202605.np2"
+ },
+ {
+  "utc": "2026-05-21T22:12:06Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.46220446269,
+  "one_way_km": 369075.164,
+  "photons": 23,
+  "window_s": 1004.0,
+  "file": "apollo11_202605.np2"
+ },
+ {
+  "utc": "2026-05-27T03:07:25Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.612681566376,
+  "one_way_km": 391631.114,
+  "photons": 11,
+  "window_s": 149.0,
+  "file": "apollo11_202605.np2"
+ },
+ {
+  "utc": "2026-06-06T11:31:00Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.5993597936361,
+  "one_way_km": 389634.231,
+  "photons": 124,
+  "window_s": 251.0,
+  "file": "apollo11_202606.np2"
+ },
+ {
+  "utc": "2026-06-12T09:33:25Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.375067393994,
+  "one_way_km": 356013.646,
+  "photons": 56,
+  "window_s": 602.0,
+  "file": "apollo11_202606.np2"
+ },
+ {
+  "utc": "2026-06-21T03:15:15Z",
+  "station": "APOL",
+  "station_id": "7045",
+  "round_trip_s": 2.5227084649874,
+  "one_way_km": 378144.486,
+  "photons": 48,
+  "window_s": 250.0,
+  "file": "apollo11_202606.np2"
+ },
+ {
+  "utc": "2026-07-04T23:26:51Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.593735433798,
+  "one_way_km": 388791.161,
+  "photons": 91,
+  "window_s": 612.0,
+  "file": "apollo11_202607.np2"
+ },
+ {
+  "utc": "2026-07-05T00:53:04Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.583614096795,
+  "one_way_km": 387274.01,
+  "photons": 97,
+  "window_s": 600.0,
+  "file": "apollo11_202607.np2"
+ },
+ {
+  "utc": "2026-07-05T02:29:57Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.576079006481,
+  "one_way_km": 386144.529,
+  "photons": 65,
+  "window_s": 195.0,
+  "file": "apollo11_202607.np2"
+ },
+ {
+  "utc": "2026-07-05T03:34:23Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.573784701979,
+  "one_way_km": 385800.621,
+  "photons": 78,
+  "window_s": 258.0,
+  "file": "apollo11_202607.np2"
+ },
+ {
+  "utc": "2026-07-05T04:26:11Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.573597387714,
+  "one_way_km": 385772.543,
+  "photons": 332,
+  "window_s": 623.0,
+  "file": "apollo11_202607.np2"
+ },
+ {
+  "utc": "2026-07-07T04:24:04Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.504183683775,
+  "one_way_km": 375367.691,
+  "photons": 106,
+  "window_s": 898.0,
+  "file": "apollo11_202607.np2"
+ },
+ {
+  "utc": "2026-07-07T06:03:59Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.502749512832,
+  "one_way_km": 375152.714,
+  "photons": 108,
+  "window_s": 1068.0,
+  "file": "apollo11_202607.np2"
+ },
+ {
+  "utc": "2026-07-07T07:24:15Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.505408398546,
+  "one_way_km": 375551.271,
+  "photons": 65,
+  "window_s": 616.0,
+  "file": "apollo11_202607.np2"
+ },
+ {
+  "utc": "2026-07-07T07:24:56Z",
+  "station": "GRSM",
+  "station_id": "7845",
+  "round_trip_s": 2.50544436867,
+  "one_way_km": 375556.663,
+  "photons": 56,
+  "window_s": 616.0,
+  "file": "apollo11_202607.np2"
+ }
+]

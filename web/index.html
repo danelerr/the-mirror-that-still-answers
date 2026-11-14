@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Mirror That Still Answers</title>
+<meta name="description" content="An interactive animated story about the mirror Apollo 11 left on the Moon, told with real NASA laser ranging data.">
+<meta name="generator" content="Code written with an AI coding assistant. Character illustrations made with an AI image generator. Photos and data: NASA.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="stage" aria-live="polite">
+
+  <!-- Shot A: Earth, Moon and the laser -->
+  <canvas id="sky" width="1280" height="720" aria-label="The Earth and the Moon in space"></canvas>
+
+  <img id="obs" class="hidden" src="assets/art/observatorio.png" alt="A telescope on Earth">
+  <div id="photons" class="hidden" aria-hidden="true"></div>
+
+  <!-- Shot B: Tranquility Base, real Apollo 11 photo -->
+  <div id="base" class="hidden">
+    <div id="basePhoto"></div>
+    <p class="credit">Tranquility Base, July 20, 1969. NASA photo AS11-40-5948.</p>
+  </div>
+
+  <!-- Chart of real measurements -->
+  <canvas id="chart" width="1280" height="720" class="hidden" aria-label="Chart of real laser measurements to the Apollo 11 mirror"></canvas>
+
+  <!-- The Mirror: AI-generated illustration, cut into pieces and animated by code -->
+  <div id="mirror" class="hidden" data-eyes="closed" data-mouth="closed" role="img" aria-label="The Mirror, a cartoon of the Apollo 11 laser retroreflector">
+    <div class="bob">
+      <img class="body" src="assets/art/espejo_cuerpo.png" alt="">
+      <div class="glow"></div>
+      <div class="face">
+        <img class="brows" src="assets/art/espejo_cejas.png" alt="">
+        <img class="e-open" src="assets/art/espejo_ojos_abiertos.png" alt="">
+        <img class="e-half" src="assets/art/espejo_ojos_medio.png" alt="">
+        <img class="e-closed" src="assets/art/espejo_ojos_cerrados.png" alt="">
+        <img class="m-closed" src="assets/art/espejo_boca_cerrada.png" alt="">
+        <img class="m-small" src="assets/art/espejo_boca_poco.png" alt="">
+        <img class="m-open" src="assets/art/espejo_boca_abierta.png" alt="">
+        <img class="m-oh" src="assets/art/espejo_boca_oh.png" alt="">
+        <img class="m-smile" src="assets/art/espejo_boca_sonrisa.png" alt="">
+      </div>
+    </div>
+  </div>
+
+  <!-- Speech balloon -->
+  <div id="balloon" class="hidden"><p id="balloonText"></p><span class="next">▸</span></div>
+
+  <!-- Silent-film title card -->
+  <div id="card" class="hidden"><div class="cardInner"><p id="cardText"></p></div></div>
+
+  <!-- Readout while the light travels -->
+  <div id="readout" class="hidden">
+    <div id="timer">0.000 s</div>
+    <div id="readoutNote"></div>
+  </div>
+
+  <button id="send" class="hidden" type="button">Send your light</button>
+  <button id="again" class="hidden" type="button">Send it again</button>
+
+  <!-- Old film finish: iris wipe, warm tint, grain, scratches and flicker -->
+  <div id="iris" aria-hidden="true"></div>
+  <div id="tint" aria-hidden="true"></div>
+  <div id="grain" aria-hidden="true"></div>
+  <canvas id="film" width="640" height="360" aria-hidden="true"></canvas>
+  <div id="vignette" aria-hidden="true"></div>
+  <button id="fx" type="button" aria-pressed="true">Old film look: on</button>
+
+  <p id="aiMark">Character illustrations and code made with AI tools. Photos and data: NASA.</p>
+</div>
+
+<script src="data/llr.js"></script>
+<script src="data/moon_orbit.js"></script>
+<script src="main.js"></script>
+</body>
+</html>
