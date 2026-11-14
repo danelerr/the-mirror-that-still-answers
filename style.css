@@ -62,6 +62,7 @@ html, body {
 /* ---------- The Mirror ---------- */
 #mirror {
   position: absolute;
+  transform-origin: 50% 100%;
   left: 64px;
   bottom: 36px;
   width: 430px;
@@ -114,6 +115,7 @@ html, body {
 /* ---------- Speech balloon ---------- */
 #balloon {
   position: absolute;
+  transform-origin: 0 85%;
   left: 500px;
   top: 210px;
   width: 640px;
@@ -179,8 +181,7 @@ html, body {
 /* ---------- Telescope on Earth and the photons that come home ---------- */
 #obs { position: absolute; width: 92px; height: auto; transform-origin: 50% 100%; transition: opacity 0.9s ease; filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.6)); }
 #photons { position: absolute; inset: 0; pointer-events: none; transition: opacity 0.9s ease; }
-#photons img { position: absolute; width: 36px; height: auto; animation: pop 0.45s steps(4) both, wobble 0.7s steps(3) infinite alternate; }
-@keyframes pop { from { transform: scale(0); } to { transform: scale(1); } }
+#photons img { position: absolute; width: 36px; height: auto; animation: wobble 0.7s steps(3) infinite alternate; }
 @keyframes wobble { from { margin-top: 0; } to { margin-top: -5px; } }
 
 /* ---------- Timer and buttons ---------- */
