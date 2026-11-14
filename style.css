@@ -1,0 +1,263 @@
+/* The Mirror That Still Answers — styles.
+   Team Unsigned Int. Code written with an AI coding assistant, directed and reviewed by the team. */
+
+:root {
+  --ink: #111;
+  --paper: #f4ecd8;
+  --gold: #ffe07a;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background: #000;
+  overflow: hidden;
+  font-family: Georgia, "Times New Roman", serif;
+  color: var(--paper);
+}
+
+/* Fixed 1280x720 stage, scaled to the window by main.js */
+#stage {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 1280px;
+  height: 720px;
+  transform-origin: center center;
+  overflow: hidden;
+  background: #000;
+  user-select: none;
+}
+
+#sky, #chart, #base, #grain, #vignette { position: absolute; inset: 0; }
+.hidden { opacity: 0; pointer-events: none; }
+#sky, #chart, #base, #mirror, #balloon, #card, #readout, button { transition: opacity 0.9s ease; }
+
+/* ---------- Shot B: real photo ---------- */
+#basePhoto {
+  position: absolute;
+  inset: -40px;
+  background: url("assets/tranquility_as11-40-5948.jpg") 30% 62% / 150% auto no-repeat;
+  filter: saturate(0.85) contrast(1.05);
+  animation: drift 40s ease-in-out infinite alternate;
+}
+@keyframes drift {
+  from { transform: scale(1) translate(0, 0); }
+  to   { transform: scale(1.08) translate(-18px, -10px); }
+}
+.credit {
+  position: absolute;
+  left: 18px;
+  bottom: 30px;
+  margin: 0;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  color: #fff;
+  opacity: 0.75;
+  text-shadow: 0 1px 3px #000;
+}
+
+/* ---------- The Mirror ---------- */
+#mirror {
+  position: absolute;
+  left: 64px;
+  bottom: 36px;
+  width: 430px;
+  height: 410px;
+  filter: drop-shadow(0 14px 10px rgba(0, 0, 0, 0.55));
+}
+/* Old cartoons move in steps: about 12 drawings per second */
+#mirror .bob { position: absolute; inset: 0; transform-origin: 50% 100%; animation: bob 0.9s steps(5) infinite alternate; }
+#mirror[data-eyes="closed"] .bob { animation-duration: 2.6s; }
+@keyframes bob {
+  from { transform: translateY(0) scaleY(1); }
+  to   { transform: translateY(-7px) scaleY(1.018); }
+}
+#mirror .body { position: absolute; left: 0; top: 0; width: 430px; height: auto; transition: filter 0.2s; }
+/* The face sits on the blank window of the tray, which is drawn in perspective */
+#mirror .face, #mirror .glow {
+  position: absolute;
+  left: 133px;
+  top: 104px;
+  width: 148px;
+  height: 169px;
+  transform-origin: 0 0;
+  transform: matrix(0.9948, -0.1001, 0.2597, 0.9656, 0, 0);
+}
+#mirror .glow { background: radial-gradient(ellipse at center, #fffbe0 0%, #ffe07a 55%, rgba(255, 224, 122, 0) 100%); opacity: 0; transition: opacity 0.18s; border-radius: 10px; }
+#mirror.flash .glow { opacity: 0.95; }
+#mirror.flash .body { filter: brightness(1.25) drop-shadow(0 0 26px #fff6a8); }
+#mirror .face img { position: absolute; left: 50%; transform: translateX(-50%); display: none; }
+/* The eyebrows are only used for the surprised look; without them the face reads friendlier */
+#mirror .face .brows { top: 1%; width: 70%; }
+#mirror.surprised .face .brows { display: block; }
+#mirror .face .e-open { top: 21%; width: 72%; }
+#mirror .face .e-half { top: 24%; width: 78%; }
+#mirror .face .e-closed { top: 39%; width: 80%; }
+#mirror .face .m-closed { top: 79%; width: 42%; }
+#mirror .face .m-small { top: 72%; width: 15%; }
+#mirror .face .m-open { top: 70%; width: 46%; }
+#mirror .face .m-oh { top: 67%; width: 23%; }
+#mirror .face .m-smile { top: 74%; width: 48%; }
+#mirror[data-eyes="open"]:not(.blink) .e-open,
+#mirror[data-eyes="half"]:not(.blink) .e-half,
+#mirror[data-eyes="closed"] .e-closed,
+#mirror.blink .e-closed,
+#mirror[data-mouth="closed"] .m-closed,
+#mirror[data-mouth="small"] .m-small,
+#mirror[data-mouth="open"] .m-open,
+#mirror[data-mouth="oh"] .m-oh,
+#mirror[data-mouth="smile"] .m-smile { display: block; }
+
+/* ---------- Speech balloon ---------- */
+#balloon {
+  position: absolute;
+  left: 500px;
+  top: 210px;
+  width: 640px;
+  padding: 26px 34px 30px;
+  background: #fff;
+  color: var(--ink);
+  border: 7px solid var(--ink);
+  border-radius: 38px;
+  font-size: 30px;
+  line-height: 1.32;
+  box-shadow: 8px 10px 0 rgba(0, 0, 0, 0.55);
+  cursor: pointer;
+}
+#balloon::before {
+  content: "";
+  position: absolute;
+  left: -46px;
+  bottom: 44px;
+  border: 24px solid transparent;
+  border-right-color: var(--ink);
+}
+#balloon::after {
+  content: "";
+  position: absolute;
+  left: -30px;
+  bottom: 50px;
+  border: 18px solid transparent;
+  border-right-color: #fff;
+}
+#balloon p { margin: 0; }
+#balloon .next { position: absolute; right: 22px; bottom: 8px; font-size: 24px; animation: nudge 0.8s steps(2) infinite; }
+@keyframes nudge { to { transform: translateX(6px); } }
+#balloon b { background: var(--gold); padding: 0 6px; border-radius: 6px; }
+#balloon.overChart { top: 18px; font-size: 26px; padding: 20px 30px 24px; }
+
+/* ---------- Silent-film title card ---------- */
+#card {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: #0b0b0b;
+  cursor: pointer;
+}
+.cardInner {
+  width: 1060px;
+  height: 592px;
+  padding: 90px 150px;
+  display: grid;
+  place-items: center;
+  background: url("assets/art/marco_cartel.png") center / 100% 100% no-repeat;
+}
+#cardText {
+  margin: 0;
+  text-align: center;
+  font-size: 46px;
+  line-height: 1.3;
+  letter-spacing: 0.02em;
+  font-variant: small-caps;
+}
+#cardText em { font-style: normal; color: var(--gold); }
+
+/* ---------- Telescope on Earth and the photons that come home ---------- */
+#obs { position: absolute; width: 92px; height: auto; transform-origin: 50% 100%; transition: opacity 0.9s ease; filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.6)); }
+#photons { position: absolute; inset: 0; pointer-events: none; transition: opacity 0.9s ease; }
+#photons img { position: absolute; width: 36px; height: auto; animation: pop 0.45s steps(4) both, wobble 0.7s steps(3) infinite alternate; }
+@keyframes pop { from { transform: scale(0); } to { transform: scale(1); } }
+@keyframes wobble { from { margin-top: 0; } to { margin-top: -5px; } }
+
+/* ---------- Timer and buttons ---------- */
+#readout {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 44px;
+  text-align: center;
+  text-shadow: 0 2px 8px #000;
+}
+#timer { font-size: 84px; font-variant-numeric: tabular-nums; letter-spacing: 0.02em; }
+#readoutNote { margin: 6px auto 0; max-width: 860px; font-size: 25px; line-height: 1.4; min-height: 70px; }
+#readoutNote b { color: var(--gold); font-weight: normal; }
+
+button {
+  position: absolute;
+  left: 50%;
+  bottom: 70px;
+  transform: translateX(-50%);
+  padding: 18px 44px;
+  font: inherit;
+  font-size: 34px;
+  font-variant: small-caps;
+  letter-spacing: 0.06em;
+  color: var(--ink);
+  background: var(--gold);
+  border: 6px solid var(--ink);
+  border-radius: 999px;
+  box-shadow: 0 0 0 3px var(--gold), 0 10px 0 rgba(0, 0, 0, 0.6);
+  cursor: pointer;
+}
+button:hover, button:focus-visible { background: #fff3b8; outline: none; }
+button:active { transform: translateX(-50%) translateY(4px); }
+#send:not(.hidden) { animation: pulse 1.1s steps(4) infinite alternate; }
+@keyframes pulse { to { box-shadow: 0 0 0 9px rgba(255, 224, 122, 0.45), 0 10px 0 rgba(0, 0, 0, 0.6); } }
+#again { left: auto; right: 40px; bottom: 40px; transform: none; font-size: 22px; padding: 10px 24px; }
+#again:active { transform: translateY(3px); }
+
+/* ---------- Old film finish ---------- */
+#grain { pointer-events: none; opacity: 0.26; mix-blend-mode: overlay; background-size: 256px 256px; }
+#iris { position: absolute; inset: 0; display: none; pointer-events: none; }
+#tint { position: absolute; inset: 0; pointer-events: none; background: #e6cf9c; mix-blend-mode: multiply; opacity: 0.2; }
+#film { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+#stage.nofx #grain, #stage.nofx #film, #stage.nofx #tint { display: none; }
+#fx {
+  left: auto; right: 14px; top: 12px; bottom: auto; transform: none;
+  padding: 5px 12px; font: 13px Arial, sans-serif; letter-spacing: 0;
+  color: #fff; background: rgba(0, 0, 0, 0.45); border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: none; opacity: 0.6;
+}
+#fx:hover, #fx:focus-visible { background: rgba(0, 0, 0, 0.7); opacity: 1; }
+#fx:active { transform: none; }
+#vignette {
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0) 52%, rgba(0, 0, 0, 0.72) 100%);
+}
+#stage.jitter { animation: jitter 0.5s steps(2) infinite; }
+@keyframes jitter {
+  0% { margin-top: 0; }
+  50% { margin-top: 1px; }
+}
+
+/* ---------- Visible notice required for AI-generated imagery ---------- */
+#aiMark {
+  position: absolute;
+  right: 14px;
+  bottom: 8px;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  color: #fff;
+  opacity: 0.7;
+  text-shadow: 0 1px 2px #000;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #basePhoto, #stage.jitter, #mirror .bob, #send:not(.hidden) { animation: none; }
+}
