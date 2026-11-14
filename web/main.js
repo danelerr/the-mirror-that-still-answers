@@ -155,6 +155,18 @@
     });
   }
 
+  // ---------- motion helpers: Disney's principles of animation ----------
+  var REDUCED = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var EASE = {
+    inOut: "cubic-bezier(0.65, 0, 0.35, 1)",   // slow in and slow out
+    out: "cubic-bezier(0.22, 1, 0.36, 1)",
+    back: "cubic-bezier(0.34, 1.56, 0.64, 1)"  // overshoot, then settle
+  };
+  function anim(el, frames, opts) {
+    if (REDUCED) return Promise.resolve();
+    return el.animate(frames, opts).finished.catch(function () {});
+  }
+
   // ---------- the Mirror's face ----------
   function setMouth(m) { mirror.setAttribute("data-mouth", m); }
   function setEyes(e) { mirror.setAttribute("data-eyes", e); }
@@ -184,6 +196,37 @@
   obs.style.top = (BASE.y - 95 + 5) + "px";
   obs.style.transform = "rotate(" + PHI + "rad)";
 
+  function obsPose(sx, sy, tilt, offset) {
+    var f = { transform: "rotate(" + (PHI + (tilt || 0)) + "rad) scale(" + sx + ", " + sy + ")" };
+    if (offset !== undefined) f.offset = offset;
+    return f;
+  }
+  var obsIdle = null;
+  function obsBreathe() {
+    if (REDUCED) return;
+    if (obsIdle) obsIdle.cancel();
+    obsIdle = obs.animate([obsPose(1, 1), obsPose(1.035, 0.965, -0.02)],
+      { duration: 1100, direction: "alternate", iterations: Infinity, easing: EASE.inOut });
+  }
+  function obsStop() { if (obsIdle) { obsIdle.cancel(); obsIdle = null; } }
+  // Anticipation: it crouches and leans back before firing, and holds the pose for a moment
+  function obsWindUp() {
+    obsStop();
+    return anim(obs, [obsPose(1, 1, 0, 0), obsPose(1.16, 0.78, -0.14, 0.72), obsPose(1.18, 0.76, -0.15, 1)],
+      { duration: 560, easing: EASE.inOut });
+  }
+  // Action and follow-through: it stretches as it fires, recoils, overshoots and settles
+  function obsFire() {
+    anim(obs, [obsPose(0.84, 1.24, 0.07, 0), obsPose(1.1, 0.88, -0.05, 0.28), obsPose(0.97, 1.05, 0.02, 0.58),
+      obsPose(1.01, 0.99, 0, 0.8), obsPose(1, 1, 0, 1)], { duration: 820, easing: EASE.out }).then(obsBreathe);
+  }
+  // It catches the light coming home: squash on impact, then rebound
+  function obsCatch() {
+    obsStop();
+    return anim(obs, [obsPose(1, 1, 0, 0), obsPose(1.14, 0.84, -0.04, 0.22), obsPose(0.95, 1.07, 0.02, 0.55), obsPose(1, 1, 0, 1)],
+      { duration: 640, easing: EASE.out }).then(obsBreathe);
+  }
+
   // The photons that came home: one small character for each (up to 70 on screen)
   function clearPhotons() { photonLayer.innerHTML = ""; }
   function spawnPhotons(n) {
@@ -195,10 +238,26 @@
       im.src = "assets/art/foton_" + (i % 5 === 4 ? "cansado" : "feliz") + ".png";
       im.alt = "";
       var a = Math.random() * 6.2832, r = Math.sqrt(Math.random());
-      im.style.left = (cx + Math.cos(a) * r * 150 - 18) + "px";
-      im.style.top = (cy + Math.sin(a) * r * 80 - 18) + "px";
-      im.style.animationDelay = (i * 22) + "ms, " + (i * 37 % 700) + "ms";
+      var tx = cx + Math.cos(a) * r * 150, ty = cy + Math.sin(a) * r * 80;
+      im.style.left = (tx - 18) + "px";
+      im.style.top = (ty - 18) + "px";
+      im.style.animationDelay = (i * 37 % 700) + "ms";
       photonLayer.appendChild(im);
+      if (REDUCED) continue;
+      // Arcs and overlapping action: each photon pops out of the telescope and flies to its
+      // place along a curve, a moment after the one before it, then squashes as it lands.
+      var dx = A.x - tx, dy = A.y - ty, lift = 60 + Math.random() * 70, frames = [];
+      for (var f = 0; f <= 5; f++) {
+        var u = f / 5, inv = 1 - u;
+        var bx = dx * inv * inv + dx * 0.5 * 2 * inv * u;
+        var by = dy * inv * inv + (dy * 0.5 - lift) * 2 * inv * u;
+        frames.push({ transform: "translate(" + bx.toFixed(1) + "px, " + by.toFixed(1) + "px) scale(" + (0.25 + 0.75 * u).toFixed(2) + ")",
+          opacity: f === 0 ? 0 : 1, offset: u * 0.7 });
+      }
+      frames.push({ transform: "translate(0px, 0px) scale(1.3, 0.78)", opacity: 1, offset: 0.82 });
+      frames.push({ transform: "translate(0px, 0px) scale(0.92, 1.1)", opacity: 1, offset: 0.92 });
+      frames.push({ transform: "translate(0px, 0px) scale(1)", opacity: 1, offset: 1 });
+      im.animate(frames, { duration: 760, delay: i * 26, easing: "linear", fill: "backwards" });
     }
   }
 
@@ -210,6 +269,7 @@
   })();
 
   var flight = null; // { start, tof, done }
+  var muzzleAt = -1;
 
   function drawSky(now) {
     ctx.fillStyle = "#020308";
@@ -235,7 +295,14 @@
       }
     }
     ctx.globalAlpha = 1;
-    if (moonImg.complete) ctx.drawImage(moonImg, MOON.x - MOON.r, MOON.y - MOON.r, MOON.r * 2, MOON.r * 2);
+    // Follow-through: the Moon squashes a little when the light lands, then wobbles back
+    var mb = flight ? Math.min((now - flight.start) / 1000, flight.tof) - flight.tof / 2 : -1;
+    var msx = 1, msy = 1;
+    if (mb >= 0 && mb < 0.7) {
+      var wv = Math.sin(mb * 26) * Math.exp(-mb * 7) * 0.07;
+      msx = 1 + wv; msy = 1 - wv;
+    }
+    if (moonImg.complete) ctx.drawImage(moonImg, MOON.x - MOON.r * msx, MOON.y - MOON.r * msy, MOON.r * 2 * msx, MOON.r * 2 * msy);
     if (earthImg.complete) ctx.drawImage(earthImg, EARTH.x - EARTH.r, EARTH.y - EARTH.r, EARTH.r * 2, EARTH.r * 2);
 
     if (flight) {
@@ -265,10 +332,11 @@
         // the photon itself, squashing and stretching as it flies
         if (photonImg.complete) {
           var wob = step % 2 ? 1.13 : 1;
+          var launch = Math.max(0, 1 - el / 0.18);   // extra stretch right after it leaves
           ctx.save();
           ctx.translate(px, py);
           ctx.rotate(ang);
-          ctx.scale((back ? -1 : 1) * 1.1 * wob, 0.94 / wob);
+          ctx.scale((back ? -1 : 1) * 1.1 * wob * (1 + 0.6 * launch), 0.94 / wob * (1 - 0.3 * launch));
           ctx.drawImage(photonImg, -36, -39, 72, 78);
           ctx.restore();
         }
@@ -302,6 +370,24 @@
         }
       }
     }
+    // Muzzle flash at the telescope: three drawings and a puff ring
+    var sm = (now - muzzleAt) / 1000;
+    if (muzzleAt > 0 && sm >= 0 && sm < 0.28) {
+      var mf = Math.floor(sm * 12);
+      var MR = [30, 22, 13, 9][mf] || 9;
+      ctx.beginPath();
+      for (var w = 0; w < 14; w++) {
+        var r2 = w % 2 ? MR * 0.45 : MR;
+        var a2 = ang + w * Math.PI / 7;
+        ctx[w ? "lineTo" : "moveTo"](A.x + Math.cos(a2) * r2, A.y + Math.sin(a2) * r2);
+      }
+      ctx.closePath();
+      ctx.fillStyle = "#fff6c8"; ctx.fill();
+      ctx.strokeStyle = "#111"; ctx.lineWidth = 3.5; ctx.lineJoin = "round"; ctx.stroke();
+      ctx.strokeStyle = "rgba(244, 236, 216, " + Math.max(0, 0.8 - sm * 3).toFixed(2) + ")";
+      ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.arc(A.x, A.y, 14 + sm * 160, 0, 6.2832); ctx.stroke();
+    }
     ctx.fillStyle = "rgba(255,255,255,0.55)";
     ctx.font = "13px Arial, sans-serif";
     ctx.fillText("Earth: NASA AS17-148-22727 (1972). Moon: NASA art002e009057 (Artemis II, 2026). Sizes and distance not to scale.", 16, H - 12);
@@ -319,7 +405,8 @@
   }
 
   // ---------- chart of the real measurements ----------
-  function drawChart(sel) {
+  function drawChart(sel, prog) {
+    if (prog === undefined) prog = 1;
     var c = chart.getContext("2d");
     var X0 = 590, X1 = 1235, Y0 = 322, Y1 = 632;
     var t0 = DATA[0].t, t1 = DATA[DATA.length - 1].t;
@@ -329,6 +416,13 @@
     kmMax = Math.ceil(kmMax / 10000) * 10000;
     function x(t) { return X0 + (t - t0) / (t1 - t0) * (X1 - X0); }
     function y(km) { return Y1 - (km - kmMin) / (kmMax - kmMin) * (Y1 - Y0); }
+    var cut = t0 + prog * (t1 - t0);
+    function popSize(tt) {
+      var age = (cut - tt) / ((t1 - t0) * 0.05);
+      if (age >= 1) return 1;
+      var q = age - 1;
+      return Math.max(0, 1 + 2.70158 * q * q * q + 1.70158 * q * q);
+    }
 
     c.clearRect(0, 0, W, H);
     c.fillStyle = "#0b0b0b";
@@ -360,22 +454,29 @@
     c.lineWidth = 2;
     c.beginPath();
     window.MOON_ORBIT.forEach(function (p, i) {
+      if (p[0] > cut) return;
       if (i === 0) c.moveTo(x(p[0]), y(p[1])); else c.lineTo(x(p[0]), y(p[1]));
     });
     c.stroke();
     c.restore();
 
+    if (prog < 1) {
+      c.strokeStyle = "rgba(255, 224, 122, 0.35)";
+      c.lineWidth = 2;
+      c.beginPath(); c.moveTo(x(cut), Y0 - 6); c.lineTo(x(cut), Y1 + 4); c.stroke();
+    }
     DATA.forEach(function (d) {
-      var px = x(d.t), py = y(d.km);
+      if (d.t > cut) return;
+      var px = x(d.t), py = y(d.km), k = popSize(d.t);
       if (d.station === "APOL") {
         c.fillStyle = "#8fd3ff";
-        c.fillRect(px - 4, py - 4, 8, 8);
+        c.fillRect(px - 4 * k, py - 4 * k, 8 * k, 8 * k);
       } else {
         c.fillStyle = "#ffe07a";
-        c.beginPath(); c.arc(px, py, 4.5, 0, 6.2832); c.fill();
+        c.beginPath(); c.arc(px, py, 4.5 * k, 0, 6.2832); c.fill();
       }
     });
-    if (sel) {
+    if (sel && prog >= 1) {
       c.strokeStyle = "#fff";
       c.lineWidth = 3;
       c.beginPath(); c.arc(x(sel.t), y(sel.km), 13, 0, 6.2832); c.stroke();
@@ -404,11 +505,33 @@
     c.fillText("Line: distance between the centers of the Earth and the Moon. Data: NASA/JPL Horizons.", X1, Y0 - 26);
   }
 
+  function animateChart(sel, ms) {
+    if (REDUCED) { drawChart(sel, 1); return Promise.resolve(); }
+    return new Promise(function (res) {
+      var start = performance.now();
+      (function step(now) {
+        var u = Math.min((now - start) / ms, 1);
+        var e = u < 0.5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2;  // slow in, slow out
+        drawChart(sel, e);
+        if (u < 1) requestAnimationFrame(step); else res();
+      })(start);
+    });
+  }
+
   // ---------- the Mirror speaks ----------
   var talking = null;
   function say(html, restMouth) {
+    var wasShown = !balloon.classList.contains("hidden");
     balloonText.innerHTML = html;
     show(balloon);
+    // the balloon pops in and overshoots; later lines just give it a small bounce
+    if (wasShown) anim(balloon, [{ transform: "scale(1)" }, { transform: "scale(1.03, 0.95)", offset: 0.4 }, { transform: "scale(1)" }], { duration: 240, easing: EASE.out });
+    else anim(balloon, [{ transform: "scale(0.6)" }, { transform: "scale(1.06)", offset: 0.65 }, { transform: "scale(1)" }], { duration: 380, easing: EASE.out });
+    // secondary action: the Mirror leans toward you as it starts each line
+    if (!mirror.classList.contains("hidden")) {
+      anim(mirror, [{ transform: "none" }, { transform: "rotate(1.6deg) translateX(5px)", offset: 0.35 }, { transform: "rotate(-0.4deg)", offset: 0.75 }, { transform: "none" }],
+        { duration: 900, easing: EASE.inOut });
+    }
     var plain = balloonText.textContent || "";
     var until = performance.now() + Math.min(4200, 600 + plain.length * 32);
     var open = false;
@@ -438,12 +561,21 @@
     show(card);
     for (var i = 0; i < lines.length; i++) {
       cardText.innerHTML = lines[i];
+      anim(cardText, [{ transform: "translateY(-30px) scale(0.94)", opacity: 0 }, { transform: "translateY(5px) scale(1.02)", opacity: 1, offset: 0.65 }, { transform: "none", opacity: 1 }],
+        { duration: 650, easing: EASE.out });
       await advance(card, 5200);
     }
     hide(card);
   }
 
   async function sendLight() {
+    // squash and stretch: the button gives under your finger
+    await anim(sendBtn, [
+      { transform: "translateX(-50%) scale(1)" },
+      { transform: "translateX(-50%) scale(1.12, 0.84)", offset: 0.4 },
+      { transform: "translateX(-50%) scale(0.96, 1.06)", offset: 0.75 },
+      { transform: "translateX(-50%) scale(1)" }
+    ], { duration: 260, easing: EASE.out });
     hide(sendBtn); hide(againBtn);
     clearPhotons();
     shot = shotsFired === 0 ? DATA[DATA.length - 1] : DATA[Math.floor(Math.random() * DATA.length)];
@@ -451,7 +583,11 @@
     timer.textContent = "0.000 s";
     note.innerHTML = "Light crosses space at <b>299,792 km every second</b>.";
     show(readout);
+    await obsWindUp();
+    muzzleAt = performance.now();
+    obsFire();
     await fire(shot);
+    obsCatch();
     spawnPhotons(shot.photons);
     note.innerHTML = "It answered. Your wait was real: on <b>" + fmtDate(shot.t) + "</b>, light sent from <b>" +
       STATIONS[shot.station] + "</b> took exactly this long. <b>" + shot.photons + " photons</b> came home.";
@@ -473,12 +609,25 @@
     mirror.classList.add("flash");
     await wait(320);
     mirror.classList.remove("flash");
-    setEyes("half");
-    await wait(520);
+    setEyes("half");                  // groggy
+    await wait(700);
+    // anticipation: it sinks a little...
+    var sink = REDUCED ? null : mirror.animate([{ transform: "none" }, { transform: "scale(1.06, 0.9)", offset: 0.6 }, { transform: "scale(1.07, 0.89)" }],
+      { duration: 320, easing: EASE.inOut, fill: "forwards" });
+    if (sink) await sink.finished.catch(function () {});
+    // ...then the take: eyes pop open, it springs up, overshoots and settles
     setEyes("open");
     setMouth("oh");
     mirror.classList.add("surprised");
-    await wait(800);
+    var take = anim(mirror, [
+      { transform: "scale(0.93, 1.13) translateY(-16px)", offset: 0 },
+      { transform: "scale(1.04, 0.96)", offset: 0.5 },
+      { transform: "scale(0.99, 1.01)", offset: 0.78 },
+      { transform: "none", offset: 1 }
+    ], { duration: 700, easing: EASE.out });
+    if (sink) sink.cancel();
+    await take;
+    await wait(250);
 
     var half = (shot.tof / 2).toFixed(6);
     await say("Oh! … Hello. Was that <b>you</b>?", "smile");
@@ -490,8 +639,9 @@
     await say("And you do not have to take my word for it. <b>Look.</b>", "smile");
 
     hide(base);
-    drawChart(shot);
+    drawChart(shot, 0);
     show(chart);
+    animateChart(shot, 2600);
     balloon.classList.add("overChart");
     await say("Every dot is a real measurement from 2025 and 2026. <b>" + DATA.length + "</b> times, someone on Earth sent me light. " + DATA.length + " times, I answered.", "smile");
     await say("See the wave? The Moon swings closer and farther every month. The line is the distance between the centers of the Earth and the Moon.", "smile");
@@ -510,12 +660,20 @@
     timer.textContent = "0.000 s";
     note.innerHTML = "Each try replays a different real measurement.";
     show(sky); show(obs); show(photonLayer); show(readout);
+    obsBreathe();
+    sending = false;
     await wait(1000);
     await iris(A.x, A.y, 0, 1500, 800);
     show(sendBtn);
   }
 
-  sendBtn.addEventListener("click", function (e) { e.stopPropagation(); sendLight(); });
+  var sending = false;
+  sendBtn.addEventListener("click", function (e) {
+    e.stopPropagation();
+    if (sending) return;
+    sending = true;
+    sendLight();
+  });
   againBtn.addEventListener("click", function (e) { e.stopPropagation(); backToSky(); });
 
   // Skip straight to a scene with ?scene=sky (useful while building)
@@ -523,6 +681,7 @@
   (async function () {
     if (start !== "sky") await titleCards();
     show(sky); show(obs); show(photonLayer);
+    obsBreathe();
     show(sendBtn);
   })();
 })();
