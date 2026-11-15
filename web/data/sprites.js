@@ -524,5 +524,15 @@ window.SPRITES = {
   "cx": 192.0,
   "cy": 188.0,
   "g": 188.0
+ },
+ "E15_espejo_habla_gestos": {
+  "n": 16,
+  "w": 495,
+  "h": 379,
+  "center": false,
+  "u": 358.8,
+  "cx": 220.0,
+  "cy": 184.0,
+  "g": 373.0
  }
 };

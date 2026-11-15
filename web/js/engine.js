@@ -433,13 +433,27 @@
     const i = Math.floor(sec * 12) * 2;            // read on twos: the mouth changes 12 times a second
     return v.env[Math.min(i, v.env.length - 1)] || 0;
   };
+  // On the web, every line of the voice is downloaded before Start is enabled, so a line never starts late (a late
+  // line let the story run ahead of it, and the next line then cut it short). Opened from a file, they are local anyway.
+  F.voiceUrl = {};
+  const voicePath = (n) => "assets/voice/" + (n < 10 ? "0" : "") + n + ".mp3?v=" + window.BUILD;
+  F.voiceCount = () => (location.protocol === "file:" ? 0 : Object.keys(VOICE).length);
+  F.preloadVoices = (onOne) => {
+    if (location.protocol === "file:") return Promise.resolve();
+    return Promise.all(Object.keys(VOICE).map((n) => {
+      const get = (tries) => fetch(voicePath(+n)).then((r) => (r.ok ? r.blob() : Promise.reject(r.status)))
+        .then((b) => { F.voiceUrl[n] = URL.createObjectURL(b); })
+        .catch(() => (tries > 1 ? new Promise((ok) => setTimeout(ok, 500)).then(() => get(tries - 1)) : null));
+      return get(3).then(() => { if (onOne) onOne(); });
+    }));
+  };
   F.speak = function (n, onLevel) {
     F.stopVoice();
     const id = F.runId;
     return F.quiet(new Promise((resolve, reject) => {
       const v = VOICE[n];
       if (!v) { resolve(); return; }
-      const a = new Audio("assets/voice/" + (n < 10 ? "0" : "") + n + ".mp3?v=" + window.BUILD);
+      const a = new Audio(F.voiceUrl[n] || voicePath(n));
       a.muted = F.muted || F.RENDER;
       const me = {
         n, a, t0: performance.now(), silent: false, done: false, onLevel,

@@ -200,7 +200,8 @@
     const pad = F.plate("sc_plataforma", { x: -30, y: -20, w: 1340, h: 754, tint: "#0b1030", tintA: 0.55 });
     const rocket = F.sprite("obj_cohete2", { x: 650, y: 552, w: 81, ax: 0.5, ay: 1, z: 20 });
     const p = F.particles({ z: 25 });
-    F.scene([F.stars({ n: 120, par: 0.2, h: 300 }), pad, rocket, p, inset], { bg: "#0b1030", cam: { x: 640, y: 380, z: 1.05 } });
+    // (the night sky goes on above the plate, with stars, for when the camera follows the rocket up)
+    F.scene([pad, F.skyAbove(pad, [90, 83, 81], [11, 16, 48]), F.stars({ n: 160, par: 0.2, y: -700, h: 760, z: -99 }), rocket, p, inset], { bg: "#0b1030", cam: { x: 640, y: 380, z: 1.05 } });
     await F.irisIn(650, 420, 600);
     const v = say(21);
     await atw(21, "1972", 0, 3.5);
