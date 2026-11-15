@@ -498,5 +498,21 @@ window.SPRITES = {
   "h": 386,
   "center": false,
   "wb": 344
+ },
+ "A1_antena_escucha": {
+  "n": 16,
+  "w": 507,
+  "h": 489,
+  "center": false,
+  "u": 381.2,
+  "cx": 218.0,
+  "cy": 274.0,
+  "g": 481.5
+ },
+ "L1_carta_vuela": {
+  "n": 16,
+  "w": 481,
+  "h": 341,
+  "center": true
  }
 };
