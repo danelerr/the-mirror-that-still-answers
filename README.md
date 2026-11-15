@@ -1,12 +1,12 @@
 # The Mirror That Still Answers
 
-An interactive animated story for children aged 8 to 12 about the hardware NASA left on the Moon, on Mars and in deep space. It is told by the mirror that Apollo 11 left on the Moon in 1969, and every interactive moment is driven by real NASA measurements.
+An animated cartoon for children aged 8 to 12 about the hardware NASA left on the Moon, on Mars and in deep space. It is told by the mirror that Apollo 11 left on the Moon in 1969, in the style of a 1930s cartoon, and every scene is driven by real NASA measurements.
 
 **Team Unsigned Int · NASA Space Apps Challenge 2026 · Challenge: Abandoned but not Forgotten**
 
 Live version: https://danelerr.github.io/the-mirror-that-still-answers/
 
-> Work in progress. This repository is being built during the hackathon, November 14–15, 2026.
+> Built during the hackathon, November 14–15, 2026.
 
 ## The idea
 
@@ -16,14 +16,13 @@ The story asks one question over and over: **how do we know what we know?** Each
 
 ## How it works
 
-1. Three silent-film title cards introduce the mirror, read by an old-film narrator.
-2. The viewer presses **Send your light**. A pulse of light travels to the Moon and back. The wait lasts exactly as long as a real measurement did. The first one is the most recent measurement in the archive: July 7, 2026, from Grasse, France, 2.505444 seconds.
-3. One small photon appears for every photon that actually returned in that measurement.
-4. The Mirror wakes up at Tranquility Base and, in a recorded voice with its mouth following the words, explains how the travel time gives the distance.
-5. A chart shows all 275 measurements from 2025 and 2026 against the Moon's orbit.
-6. Each new try replays a different real measurement.
+About six and a half minutes, in four parts. The voice tells the story; the pictures show it.
 
-Chapters about the Opportunity rover and the Pioneer 10 probe are in progress.
+- **Opening.** A real 1969 photo of Tranquility Base dissolves into the cartoon Moon, where the Mirror is asleep.
+- **Chapter 1, the Mirror.** The viewer presses **Send your light**. A cartoon photon flies to the Moon and back in exactly the time a real measurement took (the most recent one in the archive: July 7, 2026, from Grasse, France, 2.505444 seconds), and one little photon comes home for every photon that really returned. The Mirror wakes up and shows how half of that time gives the distance, how its glass corners send light straight back, and, on a 1930s movie screen, all 275 measurements from 2025 and 2026 against the Moon's orbit.
+- **Chapter 2, Opportunity.** Launch, a landing that bounces on airbags, and fourteen years on Mars. The colour of the sky, the Sun and the dust follow the rover's own 4,674 measurements of dust in the sky; the viewer can slide through its days. The 2007 storm and the 2018 storm are played from the real numbers, which climb until they stop.
+- **Chapter 3, Pioneer 10.** Through the asteroid belt and past Jupiter. The viewer sends it a greeting, and the film shows how far it is today and how long the greeting would take, from NASA/JPL Horizons. Its whole path since 1972 is drawn from the same data.
+- **Ending.** "That is how you know what is true. Not because someone told you. Because you can check."
 
 ## Run it
 
@@ -40,15 +39,18 @@ Open `web/index.html` in a browser. There is no build step and there are no depe
 
 Details, links and the conversion scripts are in [`datos/README.md`](datos/README.md).
 
-## Photos
+## Real NASA photos
 
-All backgrounds are real NASA photographs.
+They appear on screen as "proof", next to what the story says.
 
 | Image | Credit |
 |---|---|
+| Tranquility Base with the mirror | NASA, AS11-40-5948, Apollo 11, July 20, 1969 |
+| Opportunity's self-portrait | NASA/JPL-Caltech, PIA17759 |
+| Pioneer 10 being prepared | NASA Ames, ARC-1972-AC72-2135 |
+| Pioneer 10 at Jupiter (artwork, shown as "NASA ART") | NASA Ames, ARC-1972-AC72-1354 |
 | The Earth | NASA, AS17-148-22727, Apollo 17, December 7, 1972 |
 | The Moon | NASA, art002e009057, Artemis II, April 4, 2026 |
-| Tranquility Base | NASA, AS11-40-5948, Apollo 11, July 20, 1969 |
 
 ## How AI tools were used
 
@@ -58,8 +60,11 @@ The challenge rules ask teams to say clearly where AI ("SI") tools were used.
 - **Story.** An AI assistant suggested using the retroreflector as the narrator and helped shape the chapter structure. It also drafted the on-screen text in English, which the team reviews and edits.
 - **Research and data.** An AI assistant located the datasets, downloaded them from the NASA archives and wrote the conversion scripts. Every figure shown comes from the files in `datos/`.
 - **Code.** The web page, the animation and the tooling were written with an AI coding assistant, directed and reviewed by the team.
-- **Character illustrations.** The cartoon characters were made with an AI image generator from the team's prompts, using NASA photos only as shape references. Code removes the background, colours them and animates them. The originals are in `dibujos/`. A visible notice is shown on screen at all times.
-- **Narration.** The voice is a team member's own recording, not synthetic. AI speech recognition (NVIDIA Parakeet and OpenAI Whisper, run locally) was used to find the best take of each line and to check that every word is understandable. Editing, cleaning and loudness matching were done with FFmpeg.
+- **Character illustrations.** The cartoon characters were made with an AI image generator from the team's prompts, using NASA photos only as shape references. Code removes the background, colours them and animates them. The originals are in `dibujos/`.
+- **Painted scenes.** The painted backgrounds (the Moon, the observatory, Mars, the theater, the launch pad, the radio dish) and three props (rocket, parachute, airbags) were made with an AI image generator (Z-Image-Turbo) run on a team member's computer. Jupiter, the asteroids, the charts and all the signs are drawn by code. A visible notice is shown on screen at all times.
+- **Animation.** Every movement is animated by code, following Disney's twelve principles of animation (squash and stretch, anticipation, follow-through, arcs, slow in and slow out...).
+- **Music.** The two music pieces were made with an AI music generator (ACE-Step 1.5, MIT license) run on a team member's computer. The sound effects are synthesized by code.
+- **Narration.** The voice is a team member's own recording, not synthetic. AI speech recognition (NVIDIA Parakeet and OpenAI Whisper, run locally) was used to find the best take of each line, to check that every word is understandable, and to time the animation to each word. Editing, cleaning and loudness matching were done with FFmpeg.
 - **Not AI.** The voice, the photographs and the data.
 
 No AI-generated image uses or modifies NASA logos, flags or mission identifiers.
@@ -67,15 +72,16 @@ No AI-generated image uses or modifies NASA logos, flags or mission identifiers.
 ## Accessibility
 
 - The film grain, flicker and frame shake can be switched off with the **Old film look** button, and are off by default for people who ask their system for reduced motion.
-- Every step can be advanced with the mouse, a tap, the space bar or Enter.
-- The story is told in text on screen.
+- **Captions** for every line can be turned on with the Captions button.
+- The interactive moments use real buttons and a real slider, so they work with a keyboard.
+- A chapter bar lets anyone jump to any part.
 
 ## Repository layout
 
 | Folder | Contents |
 |---|---|
-| `web/` | The site: `index.html`, `style.css`, `main.js`, data files and assets |
-| `web/tools/` | Script that cuts, colours and crops the character art |
+| `web/` | The site: `index.html`, `css/`, `js/` (`engine.js` animation engine, `actors.js` characters and props, `story*.js` the shots of each chapter), `data/` and `assets/` |
+| `web/tools/` | Scripts that cut and colour the character art and stamp a version on each publish |
 | `datos/` | Raw NASA data files, the tables built from them and the scripts |
 | `dibujos/` | Original character illustrations before processing |
 

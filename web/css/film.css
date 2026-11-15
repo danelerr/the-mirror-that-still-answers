@@ -1,0 +1,97 @@
+/* The Mirror That Still Answers — styles.
+   Team Unsigned Int. Code written with an AI coding assistant, directed and reviewed by the team. */
+
+:root { --ink: #24170e; --paper: #f3e6c8; --gold: #e8b53f; --red: #b8432f; }
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: #000; overflow: hidden; font-family: Georgia, "Times New Roman", serif; color: var(--paper); }
+
+/* Fixed 1280x720 stage, scaled to the window by engine.js */
+#stage {
+  position: absolute; left: 50%; top: 50%; width: 1280px; height: 720px;
+  transform-origin: center center; overflow: hidden; overflow: clip; background: #000; user-select: none;
+}
+#view { position: absolute; left: 0; top: 0; width: 1280px; height: 720px; }
+.hidden { opacity: 0; pointer-events: none; visibility: hidden; transition: opacity 0.6s ease, visibility 0s linear 0.6s !important; }
+
+/* ---------- Start screen ---------- */
+#start { position: absolute; inset: 0; display: grid; place-items: center; background: #0b0b0b; z-index: 5; transition: opacity 0.6s ease; }
+.cardInner {
+  width: 1060px; height: 592px; padding: 90px 150px; display: grid; place-items: center; align-content: center; justify-items: center; text-align: center;
+  background: url("../assets/art/marco_cartel.png") center / 100% 100% no-repeat;
+}
+.startTitle { margin: 0; font-size: 66px; line-height: 1.08; font-variant: small-caps; letter-spacing: 0.03em; color: var(--paper); }
+.startSub { margin: 18px 0 34px; font-size: 24px; color: var(--paper); opacity: 0.85; }
+.startHint { margin: 20px 0 0; font: 15px Arial, sans-serif; color: var(--paper); opacity: 0.7; }
+
+/* ---------- Big round buttons ---------- */
+button.big, #go {
+  position: absolute; left: 50%; bottom: 70px; transform: translateX(-50%);
+  padding: 16px 42px; font: inherit; font-size: 34px; font-variant: small-caps; letter-spacing: 0.06em;
+  color: var(--ink); background: #ffe07a; border: 6px solid var(--ink); border-radius: 999px;
+  box-shadow: 0 0 0 3px #ffe07a, 0 10px 0 rgba(0, 0, 0, 0.6); cursor: pointer; z-index: 4;
+  transition: opacity 0.6s ease;
+}
+button.big:hover, button.big:focus-visible, #go:hover, #go:focus-visible { background: #fff3b8; outline: none; }
+button.big:active { transform: translateX(-50%) translateY(4px); }
+#go { position: static; transform: none; }
+#go:active { transform: translateY(4px); }
+#go, button.big:not(.hidden):not(.small) { animation: pulse 1.1s steps(4) infinite alternate; }
+@keyframes pulse { to { box-shadow: 0 0 0 9px rgba(255, 224, 122, 0.45), 0 10px 0 rgba(0, 0, 0, 0.6); } }
+button.small { font-size: 24px; padding: 10px 28px; bottom: 90px; }
+
+/* ---------- Opportunity's data panel ---------- */
+#oppPanel {
+  position: absolute; left: 700px; top: 430px; width: 560px; padding: 10px 12px 8px; z-index: 4;
+  background: rgba(36, 23, 14, 0.86); border: 4px solid var(--paper); border-radius: 16px;
+  box-shadow: 6px 8px 0 rgba(0, 0, 0, 0.5); transition: opacity 0.6s ease;
+}
+#oppChart { display: block; width: 536px; height: 120px; }
+#oppSlider { display: block; width: 536px; height: 28px; margin: 4px 0 2px; accent-color: #ffe07a; cursor: pointer; border-radius: 14px; }
+#oppPanel.invite #oppSlider { animation: invite 0.5s steps(3) infinite alternate; }
+@keyframes invite { from { box-shadow: 0 0 0 0 rgba(255, 224, 122, 0); } to { box-shadow: 0 0 0 6px rgba(255, 224, 122, 0.85); } }
+#oppRead { margin: 2px 0 0; font-size: 20px; line-height: 1.3; color: var(--paper); }
+#oppRead b { color: #ffe07a; font-weight: normal; }
+
+/* ---------- Captions ---------- */
+#cc {
+  position: absolute; left: 50%; bottom: 64px; transform: translateX(-50%); max-width: 1000px; margin: 0; z-index: 4;
+  padding: 8px 18px 10px; font-size: 24px; line-height: 1.3; text-align: center; color: #fff;
+  background: rgba(0, 0, 0, 0.72); border-radius: 10px; pointer-events: none;
+}
+
+/* ---------- Old film finish ---------- */
+#tint, #grain, #film, #vignette { position: absolute; inset: 0; pointer-events: none; z-index: 6; }
+#film { width: 100%; height: 100%; }
+#grain { opacity: 0.12; mix-blend-mode: overlay; background-size: 256px 256px; }
+#tint { background: #e6cf9c; mix-blend-mode: multiply; opacity: 0.1; }
+#vignette { background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0) 58%, rgba(0, 0, 0, 0.42) 100%); }
+#stage.nofx #grain, #stage.nofx #film, #stage.nofx #tint { display: none; }
+
+/* ---------- Small tools, bottom right ---------- */
+#tools { position: absolute; right: 12px; bottom: 26px; display: flex; gap: 6px; z-index: 7; }
+button.tool {
+  padding: 5px 11px; font: 13px Arial, sans-serif; color: #fff; cursor: pointer;
+  background: rgba(0, 0, 0, 0.45); border: 1px solid rgba(255, 255, 255, 0.6); border-radius: 999px; opacity: 0.65;
+}
+button.tool:hover, button.tool:focus-visible { background: rgba(0, 0, 0, 0.75); opacity: 1; outline: none; }
+
+/* ---------- Chapter bar ---------- */
+#chapters { position: absolute; left: 16px; bottom: 26px; display: flex; gap: 6px; z-index: 7; transition: opacity 0.6s ease; }
+#chapters button {
+  padding: 4px 12px; font: 13px Arial, sans-serif; color: #fff; cursor: pointer;
+  background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 255, 255, 0.55); border-radius: 999px; opacity: 0.75;
+}
+#chapters button:hover, #chapters button:focus-visible { opacity: 1; background: rgba(0, 0, 0, 0.8); outline: none; }
+#chapters button.current { background: #ffe07a; color: var(--ink); border-color: #ffe07a; opacity: 1; }
+
+/* ---------- Visible notice required for AI-generated imagery ---------- */
+#aiMark {
+  position: absolute; right: 14px; bottom: 6px; margin: 0; z-index: 7;
+  font: 11px Arial, sans-serif; color: #fff; opacity: 0.75; text-shadow: 0 1px 2px #000; pointer-events: none;
+}
+#stage.instant, #stage.instant * { transition: none !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  #go, button.big { animation: none !important; }
+}
+#oppGo { position: absolute; right: 12px; bottom: 8px; opacity: 0.9; }

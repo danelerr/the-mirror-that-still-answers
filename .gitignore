@@ -14,5 +14,6 @@
 /datos/raw/horizons_pioneer10_today.txt
 /dibujos/variantes/
 /dibujos/PROMPTS.md
+/dibujos/PROMPTS_ESCENAS.md
 __pycache__/
 *.pyc
