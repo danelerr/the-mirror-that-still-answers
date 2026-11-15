@@ -196,19 +196,37 @@
     const go = F.onFrame((t, dt) => { belt.pos += 900 * dt; });
     // it dodges the rocks: leans, squashes, and its eyes go wide
     const dodges = [[-0.25, -90, 900], [0.3, 110, 1000], [-0.2, -40, 800]];
-    await atw(22, "asteroid", 0, 4.1);
-    F.face(pr, "scared");
-    for (const d of dodges) {
-      sfx("swish"); pr.lx = d[0] > 0 ? 8 : -8;
-      tw(pr, { rot: d[0], y: 380 + d[1], sx: 0.92, sy: 1.08 }, 260, EZ.out);
-      await wait(260);
-      tw(pr, { sx: 1, sy: 1 }, 300, EZ.elastic);
-      await wait(d[2] / 3);
+    let p2 = null;
+    if (F.hasSprites("P2_sonda_esquiva")) {
+      // the team's drawn frames: it ducks, leans, spins and squeezes between the rocks, then cheers
+      p2 = F.spriteSet("P2_sonda_esquiva", { x: 560, y: 380, w: 400, ay: 0.5, z: 31, frame: 0 });
+      F.add(p2); pr.op = 0;
+      F.guard((async () => { for (let i = 0; i < 4; i++) { p2.frame = i; await wait(900); } })());
     }
-    pr.lx = 0; F.face(pr, "happy");
-    tw(pr, { rot: 0, y: 380 }, 400, EZ.inOut);
+    await atw(22, "asteroid", 0, 4.1);
+    if (p2) {
+      for (let i = 4; i < 16; i++) {
+        p2.frame = i;
+        if (i % 3 === 1) sfx("swish");
+        tw(p2, { y: 380 + Math.sin(i * 1.3) * 40 }, 110, EZ.inOut);
+        await wait(130);
+      }
+      sfx("tada");
+    } else {
+      F.face(pr, "scared");
+      for (const d of dodges) {
+        sfx("swish"); pr.lx = d[0] > 0 ? 8 : -8;
+        tw(pr, { rot: d[0], y: 380 + d[1], sx: 0.92, sy: 1.08 }, 260, EZ.out);
+        await wait(260);
+        tw(pr, { sx: 1, sy: 1 }, 300, EZ.elastic);
+        await wait(d[2] / 3);
+      }
+      pr.lx = 0; F.face(pr, "happy");
+      tw(pr, { rot: 0, y: 380 }, 400, EZ.inOut);
+    }
     await atw(22, "jupiter", 0, 5.9);
     go();
+    if (p2) { F.remove(p2); pr.op = 1; }
     // past the giant planet
     jupiter.x = 1100; jupiter.r = 340;
     pr.x = -100; pr.y = 260; pr.s = 0.3;
@@ -360,11 +378,23 @@
   async function moves27(pr) {
     pr.x = 640; pr.y = 330; pr.s = 0.5; pr.rot = 0; pr.eyes = "open";
     F.scene([F.stars({ n: 260, par: 0.1 }), pr, inset], { bg: "#05060a" });
+    // the team's drawn frames: it smiles, yawns, its booms droop and it falls asleep
+    let p5 = null;
+    if (F.hasSprites("P5_sonda_se_apaga")) {
+      p5 = F.spriteSet("P5_sonda_se_apaga", { x: 640, y: 350, w: 440, ay: 0.5, z: 31, frame: 0 });
+      F.add(p5); pr.op = 0;
+      p5.update = function (dt, tt) { this.y = 350 + Math.sin(tt / 1300) * 6; };      // it drifts
+    }
     const v = say(27);
     await atw(27, "powers", 0, 3.0);
-    pr.eyes = "open"; F.face(pr, "tired", 500); sfx("sad");
-    tw(pr, { sleepy: 1 }, 1200, EZ.inOut);
-    await wait(600); F.face(pr, "asleep", 500);
+    sfx("sad");
+    if (p5) {
+      for (let i = 1; i < 16; i++) { p5.frame = i; await wait(165); }
+    } else {
+      pr.eyes = "open"; F.face(pr, "tired", 500);
+      tw(pr, { sleepy: 1 }, 1200, EZ.inOut);
+      await wait(600); F.face(pr, "asleep", 500);
+    }
     await atw(27, "know", 0, 5.5);
     // its path: real distances from 1972 to today, and the line keeps going because we know how it moves
     const graph = F.custom(function (c, t) {
@@ -398,7 +428,7 @@
       c.fillText("Pioneer 10's distance from Earth, every month since 1972 (NASA/JPL Horizons)", X0 - 70, Y0 - 56);
     }, { par: 0, z: 50, op: 0, k: 0, k2: 0 });
     F.add(graph);
-    tw(pr, { op: 0.15 }, 400);
+    if (p5) tw(p5, { op: 0.15 }, 400); else tw(pr, { op: 0.15 }, 400);
     await tw(graph, { op: 1 }, 400);
     sfx("slideUp", 0.7);
     await tw(graph, { k: 1 }, 2200, EZ.inOut);
@@ -408,7 +438,8 @@
     await v;
     await wait(700);
     F.remove(graph);
-    pr.op = 1;
+    if (p5) F.remove(p5);
+    pr.op = 1; F.faceNow(pr, "asleep"); pr.sleepy = 1;
   }
 
   async function plaque28(pr) {

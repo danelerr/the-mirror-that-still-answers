@@ -351,16 +351,37 @@
     await atw(14, "water", 0, 7.8);
     F.popOut(name);
     // it digs into a rock and dreams of ancient water
-    rv.armT = 0.8; rv.hand = "point"; sfx("click"); F.face(rv, "curious"); rv.look = 6; rv.lookX = -6;
-    const dream = F.thought("sc_marte_agua", { x: 820, y: 230, w: 440, h: 280, fromX: rv.x + 40, fromY: rv.y - 330, z: 70 });
-    F.add(dream);
-    await tw(dream, { open: 1 }, 600, EZ.bigBack);
-    sfx("sparkle"); F.face(rv, "happy"); rv.look = -6; rv.lookX = 8;
-    await v;
-    await wait(500);
-    await tw(dream, { open: 0 }, 300, EZ.inBack);
-    F.remove(dream);
-    rv.armT = 0.1; rv.hand = "open"; rv.look = 0; rv.lookX = 0; F.face(rv, "neutral");
+    if (F.hasSprites("R4_rover_excava")) {
+      // the team's drawn frames: it reaches, scrapes, peers, finds a tiny round pebble and jumps for joy
+      rv.op = 0;
+      const dig = framesAt("R4_rover_excava", { w: 470 });
+      const dream = F.thought("sc_marte_agua", { x: 840, y: 230, w: 440, h: 280, fromX: rv.x + 150, fromY: rv.y - 300, z: 70 });
+      F.add(dream);
+      for (let i = 0; i < 16; i++) {
+        dig.frame = i;
+        if (i === 3 || i === 5 || i === 7) sfx("click");
+        if (i === 10) { sfx("sparkle"); tw(dream, { open: 1 }, 600, EZ.bigBack); }
+        if (i === 12) sfx("boing", 1.2);
+        await wait(i < 10 ? 150 : 210);
+      }
+      await v;
+      await wait(400);
+      await tw(dream, { open: 0 }, 300, EZ.inBack);
+      F.remove(dream);
+      rv.armT = 0.1; rv.hand = "open"; rv.look = 0; rv.lookX = 0; F.faceNow(rv, "happy");
+      backToPuppet(dig);
+    } else {
+      rv.armT = 0.8; rv.hand = "point"; sfx("click"); F.face(rv, "curious"); rv.look = 6; rv.lookX = -6;
+      const dream = F.thought("sc_marte_agua", { x: 820, y: 230, w: 440, h: 280, fromX: rv.x + 40, fromY: rv.y - 330, z: 70 });
+      F.add(dream);
+      await tw(dream, { open: 1 }, 600, EZ.bigBack);
+      sfx("sparkle"); F.face(rv, "happy"); rv.look = -6; rv.lookX = 8;
+      await v;
+      await wait(500);
+      await tw(dream, { open: 0 }, 300, EZ.inBack);
+      F.remove(dream);
+      rv.armT = 0.1; rv.hand = "open"; rv.look = 0; rv.lookX = 0; F.face(rv, "neutral");
+    }
   }
 
   async function sunlight15() {
@@ -534,9 +555,14 @@
     F.show(panel); lastI = -1;
     M.view = { s0: 5084, s1: 5114, tMax: 11 };
     M.reveal = 0;
+    // the team's drawn frames: a little more tired with every number, until it falls asleep
+    let r7 = null;
+    if (F.hasSprites("R7_rover_ultimos_dias")) { rv.op = 0; r7 = framesAt("R7_rover_ultimos_dias", { w: 470, frame: 0 }); }
+    const r7to = (a, b, ms) => { if (!r7) return; F.guard((async () => { for (let i = a; i <= b; i++) { r7.frame = i; await wait(ms / (b - a + 1)); } })()); };
     const v = say(19);
     // the numbers climb: each new measurement steps up like a stair, and the sky gets darker
     const calm = OPP.filter((r) => r[0] >= 5084 && r[0] <= 5102).length;
+    r7to(0, 3, 4000);
     for (let i = 1; i <= calm; i++) { M.reveal = i; await wait(Math.max(40, 4400 / calm)); }
     const steps = [[5103, 1.71, "climb", 0, 5.6], [5105, 2.26, "climb", 1, 6.8], [5111, 10.8, "stop", 0, 9.5]];
     const stair = [];
@@ -551,6 +577,7 @@
       F.popIn(st, 360, k === 2 ? "stamp" : "pop");
       tw(rv, { glow: 0, dim: Math.min(1, (k + 1) * 0.33) }, 700);
       F.face(rv, ["worried", "tired", "asleep"][k], 400);
+      r7to(4 + k * 4, 7 + k * 4, k === 2 ? 1600 : 900);
       if (k === 2) {
         rv.eyes = "closed";
         tw(rv, { mastT: -0.42, armT: 0.35, sy: 0.92, sx: 1.04 }, 1900);

@@ -115,11 +115,45 @@ def bags(r, regs):
     return IVORY
 
 
+def observatory(r, regs):
+    if r["rx"] > 0.68 and r["ry"] < 0.4 and r["frac"] < 0.06:
+        return YELLOW                                 # the burst of light leaving the telescope
+    if r["frac"] < 0.004:
+        return None                                   # eyes and small details
+    if r["ry"] < 0.52:
+        return "#d8dade"                              # the dome and the telescope
+    return CREAM                                      # the round building
+
+
+def probe(r, regs):
+    dish = max(regs, key=lambda q: q["area"])
+    if r is dish:
+        return CREAM                                  # the big dish
+    if (r["rx"] < 0.08 or r["rx"] > 0.72 or r["ry"] < 0.12 or r["ry"] > 0.92) and r["frac"] < 0.08:
+        return "#9a8670"                              # flying rocks
+    sl = dish["sl"]
+    cy = r["sl"][0].start + r["h"] / 2
+    cx = r["sl"][1].start + r["w"] / 2
+    if r["frac"] < 0.03 and sl[0].start < cy < sl[0].stop and sl[1].start < cx < sl[1].stop:
+        return None                                   # eyes on the dish
+    if r["frac"] > 0.015:
+        return GOLD                                   # the small body
+    return STEEL                                      # booms
+
+
 RULES = {"R1_rover_avanza": rover, "R2_rover_despliega": rover, "R5_rover_tormenta": rover, "R6_rover_sacude": rover,
-         "E2_espejo_despierta": mirror, "F1_foton_vuela": photon, "O2_bolsas_rebotan": bags}
+         "E2_espejo_despierta": mirror, "F1_foton_vuela": photon, "O2_bolsas_rebotan": bags,
+         "O1_observatorio_dispara": observatory, "E7_espejo_atrapa": mirror, "R4_rover_excava": rover,
+         "R7_rover_ultimos_dias": rover, "P2_sonda_esquiva": probe, "P5_sonda_se_apaga": probe}
+
+ONLY = None   # set from the command line to colour just some sets
 
 if __name__ == "__main__":
+    import sys
+    only = set(sys.argv[1:])
     for name, rule in RULES.items():
+        if only and name not in only:
+            continue
         d = os.path.join(WEB, "assets", "sprites", name)
         for f in sorted(glob.glob(os.path.join(d, "*.png"))):
             a = np.asarray(Image.open(f).convert("RGBA"))

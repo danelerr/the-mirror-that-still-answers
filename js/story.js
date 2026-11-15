@@ -562,6 +562,18 @@
     mir.eyes = "open"; mir.brows = true; F.face(mir, "curious"); gesture(mir, "pointUp", 220);
     tw(mir, { sy: 1.05 }, 250, EZ.out).then(() => tw(mir, { sy: 1 }, 400, EZ.back)).catch(() => {});
     await atw(6, "reaches", 0, 5.4);
+    if (F.hasSprites("E7_espejo_atrapa")) {
+      // the team's drawn frames: it catches the photon like a ball and throws it straight back
+      const pitch = F.spriteSet("E7_espejo_atrapa", { x: mir.x + 4, y: mir.y + 8, w: 330, ay: 1, z: 21, frame: 0 });
+      F.add(pitch); mir.op = 0;
+      for (let i = 0; i < 16; i++) {
+        pitch.frame = i;
+        if (i === 2) { sfx("ting", 1.3); F.shake(6); }
+        if (i === 10) sfx("whoosh", 1.3);
+        await wait(i < 12 ? 100 : 80);
+      }
+      mir.op = 1; F.remove(pitch);
+    }
     await cornerCube(6);
     await v6;
 
