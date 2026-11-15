@@ -221,3 +221,28 @@ button.big:not(.hidden):not(.small) { animation: decoGlow 1.4s ease-in-out infin
 @media (orientation: landscape) and (max-height: 520px) and (pointer: coarse) {
   button.tool, #chapters button { padding: 7px 14px; font-size: 15px; }
 }
+
+/* while Opportunity's data panel is up (bottom right), the captions move to the bottom left, clear of it */
+#oppPanel:not(.hidden) ~ #cc { left: 22px; transform: none; max-width: 620px; text-align: left; }
+
+/* ---------- Check it yourself ---------- */
+#again.pair { left: 35%; }
+#checkEnd.pair { left: 65%; }
+#checkPanel {
+  position: absolute; inset: 0; z-index: 20; display: grid; place-items: center;
+  background: rgba(5, 4, 3, 0.82); transition: opacity 0.3s ease;
+}
+#checkPanel.hidden { opacity: 0; pointer-events: none; visibility: hidden; }
+.checkCard {
+  width: 960px; max-height: 640px; overflow: auto; padding: 30px 46px 26px; text-align: left;
+  background: #0d0b09; color: var(--paper); border: 6px double #efe1bf;
+  box-shadow: 0 0 0 3px #0d0b09, 0 0 0 5px rgba(239, 225, 191, 0.5), 0 18px 48px rgba(0, 0, 0, 0.8);
+}
+.checkKicker { margin: 0; text-align: center; font-variant: small-caps; letter-spacing: 0.14em; color: #f3d98b; font-size: 17px; }
+#checkTitle { margin: 4px 0 8px; text-align: center; font-variant: small-caps; letter-spacing: 0.06em; font-size: 40px; font-weight: normal; }
+.checkLead { margin: 0 0 14px; text-align: center; font-size: 19px; opacity: 0.9; }
+.checkCard ol { margin: 0; padding-left: 26px; font-size: 19px; line-height: 1.42; }
+.checkCard li { margin: 0 0 10px; }
+.checkCard b { color: #ffe07a; font-weight: normal; }
+.checkCard a { color: #ffd166; }
+#checkClose { display: block; margin: 14px auto 0; font-size: 18px; }

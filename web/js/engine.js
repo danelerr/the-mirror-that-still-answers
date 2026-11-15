@@ -543,7 +543,7 @@
 
   // ---------- captions, off unless asked for ----------
   const ccEl = $("cc"), ccBtn = $("ccBtn");
-  let ccOn = false;
+  let ccOn = true;                 // on from the start: a viewer without sound can still follow the story
   F.LINES = {};
   // each word lights up in gold as the voice says it (times from web/data/words.js; words the speech model
   // missed are spread evenly between the ones it caught)

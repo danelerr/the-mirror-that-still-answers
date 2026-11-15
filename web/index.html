@@ -6,7 +6,7 @@
 <title>The Mirror That Still Answers</title>
 <meta name="description" content="An animated story about the mirror Apollo 11 left on the Moon and its neighbors, told with real NASA data.">
 <meta name="generator" content="Code written with an AI coding assistant. Painted scenes and character illustrations made with AI image generators. Photos and data: NASA.">
-<link rel="stylesheet" href="css/film.css?v=20261115184346">
+<link rel="stylesheet" href="css/film.css?v=20261115185835">
 </head>
 <body>
 <div id="stage">
@@ -28,6 +28,30 @@
   <button id="send" class="big hidden" type="button">Send your light</button>
   <button id="greet" class="big hidden" type="button">Send a greeting</button>
   <button id="again" class="big small hidden" type="button">Watch again</button>
+  <button id="checkEnd" class="big small hidden" type="button">Check it yourself</button>
+
+  <!-- Check it yourself: where every number comes from, and how to redo the sums -->
+  <div id="checkPanel" class="hidden" role="dialog" aria-modal="true" aria-labelledby="checkTitle">
+    <div class="checkCard">
+      <p class="checkKicker">The Mirror That Still Answers</p>
+      <h2 id="checkTitle">Check it yourself</h2>
+      <p class="checkLead">Every number in the film comes from open NASA data. Here is where to find it, and how to redo the sums.</p>
+      <ol>
+        <li><b>The Mirror.</b> Laser measurements to the Apollo 11 mirror, NASA CDDIS / International Laser Ranging Service:
+          <a href="https://cddis.nasa.gov/" target="_blank" rel="noopener">cddis.nasa.gov</a>.
+          Your light: Grasse, France, July 7, 2026. Round trip 2.505444 s. Half of it, 1.252722 s &times; 299,792.458 km/s &asymp; <b>375,557 km</b>.</li>
+        <li><b>Opportunity.</b> Dust in the sky (tau) on 4,674 days, NASA Planetary Data System:
+          <a href="https://pds-geosciences.wustl.edu/mer/mer1_mer2-m-pancam-5-atmos-opacity-v1/" target="_blank" rel="noopener">pds-geosciences.wustl.edu</a>.
+          Direct sunbeam = e<sup>&minus;tau</sup>: tau 0.94 &rarr; <b>39 %</b>; tau 4.51 &rarr; <b>1 %</b>.</li>
+        <li><b>Pioneer 10.</b> Distance and light time, NASA/JPL Horizons (target &minus;23):
+          <a href="https://ssd.jpl.nasa.gov/horizons/app.html" target="_blank" rel="noopener">ssd.jpl.nasa.gov/horizons</a>.
+          <span id="checkP10"></span></li>
+        <li><b>Our tables and code</b> (MIT license):
+          <a href="https://github.com/danelerr/the-mirror-that-still-answers/tree/main/datos" target="_blank" rel="noopener">github.com/danelerr/the-mirror-that-still-answers</a></li>
+      </ol>
+      <button id="checkClose" class="tool" type="button">Close</button>
+    </div>
+  </div>
 
   <!-- Opportunity's measurements: slide through its days -->
   <div id="oppPanel" class="hidden">
@@ -47,9 +71,10 @@
   <div id="vignette" aria-hidden="true"></div>
 
   <div id="tools">
-    <button id="ccBtn" class="tool" type="button" aria-pressed="false">Captions: off</button>
+    <button id="ccBtn" class="tool" type="button" aria-pressed="true">Captions: on</button>
     <button id="fx" class="tool" type="button" aria-pressed="true">Old film look: on</button>
     <button id="mute" class="tool" type="button" aria-pressed="false">Sound: on</button>
+    <button id="checkBtn" class="tool" type="button">Check the data</button>
   </div>
 
   <nav id="chapters" class="hidden" aria-label="Chapters">
@@ -153,19 +178,19 @@
   </div>
 </div>
 
-<script>window.BUILD = "20261115184346";</script>
-<script src="data/llr.js?v=20261115184346"></script>
-<script src="data/moon_orbit.js?v=20261115184346"></script>
-<script src="data/voice.js?v=20261115184346"></script>
-<script src="data/opportunity_tau.js?v=20261115184346"></script>
-<script src="data/words.js?v=20261115184346"></script>
-<script src="data/pioneer10.js?v=20261115184346"></script>
-<script src="data/sprites.js?v=20261115184346"></script>
-<script src="js/engine.js?v=20261115184346"></script>
-<script src="js/actors.js?v=20261115184346"></script>
-<script src="js/story.js?v=20261115184346"></script>
-<script src="js/story2.js?v=20261115184346"></script>
-<script src="js/story3.js?v=20261115184346"></script>
-<script src="js/story4.js?v=20261115184346"></script>
+<script>window.BUILD = "20261115185835";</script>
+<script src="data/llr.js?v=20261115185835"></script>
+<script src="data/moon_orbit.js?v=20261115185835"></script>
+<script src="data/voice.js?v=20261115185835"></script>
+<script src="data/opportunity_tau.js?v=20261115185835"></script>
+<script src="data/words.js?v=20261115185835"></script>
+<script src="data/pioneer10.js?v=20261115185835"></script>
+<script src="data/sprites.js?v=20261115185835"></script>
+<script src="js/engine.js?v=20261115185835"></script>
+<script src="js/actors.js?v=20261115185835"></script>
+<script src="js/story.js?v=20261115185835"></script>
+<script src="js/story2.js?v=20261115185835"></script>
+<script src="js/story3.js?v=20261115185835"></script>
+<script src="js/story4.js?v=20261115185835"></script>
 </body>
 </html>
