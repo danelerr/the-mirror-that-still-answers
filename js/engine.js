@@ -49,11 +49,18 @@
   // ---------- images ----------
   const IM = F.IM = {};
   F.ready = (im) => !!im && im.complete && im.naturalWidth > 0;
+  // (a server asked for some 500 pictures at once may drop one now and then: each is tried up to three times)
   F.load = (list, onOne) => Promise.all(list.map(([name, src]) => new Promise((resolve) => {
     if (IM[name]) { if (onOne) onOne(); resolve(); return; }
-    const im = new Image();
-    im.onload = im.onerror = () => { if (onOne) onOne(); resolve(); };
-    im.src = src + (src.indexOf("?") < 0 ? "?" : "&") + "v=" + window.BUILD;
+    const im = new Image(), url = src + (src.indexOf("?") < 0 ? "?" : "&") + "v=" + window.BUILD;
+    let tries = 0;
+    const done = () => { if (onOne) onOne(); resolve(); };
+    im.onload = done;
+    im.onerror = () => {
+      if (++tries < 3) setTimeout(() => { im.src = url + "&try=" + tries; }, 400 * tries);
+      else done();
+    };
+    im.src = url;
     IM[name] = im;
   })));
 
