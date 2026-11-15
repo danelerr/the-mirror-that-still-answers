@@ -411,7 +411,7 @@
           if (me.done) return;
           me.done = true;
           if (onLevel) onLevel(0);
-          if (cur === me) cur = null;
+          if (cur === me) { cur = null; F.caption(0); }    // the line is over: its caption goes away too
           if (stopped || id !== F.runId) reject(ABORT); else resolve();
         }
       };
