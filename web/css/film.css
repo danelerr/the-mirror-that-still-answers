@@ -96,3 +96,27 @@ button.tool:hover, button.tool:focus-visible { background: rgba(0, 0, 0, 0.75); 
   #go, button.big { animation: none !important; }
 }
 #oppGo { position: absolute; right: 12px; bottom: 8px; opacity: 0.9; }
+
+/* ---------- captions: each word turns gold as it is spoken ---------- */
+#cc span { transition: color 0.12s linear; }
+#cc span.said { color: #ffe07a; }
+
+/* ---------- the Start button, in the same art deco line work as the title frame ---------- */
+#go {
+  position: relative; padding: 14px 54px 15px; font-size: 32px; letter-spacing: 0.22em; text-indent: 0.22em;
+  color: #f3d98b; background: #0d0b09; border: 6px double #efe1bf; border-radius: 0;
+  box-shadow: 0 0 0 3px #0d0b09, 0 0 0 5px rgba(239, 225, 191, 0.55);
+}
+#go::before, #go::after {           /* small stepped corner ornaments, like the frame's corners */
+  content: ""; position: absolute; width: 14px; height: 14px; border: 2px solid #efe1bf; pointer-events: none;
+}
+#go::before { left: -14px; top: -14px; border-right: none; border-bottom: none; }
+#go::after { right: -14px; bottom: -14px; border-left: none; border-top: none; }
+#go:hover, #go:focus-visible { background: #1a140d; color: #ffe07a; outline: none; }
+#go:disabled { opacity: 0.55; cursor: wait; }
+#go { animation: decoGlow 1.4s ease-in-out infinite alternate; }
+@keyframes decoGlow {
+  from { box-shadow: 0 0 0 3px #0d0b09, 0 0 0 5px rgba(239, 225, 191, 0.55), 0 0 0 rgba(243, 217, 139, 0); }
+  to { box-shadow: 0 0 0 3px #0d0b09, 0 0 0 5px rgba(239, 225, 191, 0.85), 0 0 26px rgba(243, 217, 139, 0.35); }
+}
+@media (prefers-reduced-motion: reduce) { #go { animation: none; } }

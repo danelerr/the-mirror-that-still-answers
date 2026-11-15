@@ -7,20 +7,22 @@
   const tw = F.tw, wait = F.wait, sfx = F.sfx;
   const S = F.story, atw = S.atw, mir = S.mir;
 
-  // a lander of the future, drawn simply (no names, no logos)
+  // people coming back: the same painted rocket as the launches, coming down tail first on its flame
+  // (y is the bottom of the rocket; s squashes it as it touches down)
   const lander = F.custom(function (c, t) {
-    c.translate(this.x, this.y); c.scale(this.s, this.s);
-    c.strokeStyle = F.INK; c.lineWidth = 5; c.lineJoin = "round";
-    c.fillStyle = "#d9d4c6";
-    for (const sx of [-1, 1]) { c.beginPath(); c.moveTo(sx * 30, -20); c.lineTo(sx * 70, 40); c.stroke(); c.beginPath(); c.ellipse(sx * 72, 42, 16, 5, 0, 0, 6.2832); c.fill(); c.stroke(); }
-    F.roundRect(c, -48, -90, 96, 76, 10); c.fill(); c.stroke();
-    c.fillStyle = "#e8b53f"; F.roundRect(c, -40, -20, 80, 22, 6); c.fill(); c.stroke();
-    c.fillStyle = "#9fc7d9"; c.beginPath(); c.arc(0, -56, 16, 0, 6.2832); c.fill(); c.stroke();
+    const img = IM.obj_cohete;
+    if (!F.ready(img)) return;
+    const w = 36, h = w * img.height / img.width;          // small: it lands far away on the plain
+    c.translate(this.x, this.y);
     if (this.flame > 0.01) {
-      const L = (24 + (F.step(t) % 3) * 8) * this.flame;
-      c.fillStyle = "#ffb347"; c.beginPath(); c.moveTo(-14, 4); c.quadraticCurveTo(0, 4 + L * 1.4, 14, 4); c.closePath(); c.fill(); c.stroke();
+      const L = (34 + (F.step(t) % 3) * 10) * this.flame;
+      c.fillStyle = "#ffb347"; c.strokeStyle = F.INK; c.lineWidth = 3; c.lineJoin = "round";
+      c.beginPath(); c.moveTo(-12, 2); c.quadraticCurveTo(-9, L * 0.6, 0, L); c.quadraticCurveTo(9, L * 0.6, 12, 2); c.closePath(); c.fill(); c.stroke();
+      c.fillStyle = "#fff3b0"; c.beginPath(); c.moveTo(-6, 2); c.quadraticCurveTo(0, L * 0.55, 6, 2); c.closePath(); c.fill();
     }
-  }, { z: 8, x: 1000, y: -120, s: 0.6, flame: 1 });
+    c.scale(this.sx, this.sy);
+    c.drawImage(img, -w / 2, -h, w, h);
+  }, { z: 8, x: 1000, y: -120, sx: 1, sy: 1, flame: 1 });
 
   // the team's drawn frames over the puppet: show(set, frame) swaps in a drawn pose (in two small steps,
   // with a little squash as it lands); hide() gives the stage back to the puppet
@@ -173,9 +175,19 @@
     const v = S.speak(32, mir);
     await atw(32, "come", 0, 1.6);
     sfx("rumble", 0.8);
-    await tw(lander, { y: 440 }, 2600, EZ.out);
+    // it comes down fast and brakes on its flame before the ground (slow in), kicking up dust as it gets close,
+    // then touches down with a little squash and settles (follow-through)
+    const dust = setInterval(() => {
+      if (lander.y > 380 && lander.flame > 0.1) p.emit("puff", lander.x, 470, 2, { spread: 40, vy: -20, vxr: 160, g: 10, r: 9, life: 0.9, fill: "#cfc7b8", ink: "rgba(40,40,40,0.35)" });
+    }, 90);
+    try {
+      lander.sx = 0.92; lander.sy = 1.1;
+      tw(lander, { sx: 1, sy: 1 }, 2200, EZ.out);
+      await tw(lander, { y: 470 }, 2600, EZ.out);
+    } finally { clearInterval(dust); }
     lander.flame = 0;
-    p.emit("puff", lander.x, 460, 8, { spread: 160, vy: -30, vxr: 220, g: 20, r: 14, life: 1.2, fill: "#cfc7b8", ink: "rgba(40,40,40,0.4)" });
+    lander.sx = 1.15; lander.sy = 0.85; tw(lander, { sx: 1, sy: 1 }, 450, EZ.elastic);
+    p.emit("puff", lander.x, 472, 8, { spread: 120, vy: -30, vxr: 220, g: 20, r: 12, life: 1.2, fill: "#cfc7b8", ink: "rgba(40,40,40,0.4)" });
     sfx("thud");
     await atw(32, "waiting", 0, 5.2);
     F.face(mir, "happy"); F.gesture(mir, "rest");
