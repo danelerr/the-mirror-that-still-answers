@@ -195,8 +195,8 @@
     F.fadeTo(0, 1);
     F.music("assets/music/tierna.mp3", 0.28);           // music from the very first frame after Start
     sfx("tvon");
+    sfx("static", 1.8);                                  // the hiss starts with the picture, not after it
     await tw(snow, { on: 1 }, 300, EZ.out);
-    sfx("static", 1.5);
     await wait(1250);
     // --- 1. A real photo from July 1969. The mirror is the small tray in the middle.
     const LR = { x: 507, y: 307 };                 // the retroreflector in the photo (AS11-40-5948)
@@ -1147,6 +1147,22 @@
   F.AUTOPLAY = params.has("auto");
   goBtn.disabled = true;
   hint.textContent = "Loading the pictures…";
+  // the title screen has music too: browsers only allow sound after the first click or key, so that first
+  // gesture "starts the projector" (a flutter of clicks and the music), and only then the Start button appears
+  let gated = !F.AUTOPLAY && !F.RENDER;
+  startEl.classList.toggle("gated", gated);
+  function openGate(e) {
+    if (!gated) return;
+    gated = false;
+    ["pointerdown", "keydown"].forEach((ev) => window.removeEventListener(ev, openGate, true));
+    if (e) { e.preventDefault(); e.stopPropagation(); }
+    F.audioInit();
+    sfx("projector");
+    F.music("assets/music/tierna.mp3", 0.3);
+    startEl.classList.add("lit");
+    setTimeout(() => startEl.classList.remove("gated"), 450);     // so the same click cannot also press Start
+  }
+  if (gated) ["pointerdown", "keydown"].forEach((ev) => window.addEventListener(ev, openGate, true));
   loading.then(() => {
     goBtn.disabled = false;
     hint.textContent = "Turn your sound on · about 6 minutes";

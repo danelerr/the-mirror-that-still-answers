@@ -257,6 +257,10 @@
     musicBus.gain.value = 0.5;
     musicBus.connect(master);
     master.gain.value = F.muted ? 0 : 1;
+    // the noise used by hiss-type sounds is made now, so the very first one (the TV static) is not late
+    noiseBuf = AC.createBuffer(1, AC.sampleRate * 2, AC.sampleRate);
+    const nd = noiseBuf.getChannelData(0);
+    for (let i = 0; i < nd.length; i++) nd[i] = Math.random() * 2 - 1;
   };
   function env(g, t, a, d, peak) {
     g.gain.setValueAtTime(0.0001, t);
@@ -328,6 +332,10 @@
       noise(k, "bandpass", 3800, 2600, 0.3, 0.5, 0.02);
       noise(k, "lowpass", 260, 0, 0.18, 0.7, 0.05);                     // a low hum of the old set
       for (let i = 0; i < k * 9; i++) noise(0.014, "highpass", 2500, 0, 0.55, 1, 0.001, Math.random() * k);   // crackles
+    },
+    projector: () => {
+      noise(1.1, "lowpass", 220, 0, 0.14, 0.7, 0.08);
+      for (let i = 0; i < 22; i++) noise(0.012, "bandpass", 1700 + (i % 3) * 250, 0, 0.32, 3, 0.001, 0.05 + i * 0.048);
     },
     tvon: () => { osc("sine", 15600, 15600, 0.25, 0.03, 0.002); noise(0.18, "bandpass", 900, 3200, 0.35, 1.2, 0.004); },
     tune: () => { noise(0.22, "bandpass", 4200, 500, 0.32, 2.5, 0.005); osc("sine", 90, 50, 0.12, 0.35, 0.002, 0.2); }
@@ -507,8 +515,12 @@
   };
   F.onFrame(() => {
     if (!ccOn || !ccWords.length || !cur || cur.n !== ccN) return;
-    const t = F.vt();
-    for (const [s, ts] of ccWords) s.classList.toggle("said", ts <= t + 0.05);
+    const t = F.vt() + 0.05;
+    // only the word being said right now lights up
+    for (let i = 0; i < ccWords.length; i++) {
+      const next = i + 1 < ccWords.length ? ccWords[i + 1][1] : Infinity;
+      ccWords[i][0].classList.toggle("now", ccWords[i][1] <= t && t < next);
+    }
   });
   if (ccBtn) {
     ccBtn.addEventListener("click", (e) => {
