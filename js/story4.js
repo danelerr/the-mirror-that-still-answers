@@ -12,7 +12,13 @@
   const lander = F.custom(function (c, t) {
     const img = F.ready(IM.obj_cohete2) ? IM.obj_cohete2 : IM.obj_cohete;   // the team's drawn rocket (O3 sheet)
     if (!F.ready(img)) return;
-    const w = img === IM.obj_cohete2 ? 22 : 36, h = w * img.height / img.width;          // small: it lands far away on the plain
+    const w = img === IM.obj_cohete2 ? 30 : 36, h = w * img.height / img.width;          // small: it lands far away on the plain
+    // its shadow on the ground grows and darkens as it comes down
+    const near = F.clamp(1 - (this.gy - this.y) / 320, 0, 1);
+    if (near > 0) {
+      c.fillStyle = "rgba(20,16,12," + (0.5 * near).toFixed(3) + ")";
+      c.beginPath(); c.ellipse(this.x + 6, this.gy + 2, w * (0.5 + 0.5 * near), 5 * near + 1, 0, 0, 6.2832); c.fill();
+    }
     c.translate(this.x, this.y);
     if (this.flame > 0.01) {
       const L = (34 + (F.step(t) % 3) * 10) * this.flame;
@@ -21,8 +27,10 @@
       c.fillStyle = "#fff3b0"; c.beginPath(); c.moveTo(-6, 2); c.quadraticCurveTo(0, L * 0.55, 6, 2); c.closePath(); c.fill();
     }
     c.scale(this.sx, this.sy);
+    c.filter = "sepia(0.35) brightness(0.86) contrast(0.95)";      // in the light of the old photo of the Moon
     c.drawImage(img, -w / 2, -h, w, h);
-  }, { z: 8, x: 1000, y: -120, sx: 1, sy: 1, flame: 1 });
+    c.filter = "none";
+  }, { z: 8, x: 1000, y: -120, gy: 470, sx: 1, sy: 1, flame: 1 });
 
   // the team's drawn frames over the puppet: show(set, frame) swaps in a drawn pose (in two small steps,
   // with a little squash as it lands); hide() gives the stage back to the puppet
@@ -162,7 +170,7 @@
     const luna = F.plate("sc_luna", { x: -40, y: -24, w: 1360, h: 765 });
     mir.x = 470; mir.y = 620; mir.s = 0.5; mir.eyes = "open"; mir.mouth = "smile"; mir.lx = 8; mir.ly = -2;
     const p = S.fx();
-    lander.x = 1010; lander.y = -140; lander.flame = 1;
+    lander.x = 905; lander.gy = 462; lander.y = -140; lander.flame = 1;      // it comes down on the flat plain, clear of the crater
     F.scene([luna, F.stars({ n: 120, par: 0.2, w: W * 1.4, h: 260, y: -40 }), lander, mir, p], { bg: "#05060a", cam: { x: 640, y: 380, z: 1 } });
     F.faceNow(mir, "curious"); F.gesture(mir, "shade", 1);
     // the team's drawn frames when they are there: it shades its eyes to watch the lander, then waves to it
@@ -178,16 +186,16 @@
     // it comes down fast and brakes on its flame before the ground (slow in), kicking up dust as it gets close,
     // then touches down with a little squash and settles (follow-through)
     const dust = F.every(90, () => {
-      if (lander.y > 380 && lander.flame > 0.1) p.emit("puff", lander.x, 470, 2, { spread: 40, vy: -20, vxr: 160, g: 10, r: 9, life: 0.9, fill: "#cfc7b8", ink: "rgba(40,40,40,0.35)" });
+      if (lander.y > lander.gy - 90 && lander.flame > 0.1) p.emit("puff", lander.x, lander.gy, 2, { spread: 40, vy: -20, vxr: 160, g: 10, r: 9, life: 0.9, fill: "#cfc7b8", ink: "rgba(40,40,40,0.35)" });
     });
     try {
       lander.sx = 0.92; lander.sy = 1.1;
       tw(lander, { sx: 1, sy: 1 }, 2200, EZ.out);
-      await tw(lander, { y: 470 }, 2600, EZ.out);
+      await tw(lander, { y: lander.gy }, 2600, EZ.out);
     } finally { dust(); }
     lander.flame = 0;
     lander.sx = 1.15; lander.sy = 0.85; tw(lander, { sx: 1, sy: 1 }, 450, EZ.elastic);
-    p.emit("puff", lander.x, 472, 8, { spread: 120, vy: -30, vxr: 220, g: 20, r: 12, life: 1.2, fill: "#cfc7b8", ink: "rgba(40,40,40,0.4)" });
+    p.emit("puff", lander.x, lander.gy + 2, 10, { spread: 120, vy: -30, vxr: 220, g: 20, r: 12, life: 1.6, fill: "#cfc7b8", ink: "rgba(40,40,40,0.4)" });
     sfx("thud");
     await atw(32, "waiting", 0, 5.2);
     F.face(mir, "happy"); F.gesture(mir, "rest");

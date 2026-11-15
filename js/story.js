@@ -88,14 +88,14 @@
     .concat(PROPS.map((n) => [n, "assets/scenes/" + n + ".webp"]))
     .concat([["earth", "assets/earth.webp"], ["moon", "assets/moon.webp"], ["as11", "assets/tranquility_as11-40-5948.jpg"]]);
   // everything is downloaded before Start is enabled; the start screen shows how far along it is
-  const picsTotal = PICS.length + F.spriteList().length;
+  const picsTotal = PICS.length + F.spriteList().length + F.voiceCount();
   let picsDone = 0;
   const onePic = () => {
     picsDone++;
     const el = F.$("loadHint");
-    if (el && picsDone < picsTotal) el.textContent = "Loading the pictures… " + Math.round(100 * picsDone / picsTotal) + "%";
+    if (el && picsDone < picsTotal) el.textContent = "Loading the pictures and the voice… " + Math.round(100 * picsDone / picsTotal) + "%";
   };
-  const loading = F.load(PICS, onePic).then(() => F.loadSprites(onePic));
+  const loading = Promise.all([F.load(PICS, onePic).then(() => F.loadSprites(onePic)), F.preloadVoices(onePic)]);
 
   // ---------- the cast ----------
   const mir = F.mirror({ x: 640, y: 560, s: 0.62 });
@@ -744,37 +744,64 @@
   }
 
   // ---------- inside one of the mirror's glass corners: the light goes straight back ----------
+  // Drawn like one of the round reflectors of the Mirror's tray, cut open: a glass corner of two silver mirrors at
+  // a right angle. The light bounces off one, then the other, and leaves parallel to the way it came in (the real
+  // corners have three mirrors; two show the same trick on a flat drawing). The bounces are computed, not drawn by hand.
   async function cornerCube(n) {
-    const cx = W / 2, cy = H / 2 + 20;
-    const cube = F.custom(function (c, t) {
-      // three square mirrors meeting in one corner, seen from the front: three diamonds
-      const R = 230;
-      const faces = [[-Math.PI / 2, "#9fc7d9"], [Math.PI / 6, "#7fb0c6"], [5 * Math.PI / 6, "#b7dbe8"]];
-      c.lineJoin = "round";
-      for (const f of faces) {
-        const a = f[0];
-        c.beginPath();
-        c.moveTo(cx, cy);
-        c.lineTo(cx + Math.cos(a - Math.PI / 3) * R, cy + Math.sin(a - Math.PI / 3) * R);
-        c.lineTo(cx + Math.cos(a) * R * 1.15, cy + Math.sin(a) * R * 1.15);
-        c.lineTo(cx + Math.cos(a + Math.PI / 3) * R, cy + Math.sin(a + Math.PI / 3) * R);
-        c.closePath();
-        c.fillStyle = f[1]; c.fill();
-        c.strokeStyle = F.INK; c.lineWidth = 7; c.stroke();
+    const cx = W / 2, cy = H / 2 + 10, R = 250, vx = cx, vy = cy + 150, L = 250;
+    const walls = [[[vx, vy], [vx - L, vy - L]], [[vx, vy], [vx + L, vy - L]]];
+    // the light's path: in from the upper left, off the right mirror, off the left mirror, and out again
+    const pts = (() => {
+      // nearly straight down onto the right mirror, across to the left one, and up again, parallel and inside the window
+      let d = [0.139, 0.99], p = [vx + 115 - d[0] * 650, vy - 115 - d[1] * 650];
+      const nd = Math.hypot(d[0], d[1]); d = [d[0] / nd, d[1] / nd];
+      const out = [p.slice()];
+      for (let b = 0; b < 2; b++) {
+        let best = null;
+        for (const w of walls) {
+          const [a, c2] = w, ex = c2[0] - a[0], ey = c2[1] - a[1], den = d[0] * ey - d[1] * ex;
+          if (Math.abs(den) < 1e-6) continue;
+          const tt = ((a[0] - p[0]) * ey - (a[1] - p[1]) * ex) / den, s = ((a[0] - p[0]) * d[1] - (a[1] - p[1]) * d[0]) / den;
+          if (tt > 1 && s >= 0 && s <= 1 && (!best || tt < best.t)) best = { t: tt, ex, ey };
+        }
+        if (!best) break;
+        p = [p[0] + d[0] * best.t, p[1] + d[1] * best.t];
+        out.push(p.slice());
+        const ln = Math.hypot(best.ex, best.ey), nx = -best.ey / ln, ny = best.ex / ln, dot = d[0] * nx + d[1] * ny;
+        d = [d[0] - 2 * dot * nx, d[1] - 2 * dot * ny];
       }
-      // it is a corner seen from inside: deeper (darker) toward the middle
-      const deep = c.createRadialGradient(cx, cy, 4, cx, cy, R * 1.05);
-      deep.addColorStop(0, "rgba(10,30,55,0.55)"); deep.addColorStop(0.6, "rgba(10,30,55,0.15)"); deep.addColorStop(1, "rgba(10,30,55,0)");
-      c.fillStyle = deep; c.beginPath(); c.arc(cx, cy, R * 1.1, 0, 6.2832); c.fill();
-      // shine
-      c.globalAlpha = 0.5 + 0.2 * Math.sin(t / 300);
-      c.strokeStyle = "#fff"; c.lineWidth = 5; c.lineCap = "round";
-      c.beginPath(); c.moveTo(cx - 120, cy - 60); c.lineTo(cx - 70, cy - 110); c.stroke();
-      c.globalAlpha = 1;
-      // the path of the light
+      out.push([p[0] + d[0] * 520, p[1] + d[1] * 520]);
+      return out;
+    })();
+    const scene = F.custom(function (c, t) {
+      c.lineJoin = "round"; c.lineCap = "round";
+      // the round window, like one reflector of the tray: gold rim, ink outline
+      c.fillStyle = "rgba(0,0,0,0.35)"; c.beginPath(); c.arc(cx + 10, cy + 14, R + 34, 0, 6.2832); c.fill();
+      c.fillStyle = "#e3b04a"; c.strokeStyle = F.INK; c.lineWidth = 9;
+      c.beginPath(); c.arc(cx, cy, R + 30, 0, 6.2832); c.fill(); c.stroke();
+      c.strokeStyle = "rgba(255,240,190,0.8)"; c.lineWidth = 8; c.beginPath(); c.arc(cx, cy, R + 16, -2.6, -1.4); c.stroke();
+      c.save(); c.beginPath(); c.arc(cx, cy, R, 0, 6.2832); c.clip();
+      const g = c.createLinearGradient(0, cy - R, 0, cy + R);
+      g.addColorStop(0, "#f6ead0"); g.addColorStop(1, "#d9ecef");
+      c.fillStyle = g; c.fillRect(cx - R, cy - R, 2 * R, 2 * R);
+      // the glass corner: a clear wedge between two silver mirrors
+      c.fillStyle = "rgba(191,227,238,0.75)";
+      c.beginPath(); c.moveTo(vx, vy); c.lineTo(vx - L, vy - L); c.lineTo(vx + L, vy - L); c.closePath(); c.fill();
+      for (const w of walls) {                    // the mirrors: silver, with the cartoon hatching on their backs
+        const [a, b] = w, ux = (b[0] - a[0]) / L, side = b[0] < a[0] ? -1 : 1;
+        c.strokeStyle = F.INK; c.lineWidth = 3;
+        for (let s = 18; s < L * 1.38; s += 22) {
+          const px = a[0] + (b[0] - a[0]) * s / (L * 1.414), py = a[1] + (b[1] - a[1]) * s / (L * 1.414);
+          c.beginPath(); c.moveTo(px, py); c.lineTo(px + side * 16, py + 16); c.stroke();
+        }
+        c.strokeStyle = F.INK; c.lineWidth = 16; c.beginPath(); c.moveTo(a[0], a[1]); c.lineTo(b[0], b[1]); c.stroke();
+        c.strokeStyle = "#dfe3e6"; c.lineWidth = 8; c.beginPath(); c.moveTo(a[0], a[1]); c.lineTo(b[0], b[1]); c.stroke();
+        c.strokeStyle = "rgba(255,255,255,0.9)"; c.lineWidth = 2.5; c.beginPath(); c.moveTo(a[0] + side * -2, a[1] - 3); c.lineTo(b[0] + side * -2, b[1] - 3); c.stroke();
+      }
+      // the path of the light so far
       if (this.k > 0) {
-        const pts = this.pts, segs = pts.length - 1, upto = this.k * segs;
-        c.strokeStyle = "#ffe07a"; c.lineWidth = 6; c.setLineDash([14, 10]); c.lineDashOffset = -t / 30;
+        const segs = pts.length - 1, upto = this.k * segs;
+        c.strokeStyle = "#e8a92c"; c.lineWidth = 7; c.setLineDash([16, 11]); c.lineDashOffset = -t / 30;
         c.beginPath(); c.moveTo(pts[0][0], pts[0][1]);
         for (let i = 1; i <= Math.ceil(upto); i++) {
           const u = Math.min(1, upto - (i - 1));
@@ -782,31 +809,29 @@
         }
         c.stroke(); c.setLineDash([]);
       }
+      c.restore();
+      c.strokeStyle = F.INK; c.lineWidth = 7; c.beginPath(); c.arc(cx, cy, R, 0, 6.2832); c.stroke();
     }, { par: 0, z: 10, k: 0 });
-    // in, bounce, bounce, bounce, out: parallel to the way in
-    cube.pts = [[120, 60], [cx - 80, cy - 40], [cx + 60, cy - 10], [cx + 10, cy + 90], [cx - 150 + 330, 60 + 330 - 400]];
-    cube.pts[4] = [cube.pts[3][0] - (cube.pts[1][0] - 120), cube.pts[3][1] - (cube.pts[1][1] - 60)];
-    const ph = F.photon({ s: 0.9, z: 20, par: 0 });
-    const lab = F.stamp(["Inside one of the mirror's 100 glass corners"], { x: W / 2, y: 660, size: 26, style: "ink" });
+    const ph = F.photon({ s: 0.8, z: 20, par: 0 });
+    const lab = F.stamp(["Inside one of the mirror's 100 glass corners"], { x: W / 2, y: 672, size: 26, style: "card" });
     const p = F.particles({ z: 30, par: 0 });
-    F.scene([F.stars({ n: 200, par: 0 }), cube, ph, p], { bg: "#0b0f1c" });
+    F.scene([F.stars({ n: 200, par: 0 }), scene, ph, p], { bg: "#0b0f1c" });
     F.popIn(lab, 300);
-    const pts = cube.pts;
     for (let i = 1; i < pts.length; i++) {
       const a = pts[i - 1], b = pts[i];
-      ph.x = a[0]; ph.y = a[1]; ph.dir = Math.atan2(b[1] - a[1], b[0] - a[0]);
-      await F.tw({ u: 0 }, { u: 1 }, i === 1 ? 650 : 330, i === 1 ? EZ.in : EZ.lin, (e) => {
+      ph.dir = Math.atan2(b[1] - a[1], b[0] - a[0]);
+      await F.tw({ u: 0 }, { u: 1 }, i === 1 ? 750 : i === pts.length - 1 ? 700 : 380, i === 1 ? EZ.in : EZ.lin, (e) => {
         ph.x = F.lerp(a[0], b[0], e); ph.y = F.lerp(a[1], b[1], e);
-        cube.k = (i - 1 + e) / (pts.length - 1);
+        scene.k = (i - 1 + e) / (pts.length - 1);
       });
-      if (i < pts.length - 1) {
+      if (i < pts.length - 1) {                   // each bounce: a ting, a spark, the photon squashed against the mirror
         sfx("ting", 1 + i * 0.25);
-        p.emit("spark", b[0], b[1], 5, { spread: 10, vy: 0, vyr: 160, vxr: 160, g: 0, r: 10, life: 0.4, fill: "#ffe07a" });
-        ph.stretch = -0.3; tw(ph, { stretch: 0 }, 200, EZ.out);
+        p.emit("spark", b[0], b[1], 6, { spread: 10, vy: 0, vyr: 160, vxr: 160, g: 0, r: 10, life: 0.4, fill: "#ffe07a" });
+        ph.stretch = -0.35; tw(ph, { stretch: 0 }, 220, EZ.out);
       }
     }
     F.remove(ph);
-    const back = F.stamp(["Straight back to where it came from!"], { x: W / 2, y: 90, size: 34, style: "gold" });
+    const back = F.stamp(["Straight back to where it came from!"], { x: W / 2, y: 70, size: 34, style: "gold" });
     F.popIn(back, 380, "tada");
     await at(n, 99);
     await wait(400);

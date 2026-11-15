@@ -10,6 +10,17 @@
   F.FONT = FONT;
 
   // ---------- a painted scene ----------
+  // the sky goes on above a painted plate, so a camera that follows something up never sees the plate's top edge:
+  // the plate's own top colour (measured) fades in over its last strip and turns into `up` higher in the sky
+  F.skyAbove = (pl, top, up, o) => F.custom(function (c) {
+    const y0 = pl.y, x0 = pl.x - 600, w = pl.w + 1200, rgb = (a, al) => "rgba(" + a[0] + "," + a[1] + "," + a[2] + "," + al + ")";
+    const g = c.createLinearGradient(0, y0 + 90, 0, y0);
+    g.addColorStop(0, rgb(top, 0)); g.addColorStop(1, rgb(top, 1));
+    c.fillStyle = g; c.fillRect(x0, y0, w, 91);
+    const g2 = c.createLinearGradient(0, y0 + 1, 0, y0 - 700);
+    g2.addColorStop(0, rgb(top, 1)); g2.addColorStop(1, rgb(up, 1));
+    c.fillStyle = g2; c.fillRect(x0, y0 - 1200, w, 1201);
+  }, Object.assign({ z: pl.z + 0.5, par: pl.par }, o));
   F.plate = (im, o) => Object.assign({
     im, x: 0, y: 0, w: W, h: 0, op: 1, z: -100, par: 1, tint: null, tintA: 0,
     draw(c) {
@@ -705,9 +716,9 @@
   const G = F.hasSprites("E13_espejo_gestos") ? "E13_espejo_gestos" : null;   // the teacher's gestures sheet
   const MP = {
     wave: ["E3_espejo_saluda", [6, 7, 8, 9, 10, 11, 10, 9, 8, 7]],
-    self: G ? [G, 10] : ["E11_espejo_mira_lejos", 12], cheer: G ? [G, 10] : ["E11_espejo_mira_lejos", 12],
+    self: ["E11_espejo_mira_lejos", 12], cheer: ["E11_espejo_mira_lejos", 12],     // (E13's laugh, 10-11, is missing an arm)
     right: G ? [G, 0] : ["E9_espejo_secreto", 14], present: G ? [G, 14] : ["E9_espejo_secreto", 14],
-    left: G ? [G, 0, -1] : ["E9_espejo_secreto", 14, -1],
+    left: G ? [G, 14] : ["E9_espejo_secreto", 14],      // (presenting with both gloves open: a flipped drawing looked wrong)
     pointUp: G ? [G, 2] : ["E6_espejo_cuenta", 10], one: ["E6_espejo_cuenta", 0], two: ["E6_espejo_cuenta", 2], three: ["E6_espejo_cuenta", 4],
     shrug: ["E6_espejo_cuenta", 6], droop: ["E6_espejo_cuenta", 8], whisper: ["E9_espejo_secreto", 6],
     thumb: G ? [G, 8] : ["E11_espejo_mira_lejos", 14], hips: ["E9_espejo_secreto", 0], shade: ["E11_espejo_mira_lejos", 2],
@@ -728,6 +739,25 @@
   const TALK = "E12_espejo_habla";
   const TALK_ROW = { neutral: 0, curious: 0, surprised: 0, scared: 0, happy: 1, proud: 1, determined: 2, worried: 3, sad: 3, tired: 3 };
   const mouthIdx = (lv) => (lv < 0.12 ? 0 : lv < 0.28 ? 1 : lv < 0.5 ? 3 : 2);
+  // While it talks, the Mirror changes gesture at the little pauses between phrases (each row of a talking sheet is
+  // one gesture with the four mouths). E12 rows: 0 neutral, 1 happy, 2 explaining with a glove up, 3 gentle/sad.
+  // E15 rows: 0 gloves wide, 1 pointing up, 2 gloves clasped, 3 telling something important.
+  const TALK2 = "E15_espejo_habla_gestos";
+  const TALK_ROWS = {
+    neutral: [[TALK, 0], [TALK, 2], [TALK2, 1], [TALK2, 0], [TALK2, 3]], curious: [[TALK, 0], [TALK2, 1], [TALK, 2], [TALK2, 3]],
+    happy: [[TALK, 1], [TALK2, 0], [TALK, 2], [TALK2, 2]], proud: [[TALK, 1], [TALK2, 0], [TALK2, 1]],
+    determined: [[TALK, 2], [TALK2, 1], [TALK2, 3]], surprised: [[TALK, 0], [TALK2, 0]], scared: [[TALK, 0], [TALK2, 2]],
+    worried: [[TALK, 3], [TALK2, 2]], sad: [[TALK, 3], [TALK2, 2]], tired: [[TALK, 3]]
+  };
+  function talkRow(m, mood, t) {
+    const list = (TALK_ROWS[mood] || TALK_ROWS.neutral).filter((r) => F.hasSprites(r[0]));
+    if (m.level > 0.12) {
+      if (m.lowT !== undefined && t - m.lowT > 160 && t - (m.rowT || 0) > 1300) { m.rowI = (m.rowI || 0) + 1; m.rowT = t; }
+      m.lowT = undefined;
+    } else if (m.lowT === undefined) m.lowT = t;
+    if (t - m.loudT > 1500) { m.rowI = 0; m.rowT = t; }          // a new speech starts with its first gesture
+    return list[(m.rowI || 0) % list.length] || [TALK, TALK_ROW[mood] || 0];
+  }
   // the listening sheet: when the Mirror is quiet for a moment it reacts with its face instead of freezing
   // (each reaction drawn in two steps: interest 2-3, "oh" 4-5, warm smile 6-7, a laugh 10-11, sad sigh 12-13, proud nod 14-15)
   const LISTEN = "E14_espejo_escucha";
@@ -745,8 +775,10 @@
     if (m.eyes !== "closed" && F.hasSprites(TALK)) {
       let k = -1, key = "";
       if (resting && !(m.level <= 0.12 && (mood === "surprised" || mood === "scared"))) {
-        const row = TALK_ROW[mood] === undefined ? 0 : TALK_ROW[mood];
-        k = row * 4 + mouthIdx(m.level || 0); key = TALK + row;
+        const r = talkRow(m, mood, t);
+        k = r[1] * 4 + mouthIdx(m.level || 0); key = r[0] + r[1];
+        if (key !== m.drawnKey) { m.drawnKey = key; m.drawnT = t; }
+        return { im: IM["spr_" + r[0] + "_" + k], flip: 1, since: t - m.drawnT, set: r[0], talking: true };
       } else if ((m.pose === "present" || m.pose === "right") && m.level > 0.12) {
         k = [8, 9, 9, 11][mouthIdx(m.level)]; key = TALK + "hand";      // talking with a raised, open glove
       }
@@ -786,16 +818,37 @@
       const talkBob = this.level > 0.15 ? (st % 2) * 2.5 : 0;
       c.globalAlpha = this.op;
       c.translate(this.x, this.y);
+      // it has no legs, so when it goes somewhere it hops: about one hop every 150 px, squashing as it lands
+      // and stretching in the air (a jump of more than 120 px in one frame is a cut, not a move)
+      const dtm = Math.max(0.001, F.dt || 0.016), dx = this._px === undefined ? 0 : this.x - this._px;
+      this._px = this.x;
+      const moving = this.hops !== false && Math.abs(dx) < 120 && Math.abs(dx) / dtm > 60;
+      if (moving) this.hopPh = (this.hopPh || 0) + Math.abs(dx) / (150 * Math.max(0.2, this.s));
+      else if ((this.hopPh || 0) % 1 > 0.001) this.hopPh = Math.min(Math.ceil(this.hopPh), this.hopPh + dtm * 3.5);   // finish the hop
+      const air = Math.sin(((this.hopPh || 0) % 1) * Math.PI), land = moving && air < 0.35 ? (0.35 - air) / 0.35 : 0;
       if (this.shadow) {
-        c.fillStyle = "rgba(0,0,0,0.35)";
-        c.beginPath(); c.ellipse(0, 0, 200 * this.s * this.sx, 26 * this.s, 0, 0, 6.2832); c.fill();
+        c.fillStyle = "rgba(0,0,0," + (0.35 - air * 0.12) + ")";
+        c.beginPath(); c.ellipse(0, 0, 200 * this.s * this.sx * (1 - air * 0.25), 26 * this.s, 0, 0, 6.2832); c.fill();
       }
+      c.translate(0, -air * 34 * this.s);
+      this.hopSq = land * 0.09 - air * 0.05;          // + squashed (landing), - stretched (in the air)
       const dr = this.drawn === false ? null : mirrorDrawing(this, t);
       if (dr && F.ready(dr.im)) {
         // the drawn Mirror: a little squash as each new pose lands, then it settles (and breathes)
         const u = Math.min(1, dr.since / 240), sq = 0.06 * (1 - u) * (1 - u);
-        c.rotate(this.rot);
-        c.scale(this.s * this.sx * (1 + sq) * dr.flip, this.s * this.sy * (1 - sq) * (1 + breathe * 0.004));
+        // while it talks the body follows the voice: it stretches a little on the loud syllables, sways gently
+        // and gives a small hop on an accent (the level jumping up after a quiet moment)
+        const lv = dr.talking ? Math.min(1, this.level || 0) : 0;
+        if (dr.talking) {
+          if (lv > 0.5 && (this.prevLv || 0) < 0.25 && t - (this.hopT || 0) > 600) this.hopT = t;
+          this.prevLv = lv;
+        }
+        const hop = dr.talking && t - (this.hopT || 0) < 260 ? Math.sin((t - this.hopT) / 260 * Math.PI) : 0;
+        const hs = this.hopSq || 0;
+        c.translate(0, -(lv * 5 + hop * 9) * this.s);
+        // a gentle sway all the time (a little more while talking), so a held pose is never frozen
+        c.rotate(this.rot + Math.sin(t / 900 + this.seed) * (dr.talking ? 0.022 : 0.01));
+        c.scale(this.s * this.sx * (1 + sq + hs - lv * 0.025 - hop * 0.03) * dr.flip, this.s * this.sy * (1 - sq - hs + lv * 0.04 + hop * 0.05) * (1 + breathe * 0.004));
         const meta = (window.SPRITES || {})[dr.set] || {}, M = F.CHAR.mirror;
         let w = dr.im.width * 1.086, h = dr.im.height * 1.086, x0 = -w / 2 + 6, y0 = -h + 13;
         if (meta.u) {                              // same body size and same body position for every sheet

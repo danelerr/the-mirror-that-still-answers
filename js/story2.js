@@ -231,7 +231,7 @@
     const pad = F.plate("sc_plataforma", { x: -30, y: -20, w: 1340, h: 754 });
     const rocket = F.sprite("obj_cohete2", { x: 650, y: 552, w: 84, ax: 0.5, ay: 1, z: 20 });
     const p = F.particles({ z: 25 });
-    F.scene([pad, rocket, p, F.credit("Painted scene: AI image generator.")], { bg: "#e8c9a0", cam: { x: 640, y: 380, z: 1.05 } });
+    F.scene([pad, F.skyAbove(pad, [187, 164, 122], [226, 196, 150]), rocket, p, F.credit("Painted scene: AI image generator.")], { bg: "#e8c9a0", cam: { x: 640, y: 380, z: 1.05 } });
     await F.irisIn(650, 420, 700);
     const when = F.stamp(["July 2003"], { x: 1030, y: 110, size: 46, rot: -0.05, kicker: "A rover leaves Earth for Mars" });
     F.popIn(when, 420, "stamp");
