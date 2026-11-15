@@ -197,10 +197,15 @@
       // the team's drawn frames: the booms swing out, bounce too far and settle, it wakes up, stretches and waves
       const un = F.spriteSet("P1_sonda_despliega", { x: pr.x, y: pr.y, w: 400 * pr.s / 0.45, ay: 0.5, z: 31, frame: 0 });
       F.add(un); pr.op = 0;
+      // pose to pose, each beat held long enough to read: folded and asleep, the booms swing out and overshoot
+      // (a squash on each bounce), they settle, one eye opens, both open, a stretch, a wave
+      await wait(380);
       sfx("slideUp");
-      for (const [f, ms, snd] of [[1, 120], [2, 110], [3, 110, "boing"], [4, 110], [5, 110], [6, 140], [7, 160], [8, 160, "ting"], [9, 140],
-        [10, 140], [11, 140], [12, 140], [13, 140], [14, 120], [15, 300, "tada"]]) {
-        un.frame = f; if (snd) sfx(snd); await wait(ms);
+      for (const [f, ms, snd, sq] of [[2, 150], [3, 130, "boing", 1], [4, 130], [5, 150, null, 1], [6, 200], [7, 320],
+        [8, 420, "ting"], [9, 260], [10, 200], [11, 300], [12, 220, "swish"], [13, 260], [14, 220], [15, 520, "tada"]]) {
+        un.frame = f; if (snd) sfx(snd);
+        if (sq) { un.sx = 1.08; un.sy = 0.93; tw(un, { sx: 1, sy: 1 }, 260, EZ.elastic); }
+        await wait(ms);
       }
       pr.unfold = 1; pr.eyes = "open"; F.faceNow(pr, "happy");
       F.remove(un); pr.op = 1;

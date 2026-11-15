@@ -123,3 +123,11 @@ button.tool:hover, button.tool:focus-visible { background: rgba(0, 0, 0, 0.75); 
 @media (prefers-reduced-motion: reduce) { #go { animation: none; } }
 /* captions: smaller and lower, so they cover less of the picture */
 #cc { bottom: 52px; max-width: 860px; font-size: 19px; line-height: 1.25; padding: 5px 14px 7px; background: rgba(0, 0, 0, 0.66); }
+/* the buttons inside the film share the Start button's art deco look */
+button.big {
+  color: #f3d98b; background: #0d0b09; border: 6px double #efe1bf; border-radius: 0; letter-spacing: 0.14em;
+  box-shadow: 0 0 0 3px #0d0b09, 0 0 0 5px rgba(239, 225, 191, 0.55);
+}
+button.big:hover, button.big:focus-visible { background: #1a140d; color: #ffe07a; }
+button.big:not(.hidden):not(.small) { animation: decoGlow 1.4s ease-in-out infinite alternate; }
+@media (prefers-reduced-motion: reduce) { button.big:not(.hidden):not(.small) { animation: none; } }
