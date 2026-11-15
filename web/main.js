@@ -74,6 +74,8 @@
   }
   window.addEventListener("resize", fit);
   fit();
+  // Browsers without overflow: clip could still scroll the stage when a button gets focus
+  stage.addEventListener("scroll", function () { stage.scrollTop = 0; stage.scrollLeft = 0; });
 
   // ---------- old film look: grain, flicker, scratches, dust and a shaky frame ----------
   var fxOn = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;

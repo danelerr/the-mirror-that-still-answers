@@ -27,11 +27,13 @@ html, body {
   height: 720px;
   transform-origin: center center;
   overflow: hidden;
+  overflow: clip;          /* never scrolls: a scrolled stage cut off the top of every scene */
   background: #000;
   user-select: none;
 }
 
 #sky, #chart, #base, #grain, #vignette { position: absolute; inset: 0; }
+#base { overflow: hidden; }
 .hidden { opacity: 0; pointer-events: none; }
 #sky, #chart, #base, #mirror, #balloon, #card, #readout, button { transition: opacity 0.9s ease; }
 
