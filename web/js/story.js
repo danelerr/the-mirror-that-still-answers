@@ -81,7 +81,7 @@
     "marco_cartel", "sonda_cuerpo", "sonda_brazo_a", "sonda_brazo_b", "sonda_brazo_largo", "sonda_ojos_abiertos", "sonda_ojos_medio",
     "sonda_ojos_cerrados"];
   const SCENES = ["luna", "espacio", "observatorio", "teatro", "marte_llanura", "marte_arriba", "plataforma", "marte_agua",
-    "crater_atardecer", "espacio_profundo", "antena"];
+    "crater_atardecer", "espacio_profundo", "antena", "libro_tapa", "libro_abre"];
   const PROPS = ["obj_cohete", "obj_paracaidas", "obj_bolsas"];
   const loading = F.load(
     ART.map((n) => [n, "assets/art/" + n + ".png"])
@@ -157,6 +157,30 @@
   // =================== OPENING ===================
   async function opening() {
     setChapter(0);
+    // --- 0. A storybook on a desk under a lamp: the camera moves in, the cover opens and light spills out
+    const cover = F.plate("sc_libro_tapa", { x: -40, y: -24, w: 1360, h: 765 });
+    const motes = F.particles({ z: 20 });
+    const lamp = F.custom(function (c, t) {
+      const f = 0.08 + 0.04 * Math.sin(t / 130) * Math.sin(t / 47);
+      const g = c.createRadialGradient(150, 60, 10, 150, 60, 520);
+      g.addColorStop(0, "rgba(255,214,140," + f.toFixed(3) + ")"); g.addColorStop(1, "rgba(255,214,140,0)");
+      c.fillStyle = g; c.fillRect(-200, -200, 1100, 900);
+    }, { z: 10 });
+    F.scene([cover, lamp, motes, F.credit("Storybook painting: AI image generator (made by the team).")], { bg: "#1a0f08", cam: { x: 600, y: 380, z: 1 } });
+    F.black();
+    F.irisIn(560, 330, 700);
+    const dust = setInterval(() => motes.emit("dot", 120 + Math.random() * 500, 120 + Math.random() * 400, 1, { spread: 10, vx: 6, vxr: 20, vy: -6, vyr: 14, g: 0, r: 2.2, life: 2.4, fill: "rgba(255,236,190,0.8)" }), 90);
+    sfx("pluck", 0.6);
+    await tw(F.cam, { x: 640, y: 330, z: 1.22 }, 2200, EZ.inOut);
+    clearInterval(dust);
+    const open = F.plate("sc_libro_abre", { x: -40, y: -24, w: 1360, h: 765 });
+    await F.dissolve(() => {
+      F.scene([open, F.credit("Storybook painting: AI image generator (made by the team).")], { bg: "#1a0f08", cam: { x: 700, y: 400, z: 1.05 } });
+      tw(F.cam, { x: 760, y: 470, z: 1.6 }, 1700, EZ.in);
+    }, 450);
+    sfx("whoosh", 1.2); sfx("sparkle");
+    await wait(1100);
+    await F.fadeTo(1, 380, "#fff3d6");
     // --- 1. A real photo from July 1969. The mirror is the small tray in the middle.
     const LR = { x: 507, y: 307 };                 // the retroreflector in the photo (AS11-40-5948)
     const photo = F.plate("as11", { x: 0, y: -330, w: 1280, h: 1280 });
@@ -171,9 +195,8 @@
       c.beginPath(); c.ellipse(LR.x, LR.y, 58 * this.k, 34 * this.k, 0, 0, 6.2832); c.stroke();
     }, { z: 6, k: 0 });
     F.scene([photo, sepia, ring, F.credit("Real photo: NASA AS11-40-5948, Tranquility Base, July 1969.")], { bg: "#000" });
-    F.black();
     const v1 = speak(1);
-    F.irisIn(W / 2, H / 2, 900);
+    F.fadeTo(0, 700);
     tw(F.cam, { z: 1.5, x: LR.x + 40, y: LR.y + 30 }, 5800, EZ.inOut);
     await atw(1, "1969", 0, 0.5);
     const july = F.stamp(["July 1969"], { x: 1010, y: 120, size: 46, rot: -0.06, kicker: "Tranquility Base, the Moon" });
@@ -232,9 +255,14 @@
   // the cartoon observatory on Earth, aimed at the Moon
   const scope = F.sprite("observatorio", { x: 293, y: 722, w: 380, ax: 0.5, ay: 1, z: 20 });
   const TIP = { x: 740 / 797, y: 60 / 824 };    // the end of the telescope tube, as a share of the picture
-  function tipPos() {
+  // the mouth of the telescope tube, wherever the squash, stretch and lean have put it,
+  // plus a little way out along the tube so the light starts in front of it, not on top of it
+  function tipPos(out) {
     const w = scope.w * scope.s, h = w * 824 / 797;
-    return { x: scope.x + (TIP.x - 0.5) * w * scope.sx, y: scope.y - (1 - TIP.y) * h * scope.sy };
+    const lx = (TIP.x - 0.5) * w * scope.sx, ly = -(1 - TIP.y) * h * scope.sy;
+    const r = scope.rot || 0, cs = Math.cos(r), sn = Math.sin(r);
+    const tube = -0.63 + r, d = out === undefined ? 34 : out;          // the tube points up and to the right
+    return { x: scope.x + lx * cs - ly * sn + Math.cos(tube) * d, y: scope.y + lx * sn + ly * cs + Math.sin(tube) * d };
   }
   let scopeIdle = true;
   F.onFrame((t) => {
@@ -853,6 +881,7 @@
     await atw(13, "introduce", 0, 8.4);
     F.face(mir, "curious"); gesture(mir, "pointUp", 200);
     sfx("whoosh");
+    gesture(mir, "rest", 300);
     tw(F.cam, { x: mars.x, y: mars.y + 40, z: 2.2 }, 1500, EZ.inOut);
     await v13;
     await F.irisOut(F.toScreen(mars.x, mars.y).x, F.toScreen(mars.x, mars.y).y, 700);
