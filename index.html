@@ -6,7 +6,7 @@
 <title>The Mirror That Still Answers</title>
 <meta name="description" content="An animated story about the mirror Apollo 11 left on the Moon and its neighbors, told with real NASA data.">
 <meta name="generator" content="Code written with an AI coding assistant. Painted scenes and character illustrations made with AI image generators. Photos and data: NASA.">
-<link rel="stylesheet" href="css/film.css?v=20261115173032">
+<link rel="stylesheet" href="css/film.css?v=20261115180646">
 </head>
 <body>
 <div id="stage">
@@ -62,19 +62,110 @@
   <p id="aiMark">Painted scenes, characters, music and code made with AI tools. Voice: the team. Photos and data: NASA.</p>
 </div>
 
-<script>window.BUILD = "20261115173032";</script>
-<script src="data/llr.js?v=20261115173032"></script>
-<script src="data/moon_orbit.js?v=20261115173032"></script>
-<script src="data/voice.js?v=20261115173032"></script>
-<script src="data/opportunity_tau.js?v=20261115173032"></script>
-<script src="data/words.js?v=20261115173032"></script>
-<script src="data/pioneer10.js?v=20261115173032"></script>
-<script src="data/sprites.js?v=20261115173032"></script>
-<script src="js/engine.js?v=20261115173032"></script>
-<script src="js/actors.js?v=20261115173032"></script>
-<script src="js/story.js?v=20261115173032"></script>
-<script src="js/story2.js?v=20261115173032"></script>
-<script src="js/story3.js?v=20261115173032"></script>
-<script src="js/story4.js?v=20261115173032"></script>
+<!-- Mobile portrait notice: the film is framed 16:9, so phones held vertically are asked to turn sideways -->
+<div id="turnScreen" role="region" aria-label="Please turn your phone sideways">
+  <div class="turnCard">
+    <svg class="turnCorner tl" viewBox="0 0 90 90" aria-hidden="true">
+      <path d="M4 86 V4 H86 M14 86 V14 H86 M4 24 H24 V4 M24 24 L52 10 M24 24 L44 44 M24 24 L10 52 M14 62 H28 V46 H46 V28 H62 V14" fill="none" stroke="#efe1bf" stroke-width="2.5" stroke-linecap="square"/>
+    </svg>
+    <svg class="turnCorner tr" viewBox="0 0 90 90" aria-hidden="true">
+      <path d="M4 86 V4 H86 M14 86 V14 H86 M4 24 H24 V4 M24 24 L52 10 M24 24 L44 44 M24 24 L10 52 M14 62 H28 V46 H46 V28 H62 V14" fill="none" stroke="#efe1bf" stroke-width="2.5" stroke-linecap="square"/>
+    </svg>
+    <svg class="turnCorner bl" viewBox="0 0 90 90" aria-hidden="true">
+      <path d="M4 86 V4 H86 M14 86 V14 H86 M4 24 H24 V4 M24 24 L52 10 M24 24 L44 44 M24 24 L10 52 M14 62 H28 V46 H46 V28 H62 V14" fill="none" stroke="#efe1bf" stroke-width="2.5" stroke-linecap="square"/>
+    </svg>
+    <svg class="turnCorner br" viewBox="0 0 90 90" aria-hidden="true">
+      <path d="M4 86 V4 H86 M14 86 V14 H86 M4 24 H24 V4 M24 24 L52 10 M24 24 L44 44 M24 24 L10 52 M14 62 H28 V46 H46 V28 H62 V14" fill="none" stroke="#efe1bf" stroke-width="2.5" stroke-linecap="square"/>
+    </svg>
+
+    <div class="turnStarBar" aria-hidden="true">
+      <span class="turnRule"></span>
+      <svg class="turnStar" viewBox="0 0 36 36"><polygon points="18,3 22.2,13.2 33.2,14 24.7,21.1 27.4,31.8 18,26 8.6,31.8 11.3,21.1 2.8,14 13.8,13.2" fill="none" stroke="#efe1bf" stroke-width="2.4" stroke-linejoin="round"/></svg>
+      <span class="turnRule"></span>
+    </div>
+
+    <p class="turnKicker">The Mirror That Still Answers</p>
+
+    <svg class="turnArt" viewBox="0 0 260 200" aria-hidden="true">
+      <!-- Ghost outline of the upright phone before turning -->
+      <rect x="92" y="26" width="76" height="142" rx="10" fill="none" stroke="#efe1bf" stroke-width="2" stroke-dasharray="5 5" opacity="0.28"/>
+
+      <!-- Curved 1930s motion arcs showing the 90-degree turn -->
+      <path d="M126 16 C74 16 40 52 38 96" fill="none" stroke="#ffe07a" stroke-width="3" stroke-linecap="round" stroke-dasharray="7 5"/>
+      <polygon points="38,105 30,90 46,91" fill="#ffe07a"/>
+      <path d="M134 184 C186 184 220 148 222 104" fill="none" stroke="#ffe07a" stroke-width="3" stroke-linecap="round" stroke-dasharray="7 5"/>
+      <polygon points="222,95 214,109 230,108" fill="#ffe07a"/>
+
+      <!-- Twinkling cartoon stars that pop when the screen lands in landscape -->
+      <g class="turnSparks">
+        <path d="M36 42 Q44 42 44 34 Q44 42 52 42 Q44 42 44 50 Q44 42 36 42 Z" fill="#ffe07a"/>
+        <path d="M208 40 Q215 40 215 33 Q215 40 222 40 Q215 40 215 47 Q215 40 208 40 Z" fill="#ffe07a"/>
+        <path d="M40 156 Q46 156 46 150 Q46 156 52 156 Q46 156 46 162 Q46 156 40 156 Z" fill="#f3e6c8"/>
+        <path d="M206 156 Q213 156 213 149 Q213 156 220 156 Q213 156 213 163 Q213 156 206 156 Z" fill="#f3e6c8"/>
+      </g>
+
+      <!-- The screen itself: starts upright, winds back with anticipation, turns -90 deg to landscape and settles -->
+      <g class="turnDevice">
+        <g transform="translate(130, 97)">
+          <!-- Outer casing in cream and ink -->
+          <rect x="-42" y="-74" width="84" height="148" rx="11" fill="#f3e6c8" stroke="#24170e" stroke-width="5"/>
+          <!-- Inner projector screen -->
+          <rect x="-33" y="-58" width="66" height="116" rx="4" fill="#0d0b09" stroke="#24170e" stroke-width="3.5"/>
+          <rect x="-28" y="-53" width="56" height="106" fill="none" stroke="#efe1bf" stroke-width="1.4" opacity="0.65"/>
+          <!-- Earpiece & button details -->
+          <line x1="-10" y1="-66" x2="10" y2="-66" stroke="#24170e" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="0" cy="65" r="3.5" fill="#24170e"/>
+
+          <!-- Scene inside the screen (drawn for landscape so it stands right-side-up when rotated -90 deg) -->
+          <g transform="rotate(90)">
+            <!-- Little lunar horizon -->
+            <path d="M-50 22 Q0 10 50 22 L50 30 L-50 30 Z" fill="#d9ccb2" stroke="#24170e" stroke-width="2.5"/>
+            <!-- Smiling crescent Moon and star -->
+            <path d="M-24 -14 A14 14 0 1 0 -10 8 A11 11 0 1 1 -24 -14 Z" fill="#ffe07a" stroke="#24170e" stroke-width="2"/>
+            <polygon points="22,-16 24.5,-10 31,-9.5 26,-5 27.5,1.5 22,-2 16.5,1.5 18,-5 13,-9.5 19.5,-10" fill="#ffe07a"/>
+            <!-- Tiny retroreflector panel with cartoon eyes -->
+            <g transform="translate(4, 14)">
+              <polygon points="-14,6 -9,-8 13,-8 18,6" fill="#f3e6c8" stroke="#24170e" stroke-width="2.5" stroke-linejoin="round"/>
+              <ellipse cx="-1" cy="-1" rx="2.3" ry="3.2" fill="#24170e"/>
+              <ellipse cx="6" cy="-1" rx="2.3" ry="3.2" fill="#24170e"/>
+              <circle cx="-1.6" cy="-2.2" r="0.9" fill="#fff"/>
+              <circle cx="5.4" cy="-2.2" r="0.9" fill="#fff"/>
+            </g>
+          </g>
+
+          <!-- 1930s three-finger + thumb cartoon glove gripping the side of the frame -->
+          <g transform="translate(43, 18)">
+            <ellipse cx="14" cy="2" rx="7" ry="12" fill="#f3e6c8" stroke="#24170e" stroke-width="3.5"/>
+            <path d="M10 -10 C2 -14 -7 -11 -7 -5 C-7 -1 -1 1 5 0" fill="#f3e6c8" stroke="#24170e" stroke-width="3.5" stroke-linejoin="round"/>
+            <ellipse cx="-2" cy="1" rx="7" ry="4.5" fill="#f3e6c8" stroke="#24170e" stroke-width="3.5"/>
+            <ellipse cx="-1" cy="8" rx="6.5" ry="4.3" fill="#f3e6c8" stroke="#24170e" stroke-width="3.5"/>
+            <ellipse cx="1" cy="14.5" rx="5.8" ry="4" fill="#f3e6c8" stroke="#24170e" stroke-width="3.5"/>
+            <line x1="11" y1="-2" x2="16" y2="-1" stroke="#24170e" stroke-width="2.2" stroke-linecap="round"/>
+            <line x1="11" y1="3" x2="17" y2="4" stroke="#24170e" stroke-width="2.2" stroke-linecap="round"/>
+          </g>
+        </g>
+      </g>
+    </svg>
+
+    <p class="turnTitle">Turn Your Screen<br>Sideways</p>
+    <p class="turnSub">This animated film is made for a wide screen.<br>Rotate your phone to landscape to open the projector.</p>
+    <p class="turnHint">&#9654;&nbsp; Turn to landscape to watch</p>
+  </div>
+</div>
+
+<script>window.BUILD = "20261115180646";</script>
+<script src="data/llr.js?v=20261115180646"></script>
+<script src="data/moon_orbit.js?v=20261115180646"></script>
+<script src="data/voice.js?v=20261115180646"></script>
+<script src="data/opportunity_tau.js?v=20261115180646"></script>
+<script src="data/words.js?v=20261115180646"></script>
+<script src="data/pioneer10.js?v=20261115180646"></script>
+<script src="data/sprites.js?v=20261115180646"></script>
+<script src="js/engine.js?v=20261115180646"></script>
+<script src="js/actors.js?v=20261115180646"></script>
+<script src="js/story.js?v=20261115180646"></script>
+<script src="js/story2.js?v=20261115180646"></script>
+<script src="js/story3.js?v=20261115180646"></script>
+<script src="js/story4.js?v=20261115180646"></script>
 </body>
 </html>

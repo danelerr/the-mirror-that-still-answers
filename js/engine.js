@@ -19,7 +19,7 @@
   const ABORT = F.ABORT = { abort: true };
   window.addEventListener("unhandledrejection", (e) => { if (e.reason === ABORT) e.preventDefault(); });
   F.guard = (p) => p.catch((e) => { if (e !== ABORT) console.error(e); });
-  F.quiet = (p) => { p.catch(() => {}); return p; };
+  F.quiet = (p) => { p.catch(() => { }); return p; };
   // a scene cancelled by a chapter jump ends its animations with ABORT; one started without await (a side
   // animation) would otherwise show up as an unhandled rejection. Cancelling is normal, so it stays silent.
   window.addEventListener("unhandledrejection", (e) => { if (e.reason === ABORT) e.preventDefault(); });
@@ -36,15 +36,28 @@
     stage.style.transform = "translate(-50%, -50%) translate(" + weave.x.toFixed(2) + "px, " + weave.y.toFixed(2) + "px) scale(" + scale + ")";
   }
   function fit() {
-    scale = Math.min(window.innerWidth / W, window.innerHeight / H);
+    const vv = window.visualViewport;
+    const vw = (vv && vv.width) || window.innerWidth;
+    const vh = (vv && vv.height) || window.innerHeight;
+    scale = Math.min(vw / W, vh / H);
     res = Math.min(2, Math.max(1, scale * (window.devicePixelRatio || 1)));
     cv.width = Math.round(W * res);
     cv.height = Math.round(H * res);
     applyStage();
   }
   window.addEventListener("resize", fit);
+  window.addEventListener("orientationchange", () => setTimeout(fit, 120));
+  if (window.visualViewport) window.visualViewport.addEventListener("resize", fit);
   fit();
   stage.addEventListener("scroll", () => { stage.scrollTop = 0; stage.scrollLeft = 0; });
+
+  // On a phone held vertically, a title-card notice asks the viewer to turn the screen sideways first;
+  // touches on that notice do not start the projector underneath until the phone is turned to landscape.
+  const portraitMM = window.matchMedia("(orientation: portrait) and (max-width: 900px) and (pointer: coarse)");
+  const inPortraitGate = () => !F.RENDER && !F.AUTOPLAY && portraitMM.matches;
+  ["pointerdown", "keydown"].forEach((ev) => window.addEventListener(ev, (e) => {
+    if (inPortraitGate()) e.stopImmediatePropagation();
+  }, true));
 
   // ---------- images ----------
   const IM = F.IM = {};
@@ -417,7 +430,7 @@
     music.muted = F.muted;
     musicNow = 0;
     musicTarget = vol === undefined ? 0.35 : vol;
-    music.play().catch(() => {});
+    music.play().catch(() => { });
   };
   F.musicVol = (v) => {
     musicTarget = v;
