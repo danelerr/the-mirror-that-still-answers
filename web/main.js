@@ -29,13 +29,16 @@
   // ---------- helpers ----------
   function show(el) { el.classList.remove("hidden"); }
   function hide(el) { el.classList.add("hidden"); }
+  function ready(im) { return im.complete && im.naturalWidth > 0; }
+
   // Jumping to a chapter cancels the scene that was playing: every timer checks this run number
   var runId = 0, ABORT = { abort: true };
   window.addEventListener("unhandledrejection", function (e) { if (e.reason === ABORT) e.preventDefault(); });
   function guard(p) { return p.catch(function (e) { if (e !== ABORT) console.error(e); }); }
+  function quiet(p) { p.catch(function () {}); return p; }
   function wait(ms) {
     var id = runId;
-    return new Promise(function (res, rej) { setTimeout(function () { if (id === runId) res(); else rej(ABORT); }, ms); });
+    return quiet(new Promise(function (res, rej) { setTimeout(function () { if (id === runId) res(); else rej(ABORT); }, ms); }));
   }
   function fmtDate(ms) {
     return new Date(ms).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" });
@@ -45,22 +48,29 @@
   // Resolves on click, Space or Enter; or after `auto` ms if given
   function advance(el, auto, until) {
     var id = runId;
-    return new Promise(function (res, rej) {
+    return quiet(new Promise(function (res, rej) {
       var done = false, to = null;
       function finish() {
         if (done) return;
         done = true;
+        el.classList.remove("listening");
         el.removeEventListener("click", finish);
         document.removeEventListener("keydown", onKey);
         if (to) clearTimeout(to);
         if (id === runId) res(); else rej(ABORT);
       }
-      function onKey(e) { if (e.key === " " || e.key === "Enter") { e.preventDefault(); finish(); } }
+      function onKey(e) {
+        if (e.key !== " " && e.key !== "Enter") return;
+        if (e.repeat || (e.target.closest && e.target.closest("button, input, select, textarea"))) return;
+        e.preventDefault();
+        finish();
+      }
+      el.classList.add("listening");
       el.addEventListener("click", finish);
       document.addEventListener("keydown", onKey);
       if (auto) to = setTimeout(finish, auto);
-      if (until) until.then(finish);
-    });
+      if (until) until.then(finish, finish);
+    }));
   }
 
   // ---------- fit the stage to the window ----------
@@ -155,7 +165,7 @@
   var irisEl = $("iris");
   function iris(cx, cy, from, to, ms) {
     var id = runId;
-    return new Promise(function (res, rej) {
+    return quiet(new Promise(function (res, rej) {
       irisEl.style.display = "block";
       var frames = Math.max(2, Math.round(ms / 42)), i = 0;
       (function tick() {
@@ -165,7 +175,7 @@
         if (i++ < frames) setTimeout(tick, 42);
         else { if (to > 1000) irisEl.style.display = "none"; res(); }
       })();
-    });
+    }));
   }
 
   // ---------- motion helpers: Disney's principles of animation ----------
@@ -177,7 +187,8 @@
   };
   function anim(el, frames, opts) {
     if (REDUCED) return Promise.resolve();
-    return el.animate(frames, opts).finished.catch(function () {});
+    var id = runId;
+    return quiet(el.animate(frames, opts).finished.catch(function () {}).then(function () { if (id !== runId) throw ABORT; }));
   }
 
   // ---------- the Mirror's face ----------
@@ -288,13 +299,13 @@
   // Action and follow-through: it stretches as it fires, recoils, overshoots and settles
   function obsFire() {
     anim(obs, [obsPose(0.84, 1.24, 0.07, 0), obsPose(1.1, 0.88, -0.05, 0.28), obsPose(0.97, 1.05, 0.02, 0.58),
-      obsPose(1.01, 0.99, 0, 0.8), obsPose(1, 1, 0, 1)], { duration: 820, easing: EASE.out }).then(obsBreathe);
+      obsPose(1.01, 0.99, 0, 0.8), obsPose(1, 1, 0, 1)], { duration: 820, easing: EASE.out }).then(obsBreathe, function () {});
   }
   // It catches the light coming home: squash on impact, then rebound
   function obsCatch() {
     obsStop();
     return anim(obs, [obsPose(1, 1, 0, 0), obsPose(1.14, 0.84, -0.04, 0.22), obsPose(0.95, 1.07, 0.02, 0.55), obsPose(1, 1, 0, 1)],
-      { duration: 640, easing: EASE.out }).then(obsBreathe);
+      { duration: 640, easing: EASE.out }).then(obsBreathe, function () {});
   }
 
   // The photons that came home: one small character for each (up to 70 on screen)
@@ -372,8 +383,8 @@
       var wv = Math.sin(mb * 26) * Math.exp(-mb * 7) * 0.07;
       msx = 1 + wv; msy = 1 - wv;
     }
-    if (moonImg.complete) ctx.drawImage(moonImg, MOON.x - MOON.r * msx, MOON.y - MOON.r * msy, MOON.r * 2 * msx, MOON.r * 2 * msy);
-    if (earthImg.complete) ctx.drawImage(earthImg, EARTH.x - EARTH.r, EARTH.y - EARTH.r, EARTH.r * 2, EARTH.r * 2);
+    if (ready(moonImg)) ctx.drawImage(moonImg, MOON.x - MOON.r * msx, MOON.y - MOON.r * msy, MOON.r * 2 * msx, MOON.r * 2 * msy);
+    if (ready(earthImg)) ctx.drawImage(earthImg, EARTH.x - EARTH.r, EARTH.y - EARTH.r, EARTH.r * 2, EARTH.r * 2);
 
     if (flight) {
       var el = Math.min((now - flight.start) / 1000, flight.tof);
@@ -400,7 +411,7 @@
           ctx.beginPath(); ctx.moveTo(sx, sy); ctx.lineTo(ex, ey); ctx.stroke();
         }
         // the photon itself, squashing and stretching as it flies
-        if (photonImg.complete) {
+        if (ready(photonImg)) {
           var wob = step % 2 ? 1.13 : 1;
           var launch = Math.max(0, 1 - el / 0.18);   // extra stretch right after it leaves
           ctx.save();
@@ -464,8 +475,8 @@
   }
 
   (function loop(now) {
-    if (!sky.classList.contains("hidden")) drawSky(now || 0);
     requestAnimationFrame(loop);
+    if (!sky.classList.contains("hidden")) drawSky(now || 0);
   })();
 
   function fire(m) {
@@ -478,7 +489,7 @@
   function drawChart(sel, prog) {
     if (prog === undefined) prog = 1;
     var c = chart.getContext("2d");
-    var X0 = 590, X1 = 1235, Y0 = 322, Y1 = 632;
+    var X0 = 590, X1 = 1235, Y0 = 300, Y1 = 600;
     var t0 = DATA[0].t, t1 = DATA[DATA.length - 1].t;
     var kmMin = Infinity, kmMax = -Infinity;
     DATA.forEach(function (d) { kmMin = Math.min(kmMin, d.km); kmMax = Math.max(kmMax, d.km); });
@@ -590,6 +601,7 @@
 
   // ---------- the Mirror speaks ----------
   function say(html, restMouth, n) {
+    lineId++;
     var wasShown = !balloon.classList.contains("hidden");
     balloonText.innerHTML = html;
     show(balloon);
@@ -678,6 +690,7 @@
   }
 
   async function mirrorScene() {
+    var my = runId;
     await iris(B.x, B.y, 1500, 0, 800);
     hide(readout);
     hide(sky); hide(obs); hide(photonLayer);
@@ -697,6 +710,7 @@
     var sink = REDUCED ? null : mirror.animate([{ transform: "none" }, { transform: "scale(1.06, 0.9)", offset: 0.6 }, { transform: "scale(1.07, 0.89)" }],
       { duration: 320, easing: EASE.inOut, fill: "forwards" });
     if (sink) await sink.finished.catch(function () {});
+    if (my !== runId) throw ABORT;
     // ...then the take: eyes pop open, it springs up, overshoots and settles
     setEyes("open");
     setMouth("oh");
@@ -735,11 +749,14 @@
 
   async function backToSky() {
     hide(againBtn);
+    shotsFired = Math.max(shotsFired, 1);
+    setChapter(1);
     await iris(285, 450, 1500, 0, 700);
     hide(chart); hide(mirror); hide(balloon);
     if (typeof marsCv !== "undefined") { hide(marsCv); hide(oppPanel); }
     mirror.classList.remove("inset");
     balloon.classList.remove("caption");
+    againBtn.classList.remove("left");
     flight = null;
     clearPhotons();
     timer.textContent = "0.000 s";
@@ -755,12 +772,14 @@
   var sending = false;
   sendBtn.addEventListener("click", function (e) {
     e.stopPropagation();
+    sendBtn.blur();
     if (sending) return;
     sending = true;
     guard(sendLight());
   });
   againBtn.addEventListener("click", function (e) {
     e.stopPropagation();
+    againBtn.blur();
     if (!sky.classList.contains("hidden")) {   // still in the sky: just fire again
       if (sending) return;
       sending = true;
@@ -830,6 +849,9 @@
     back: function (u) { var c = 1.70158, d = u - 1; return 1 + (c + 1) * d * d * d + c * d * d; }
   };
   function tween(obj, to, ms, ease) {
+    M.tweens = M.tweens.filter(function (tw) {
+      return tw.obj !== obj || !Object.keys(to).some(function (k) { return k in tw.to; });
+    });
     return new Promise(function (res) {
       var from = {};
       for (var k in to) from[k] = obj[k];
@@ -864,7 +886,7 @@
     var e = rv.eyes;
     if (e === "open" && now % 4300 < 140) e = "closed";      // a blink now and then
     var im = mi[e === "closed" ? "rover_ojos_cerrados" : e === "half" ? "rover_ojos_medio" : "rover_ojos_abiertos"];
-    if (!im.complete) return;
+    if (!ready(im)) return;
     var half = im.width / 2, f = 0.7, w = half * f, h = im.height * f;
     var sockets = [[78 - 172, 75 - 640], [262 - 172, 75 - 640]];   // the two camera "eyes" at the top of the mast (mast pivot at 172, 640)
     for (var i = 0; i < 2; i++) {
@@ -873,7 +895,7 @@
   }
   function drawRover(c, now, x, y, sx, sy, tilt) {
     var rv = M.rv;
-    if (!mi.rover_cuerpo.complete) return;
+    if (!ready(mi.rover_cuerpo)) return;
     c.save();
     c.translate(x, y);
     c.rotate(tilt);
@@ -923,7 +945,7 @@
     glow.addColorStop(1, "rgba(255,236,180,0)");
     c.fillStyle = glow;
     c.fillRect(780, 0, 500, 430);
-    if (mi.cielo_sol.complete) {
+    if (ready(mi.cielo_sol)) {
       c.globalAlpha = sunA;
       c.drawImage(mi.cielo_sol, 1075 - 85 * sp, 165 - 83 * sp, 170 * sp, 166 * sp);
       c.globalAlpha = 1;
@@ -937,7 +959,7 @@
       if (cl.x > W + 60) cl.x = -470;
       var want = i < nC ? Math.min(1, 0.3 + d) : 0;
       cl.a += (want - cl.a) * Math.min(1, dt * 2);
-      if (cl.a > 0.02 && im.complete) {
+      if (cl.a > 0.02 && ready(im)) {
         c.globalAlpha = cl.a;
         c.drawImage(im, cl.x, cl.y, im.width * cl.s, im.height * cl.s);
       }
@@ -947,7 +969,7 @@
     // the ground: Opportunity's own last panorama
     c.fillStyle = "#7a5636";
     c.fillRect(0, 560, W, H - 560);
-    if (mi.mars_ground.complete) {
+    if (ready(mi.mars_ground)) {
       var gh = 400, gw = 4096 * gh / 410, gy = 330;
       M.pan = ((M.pan + M.panV * dt) % gw + gw) % gw;
       c.drawImage(mi.mars_ground, -M.pan, gy, gw, gh);
@@ -981,7 +1003,7 @@
       pf.y += pf.vy * dt;
       pf.vy += 30 * dt;
       var u = pf.life / pf.max, s = pf.s * (1 + u * 1.6);
-      if (im2.complete) {
+      if (ready(im2)) {
         c.globalAlpha = Math.max(0, 0.85 * (1 - u));
         c.drawImage(im2, pf.x - im2.width * s / 2, pf.y - im2.height * s / 2, im2.width * s, im2.height * s);
       }
@@ -1092,10 +1114,9 @@
     var sol = OPP_ALL[i][0], tau = OPP_ALL[i][1], direct = Math.exp(-tau) * 100;
     var pct = direct >= 1 ? Math.round(direct) + "%" : "less than 1%";
     var est = i === OPP_ALL.length - 1 ? " (NASA estimate)" : "";
-    oppRead.innerHTML = "Sol <b>" + sol + "</b> &middot; " + monthYear(sol) + " &middot; dust (tau): <b>" + tau.toFixed(2) + "</b>" + est +
-      "<br>Sunlight shining straight through the dust: <b>" + pct + "</b>" +
-      (M.odoShow ? " &middot; total driven: <b>45.16 km</b>" : "");
-    if (document.activeElement !== oppSlider) oppSlider.value = String(i);
+    oppRead.innerHTML = "Sol <b>" + sol + "</b> &middot; " + monthYear(sol) + " &middot; dust in the sky (tau): <b>" + tau.toFixed(2) + "</b>" + est +
+      "<br>Direct sunlight: <b>" + pct + "</b>" + (M.odoShow ? " &middot; total distance driven: <b>45.16 km</b>" : "");
+    if (!sliderHeld) oppSlider.value = String(i);
   }
 
   oppSlider.max = String(OPP_ALL.length - 1);
@@ -1108,23 +1129,34 @@
   ["pointerdown", "click", "keydown"].forEach(function (ev) {
     oppSlider.addEventListener(ev, function (e) { e.stopPropagation(); if (ev === "pointerdown") sliderHeld = true; });
   });
-  window.addEventListener("pointerup", function () { sliderHeld = false; });
+  ["pointerup", "pointercancel", "blur"].forEach(function (ev) { window.addEventListener(ev, function () { sliderHeld = false; }); });
+  oppSlider.addEventListener("lostpointercapture", function () { sliderHeld = false; });
   function waitSlide() {
     return new Promise(function (res) {
-      var t0 = performance.now(), id = runId;
+      var t0 = performance.now(), id = runId, skipped = false;
       oppPanel.classList.add("invite");
+      // a click on the balloon also moves on
+      function skip() { skipped = true; }
+      balloon.classList.add("listening");
+      balloon.addEventListener("click", skip);
       (function check() {
-        if (id !== runId) { oppPanel.classList.remove("invite"); return; }
+        if (id !== runId) { end(); return; }
         var now = performance.now();
-        var done = lastSlide > t0 ? now - lastSlide > 4500 && !sliderHeld : now - t0 > 12000;
-        if (done) { oppPanel.classList.remove("invite"); res(); } else setTimeout(check, 200);
+        var done = skipped || now - t0 > 30000 || (lastSlide > t0 ? now - lastSlide > 4500 && !sliderHeld : now - t0 > 12000);
+        if (done) { end(); res(); } else setTimeout(check, 200);
       })();
+      function end() {
+        oppPanel.classList.remove("invite");
+        balloon.classList.remove("listening");
+        balloon.removeEventListener("click", skip);
+        oppSlider.blur();
+      }
     });
   }
 
   (function marsLoop(now) {
-    if (!marsCv.classList.contains("hidden")) { drawMars(now || 0); drawOppChart(); }
     requestAnimationFrame(marsLoop);
+    if (!marsCv.classList.contains("hidden")) { drawMars(now || 0); drawOppChart(); }
   })();
 
   function resetMars() {
@@ -1142,76 +1174,85 @@
     anim(oppPanel, [{ transform: "scale(0.6)" }, { transform: "scale(1.05)", offset: 0.65 }, { transform: "scale(1)" }], { duration: 450, easing: EASE.out });
   }
 
+  var lineId = 0;
+  function lineWait(my, ms) { return quiet(wait(ms).then(function () { if (my !== lineId) throw ABORT; })); }
+  function lineTween(my, obj, to, ms, ease) { return quiet(tween(obj, to, ms, ease).then(function () { if (my !== lineId) throw ABORT; })); }
+
   // Opportunity drives in from the right, front first
   async function roverDriveIn() {
+    var my = lineId;
     var rv = M.rv;
-    await wait(250);
+    await lineWait(my, 250);
     // anticipation: it rocks back before it rolls
-    await tween(rv, { sx: 1.05, sy: 0.94, tilt: 0.03 }, 220);
+    await lineTween(my, rv, { sx: 1.05, sy: 0.94, tilt: 0.03 }, 220);
     rv.drive = 1;
     tween(rv, { sx: 1, sy: 1, tilt: 0 }, 200, EZ.out);
-    await tween(rv, { x: 420 }, 2700, EZ.out);           // slows in as it arrives
+    await lineTween(my, rv, { x: 420 }, 2700, EZ.out);           // slows in as it arrives
     rv.drive = 0;
     // it stops: squash, rebound, settle
-    await tween(rv, { sx: 1.06, sy: 0.93 }, 130, EZ.out);
-    await tween(rv, { sx: 0.97, sy: 1.04 }, 170, EZ.out);
-    await tween(rv, { sx: 1, sy: 1 }, 220);
+    await lineTween(my, rv, { sx: 1.06, sy: 0.93 }, 130, EZ.out);
+    await lineTween(my, rv, { sx: 0.97, sy: 1.04 }, 170, EZ.out);
+    await lineTween(my, rv, { sx: 1, sy: 1 }, 220);
   }
   // It tilts its cameras up toward the Sun, and the measurements appear
   async function lookAtSun() {
+    var my = lineId;
     var rv = M.rv;
-    await wait(Math.max(0, CUE[15].sun * 1000 - 1100));
-    await tween(rv, { mastT: -0.1 }, 260);               // anticipation: a small dip the other way
+    await lineWait(my, Math.max(0, CUE[15].sun * 1000 - 1100));
+    await lineTween(my, rv, { mastT: -0.1 }, 260);               // anticipation: a small dip the other way
     tween(rv, { mastT: 0.3, look: -10, lookX: 6 }, 650, EZ.back);
-    await tween(M, { beam: 1 }, 600, EZ.out);
+    await lineTween(my, M, { beam: 1 }, 600, EZ.out);
     tween(M, { sunPop: 1 }, 170, EZ.out).then(function () { return tween(M, { sunPop: 0 }, 420, EZ.back); });
-    await wait(Math.max(0, (CUE[15].dust - CUE[15].sun) * 1000 - 500));
+    await lineWait(my, Math.max(0, (CUE[15].dust - CUE[15].sun) * 1000 - 500));
     showPanel();
-    await wait(1200);
+    await lineWait(my, 1200);
     tween(M, { beam: 0 }, 500, EZ.in);
     tween(rv, { mastT: 0, look: 0, lookX: 0 }, 700);
   }
   // 2007: the days roll on to the storm, Opportunity waits it out, then shakes off the dust
   async function storm2007() {
+    var my = lineId;
     var rv = M.rv, c = CUE[17];
-    await tween(M, { idx: idxOfSol(1150) }, 1400);
-    await tween(M, { idx: idxOfSol(1236) }, Math.max(300, (c.darkened + 0.5) * 1000 - 1400), EZ.in);
+    await lineTween(my, M, { idx: idxOfSol(1150) }, 1400);
+    await lineTween(my, M, { idx: idxOfSol(1236) }, Math.max(300, (c.darkened + 0.5) * 1000 - 1400), EZ.in);
     rv.eyes = "half";
     tween(rv, { sy: 0.9, sx: 1.05, mastT: -0.2, armT: 0.25 }, 700);
-    await wait(Math.max(0, (c.waited - c.darkened) * 1000 - 200));
+    await lineWait(my, Math.max(0, (c.waited - c.darkened) * 1000 - 200));
     rv.eyes = "closed";
-    await wait(Math.max(0, (c.cleared - c.waited) * 1000 - 900));
-    await tween(M, { idx: idxOfSol(1420) }, 1300, EZ.out);
+    await lineWait(my, Math.max(0, (c.cleared - c.waited) * 1000 - 900));
+    await lineTween(my, M, { idx: idxOfSol(1420) }, 1300, EZ.out);
     rv.eyes = "open";                                      // the take: eyes pop open and it springs up
-    await tween(rv, { sy: 1.12, sx: 0.94, mastT: 0.05 }, 160, EZ.out);
+    await lineTween(my, rv, { sy: 1.12, sx: 0.94, mastT: 0.05 }, 160, EZ.out);
     for (var k = 0; k < 3; k++) {                          // it shakes off the dust
-      await tween(rv, { tilt: 0.05, sx: 1.03 }, 70);
-      await tween(rv, { tilt: -0.05, sx: 0.98 }, 70);
+      await lineTween(my, rv, { tilt: 0.05, sx: 1.03 }, 70);
+      await lineTween(my, rv, { tilt: -0.05, sx: 0.98 }, 70);
     }
     puff(rv.x + 60, GROUND_Y - 150, 8, 260);
     tween(rv, { sy: 1, sx: 1, tilt: 0, mastT: 0, armT: 0.1 }, 320, EZ.back);
     rv.drive = 0.6;
-    await wait(900);
+    await lineWait(my, 900);
     rv.drive = 0;
   }
   // Years go by; then the 2018 storm rolls in
   async function drive2018() {
+    var my = lineId;
     var rv = M.rv, c = CUE[18];
     rv.drive = 1;
     M.panV = -70;                                          // a time-lapse: the ground slides by
-    await tween(M, { idx: idxOfSol(5050) }, c.km * 1000, EZ.inOut);
+    await lineTween(my, M, { idx: idxOfSol(5050) }, c.km * 1000, EZ.inOut);
     M.odoShow = true;
     updateOppRead();
     anim(oppRead, [{ transform: "scale(1)" }, { transform: "scale(1.06)", offset: 0.4 }, { transform: "scale(1)" }], { duration: 400, easing: EASE.out });
-    await wait(Math.max(0, (c.june - c.km) * 1000));
+    await lineWait(my, Math.max(0, (c.june - c.km) * 1000));
     rv.drive = 0;
     M.panV = 6;
-    await tween(M, { idx: idxOfSol(5105) }, Math.max(400, (c.covered - c.june + 0.6) * 1000), EZ.in);
+    await lineTween(my, M, { idx: idxOfSol(5105) }, Math.max(400, (c.covered - c.june + 0.6) * 1000), EZ.in);
     rv.eyes = "half";
     tween(rv, { sy: 0.95, sx: 1.03, mastT: -0.12 }, 900);
   }
   // The last days, one dot at a time: the numbers climb, and climb, and stop
   async function lastDays() {
+    var my = lineId;
     var rv = M.rv, c = CUE[19];
     M.view = { s0: 5084, s1: 5114, tMax: 11 };
     M.reveal = 0;
@@ -1219,28 +1260,29 @@
     var calm = OPP.filter(function (r) { return r[0] >= 5084 && r[0] <= 5102; }).length;
     for (var i = 1; i <= calm; i++) {
       M.reveal = i;
-      await wait(Math.max(40, (c.climb1 * 1000 - 500) / calm));
+      await lineWait(my, Math.max(40, (c.climb1 * 1000 - 500) / calm));
     }
     M.reveal = calm + 1;
     M.idx = idxOfSol(5103);
-    await wait((c.climb2 - c.climb1) * 1000);
+    await lineWait(my, (c.climb2 - c.climb1) * 1000);
     M.reveal = calm + 2;
     M.idx = idxOfSol(5105);
-    await wait(Math.max(0, (c.stop - c.climb2) * 1000 - 400));
+    await lineWait(my, Math.max(0, (c.stop - c.climb2) * 1000 - 400));
     M.finalShown = true;
     M.idx = OPP_ALL.length - 1;
     // it settles, slowly, and its eyes close
     tween(rv, { mastT: -0.42, armT: 0.35, sy: 0.92, sx: 1.04 }, 1900);
-    await wait(800);
+    await lineWait(my, 800);
     rv.eyes = "closed";
   }
   // The chart steps back out: fourteen years of numbers, still there
   async function goQuiet() {
+    var my = lineId;
     var c = CUE[20];
-    await wait((c.quiet + 0.6) * 1000);
+    await lineWait(my, (c.quiet + 0.6) * 1000);
     M.view = null;
     anim(oppChartEl, [{ transform: "scale(1.05)" }, { transform: "scale(1)" }], { duration: 500, easing: EASE.out });
-    await wait(Math.max(0, (c.check - c.quiet - 0.6) * 1000));
+    await lineWait(my, Math.max(0, (c.check - c.quiet - 0.6) * 1000));
     anim(oppPanel, [{ transform: "scale(1)" }, { transform: "scale(1.04)", offset: 0.4 }, { transform: "scale(1)" }], { duration: 600, easing: EASE.out });
   }
 
@@ -1262,28 +1304,29 @@
     setMouth("smile");
     show(mirror);
     var line = say("This is <b>Opportunity</b>. It landed on Mars in January 2004, to look for signs of ancient water.", "smile", 14);
-    roverDriveIn();
+    guard(roverDriveIn());
     await line;
     line = say("It ran on <b>sunlight</b>. And every day, it looked straight at the Sun and measured how much dust was in the sky.", "smile", 15);
-    lookAtSun();
+    guard(lookAtSun());
     await line;
     showPanel();
     await say("<b>Slide through its days.</b> When the sky gets dusty, less sunlight reaches its solar panels.", "smile", 16);
     await waitSlide();
     line = say("In 2007, a huge dust storm darkened the sky. Opportunity <b>waited</b>… and when the dust cleared, it went back to work.", "smile", 17);
-    storm2007();
+    guard(storm2007());
     await line;
     line = say("It drove more than <b>45 kilometers</b>. Then, in June 2018, the biggest storm of all covered the whole planet.", "smile", 18);
-    drive2018();
+    guard(drive2018());
     await line;
     line = say("Look at its last measurement. The numbers climb… and climb… and then they <b>stop</b>.", "closed", 19);
-    lastDays();
+    guard(lastDays());
     await line;
     line = say("Opportunity went quiet. But its numbers are still here, and <b>anyone</b> can check them.", "smile", 20);
-    goQuiet();
+    guard(goQuiet());
     await line;
     await wait(800);
     hide(balloon);
+    againBtn.classList.add("left");
     show(againBtn);
   }
 
@@ -1307,7 +1350,13 @@
   }
   function resetAll() {
     runId++;
+    lineId++;
     stopVoice();
+    stage.classList.add("instant");
+    requestAnimationFrame(function () { requestAnimationFrame(function () { stage.classList.remove("instant"); }); });
+    obs.getAnimations().forEach(function (a) { a.cancel(); });
+    mirror.getAnimations().forEach(function (a) { a.cancel(); });
+    if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
     flight = null;
     clearPhotons();
     obsStop();
@@ -1316,6 +1365,7 @@
     mirror.classList.remove("inset", "surprised", "flash");
     balloon.classList.remove("caption", "overChart");
     readout.classList.remove("onBase");
+    againBtn.classList.remove("left");
     irisEl.style.display = "none";
     sending = false;
   }
@@ -1346,6 +1396,7 @@
       goBtn.addEventListener("click", function h(e) {
         e.stopPropagation();
         goBtn.removeEventListener("click", h);
+        goBtn.blur();
         res();
       });
     });
