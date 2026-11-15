@@ -442,16 +442,36 @@
     F.scene([luna, F.stars({ n: 120, par: 0.2, w: W * 1.4, h: 260, y: -40 }), mir, p], { bg: "#05060a", cam: { x: 640, y: 400, z: 1.25 } });
     await F.irisIn(mir.x, mir.y - 200, 700);
     await wait(300);
-    // anticipation: it sinks...
-    await tw(mir, { sx: 1.08, sy: 0.88 }, 300, EZ.inOut);
-    // ...then the take: eyes pop, it springs up, dust flies off, it overshoots and settles
-    mir.eyes = "open"; mir.mouth = "oh"; mir.brows = true;
-    F.faceNow(mir, "surprised"); gesture(mir, "up", 160);
-    sfx("boing", 1.1);
-    p.emit("puff", mir.x, mir.y - 300, 10, { spread: 260, vy: -120, vyr: 80, vxr: 240, g: 160, r: 12, life: 1, fill: "#cfc7b8", ink: "rgba(40,40,40,0.4)" });
-    mir.dust = 0;
-    await F.keys(mir, [[{ sx: 0.9, sy: 1.16, y: LUNA.mirror.y - 40 }, 160, EZ.out], [{ sx: 1.05, sy: 0.95, y: LUNA.mirror.y }, 220, EZ.in],
-      [{ sx: 1, sy: 1 }, 380, EZ.elastic]]);
+    if (F.hasSprites("E2_espejo_despierta")) {
+      // the team's drawn wake-up, frame by frame (pose to pose, with its own squash and stretch)
+      const take = F.spriteSet("E2_espejo_despierta", { x: mir.x + 4, y: mir.y + 8, w: 340, ay: 1, z: 21, frame: 0 });
+      F.add(take); mir.op = 0;
+      const seq = [[0, 450], [1, 420, "ting"], [2, 220, "pop"], [3, 150, "boing"], [4, 260], [5, 170, "thud"], [6, 190], [7, 420]];
+      for (const s of seq) {
+        take.frame = s[0];
+        if (s[2]) sfx(s[2], s[2] === "boing" ? 1.1 : 1);
+        if (s[0] === 3) {
+          p.emit("puff", mir.x, mir.y - 300, 10, { spread: 260, vy: -120, vyr: 80, vxr: 240, g: 160, r: 12, life: 1, fill: "#cfc7b8", ink: "rgba(40,40,40,0.4)" });
+          mir.dust = 0;
+          tw(take, { y: mir.y - 50 }, 150, EZ.out);
+        }
+        if (s[0] === 5) { tw(take, { y: mir.y + 10 }, 90, EZ.in); F.shake(5); }
+        await wait(s[1]);
+      }
+      mir.eyes = "open"; mir.mouth = "smile"; mir.brows = false; F.faceNow(mir, "happy"); gesture(mir, "rest", 1);
+      mir.op = 1; F.remove(take);
+    } else {
+      // anticipation: it sinks...
+      await tw(mir, { sx: 1.08, sy: 0.88 }, 300, EZ.inOut);
+      // ...then the take: eyes pop, it springs up, dust flies off, it overshoots and settles
+      mir.eyes = "open"; mir.mouth = "oh"; mir.brows = true;
+      F.faceNow(mir, "surprised"); gesture(mir, "up", 160);
+      sfx("boing", 1.1);
+      p.emit("puff", mir.x, mir.y - 300, 10, { spread: 260, vy: -120, vyr: 80, vxr: 240, g: 160, r: 12, life: 1, fill: "#cfc7b8", ink: "rgba(40,40,40,0.4)" });
+      mir.dust = 0;
+      await F.keys(mir, [[{ sx: 0.9, sy: 1.16, y: LUNA.mirror.y - 40 }, 160, EZ.out], [{ sx: 1.05, sy: 0.95, y: LUNA.mirror.y }, 220, EZ.in],
+        [{ sx: 1, sy: 1 }, 380, EZ.elastic]]);
+    }
     const v4 = speak(4, mir);
     await atw(4, "hello", 0, 1.2);
     mir.brows = false; F.face(mir, "happy"); gesture(mir, "wave", 300);
@@ -872,6 +892,7 @@
     if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
     F.ov.iris = 2000; F.ov.fade = 0; F.ov.flash = 0; F.ov.snapA = 0;
     scopeIdle = true;
+    mir.op = 1;
     F.scene([], { bg: "#000" });
   }
   F.resetAll = resetAll;
