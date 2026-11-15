@@ -36,6 +36,9 @@
   <!-- Chart of real measurements -->
   <canvas id="chart" width="1280" height="720" class="hidden" aria-label="Chart of real laser measurements to the Apollo 11 mirror"></canvas>
 
+  <!-- Chapter 2: Mars. The ground is Opportunity's last panorama; the sky follows its measurements -->
+  <canvas id="mars" width="1280" height="720" class="hidden" aria-label="Opportunity on Mars under a dusty sky"></canvas>
+
   <!-- The Mirror: AI-generated illustration, cut into pieces and animated by code -->
   <div id="mirror" class="hidden" data-eyes="closed" data-mouth="closed" role="img" aria-label="The Mirror, a cartoon of the Apollo 11 laser retroreflector">
     <div class="bob">
@@ -61,6 +64,13 @@
   <!-- Silent-film title card -->
   <div id="card" class="hidden"><div class="cardInner"><p id="cardText"></p></div></div>
 
+  <!-- Opportunity's measurements: slide through its days -->
+  <div id="oppPanel" class="hidden">
+    <canvas id="oppChart" width="540" height="150" aria-label="Dust in the sky over Opportunity, 2004 to 2018"></canvas>
+    <input id="oppSlider" type="range" min="0" max="4674" step="1" value="0" aria-label="Slide through Opportunity's days on Mars">
+    <p id="oppRead"></p>
+  </div>
+
   <!-- Readout while the light travels -->
   <div id="readout" class="hidden">
     <div id="timer">0.000 s</div>
@@ -85,6 +95,7 @@
 <script src="data/llr.js"></script>
 <script src="data/moon_orbit.js"></script>
 <script src="data/voice.js"></script>
+<script src="data/opportunity_tau.js"></script>
 <script src="main.js"></script>
 </body>
 </html>
