@@ -202,16 +202,8 @@
   async function launch() {
     const pad = F.plate("sc_plataforma", { x: -30, y: -20, w: 1340, h: 754 });
     const rocket = F.sprite("obj_cohete", { x: 650, y: 552, w: 120, ax: 0.5, ay: 1, z: 20 });
-    const flame = F.custom(function (c, t) {
-      if (this.k <= 0.01) return;
-      const st = F.step(t), L = (60 + (st % 3) * 14) * this.k, x = rocket.x, y = rocket.y + 2 + (rocket.y < 552 ? 0 : 0);
-      c.translate(x, y); c.scale(rocket.sx, 1);
-      c.fillStyle = "#ffb347"; c.strokeStyle = F.INK; c.lineWidth = 4; c.lineJoin = "round";
-      c.beginPath(); c.moveTo(-24, 0); c.quadraticCurveTo(-18, L * 0.6, 0, L); c.quadraticCurveTo(18, L * 0.6, 24, 0); c.closePath(); c.fill(); c.stroke();
-      c.fillStyle = "#fff3b0"; c.beginPath(); c.moveTo(-12, 0); c.quadraticCurveTo(-8, L * 0.4, 0, L * 0.6); c.quadraticCurveTo(8, L * 0.4, 12, 0); c.closePath(); c.fill();
-    }, { z: 19, k: 0 });
     const p = F.particles({ z: 25 });
-    F.scene([pad, flame, rocket, p, F.credit("Painted scene: AI image generator.")], { bg: "#e8c9a0", cam: { x: 640, y: 380, z: 1.05 } });
+    F.scene([pad, rocket, p, F.credit("Painted scene: AI image generator.")], { bg: "#e8c9a0", cam: { x: 640, y: 380, z: 1.05 } });
     await F.irisIn(650, 420, 700);
     const when = F.stamp(["July 2003"], { x: 1030, y: 110, size: 46, rot: -0.05, kicker: "A rover leaves Earth for Mars" });
     F.popIn(when, 420, "stamp");
@@ -221,20 +213,8 @@
       await wait(520);
       F.remove(s);
     }
-    // ignition and anticipation: smoke, a crouch, a shake
-    sfx("rumble", 1.4);
-    tw(flame, { k: 1 }, 300, EZ.out);
-    const smoke = setInterval(() => p.emit("smoke", rocket.x, Math.min(552, rocket.y) + 10, 3, { spread: 60, vx: 0, vxr: 260, vy: -30, vyr: 40, g: -10, r: 26, grow: 2.2, life: 1.6, fill: "#f6efe2", ink: "rgba(60,40,30,0.5)" }), 90);
-    F.shake(4);
-    await tw(rocket, { sx: 1.06, sy: 0.93 }, 420, EZ.inOut);
-    await wait(250);
-    // lift-off: slow at first, then faster and faster, stretching as it goes
-    sfx("whoosh", 2);
-    F.shake(8);
-    tw(rocket, { sx: 0.9, sy: 1.16 }, 300, EZ.out);
-    tw(F.cam, { y: 120, z: 1 }, 2200, EZ.inOut);
-    await tw(rocket, { y: -700 }, 2400, EZ.in);
-    clearInterval(smoke);
+    // ignition, anticipation, lift-off that speeds up, smoke left behind
+    await F.rocketLaunch(rocket, p, { cam: { y: 150, z: 1 }, camMs: 2600 });
     F.popOut(when);
     await wait(300);
     await F.irisOut(640, 300, 500);

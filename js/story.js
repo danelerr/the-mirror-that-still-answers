@@ -120,6 +120,7 @@
   };
   function gesture(p, name, ms) {
     const g = GP[name] || GP.rest;
+    p.pose = name;                     // the drawn Mirror picks its drawing from this
     [p.gL, p.gR].forEach((h, i) => {
       h.pose = g[i][0];
       F.tw(h, { x: g[i][1], y: g[i][2], rot: g[i][3] }, ms || 260, EZ.back);
@@ -513,20 +514,23 @@
     F.scene([luna, F.stars({ n: 120, par: 0.2, w: W * 1.4, h: 260, y: -40 }), mir, p], { bg: "#05060a", cam: { x: 640, y: 400, z: 1.25 } });
     await F.irisIn(mir.x, mir.y - 200, 700);
     await wait(300);
-    if (F.hasSprites("E2_espejo_despierta")) {
-      // the team's drawn wake-up, frame by frame (pose to pose, with its own squash and stretch)
-      const take = F.spriteSet("E2_espejo_despierta", { x: mir.x + 4, y: mir.y + 8, w: 340, ay: 1, z: 21, frame: 0 });
+    // the drawn wake-up with arms (16 drawings), the same design as every other drawing of the Mirror
+    const WAKE = "E2_espejo_despierta_brazos";
+    if (F.hasSprites(WAKE)) {
+      const fw = (window.SPRITES[WAKE].w || 490) * 330 / 490;
+      const take = F.spriteSet(WAKE, { x: mir.x + 4, y: mir.y + 8, w: fw, ay: 1, z: 21, frame: 0 });
       F.add(take); mir.op = 0;
-      const seq = [[0, 450], [1, 420, "ting"], [2, 220, "pop"], [3, 150, "boing"], [4, 260], [5, 170, "thud"], [6, 190], [7, 420]];
+      const seq = [[0, 450], [1, 300], [2, 260, "ting"], [3, 160], [4, 120, "pop"], [5, 100], [6, 90, "boing"], [7, 90], [8, 160], [9, 120],
+        [10, 90, "thud"], [11, 120], [12, 110], [13, 110], [14, 220], [15, 380]];
       for (const s of seq) {
         take.frame = s[0];
         if (s[2]) sfx(s[2], s[2] === "boing" ? 1.1 : 1);
-        if (s[0] === 3) {
-          p.emit("puff", mir.x, mir.y - 300, 10, { spread: 260, vy: -120, vyr: 80, vxr: 240, g: 160, r: 12, life: 1, fill: "#cfc7b8", ink: "rgba(40,40,40,0.4)" });
+        if (s[0] === 6) {
+          p.emit("puff", mir.x, mir.y - 260, 10, { spread: 260, vy: -120, vyr: 80, vxr: 240, g: 160, r: 12, life: 1, fill: "#cfc7b8", ink: "rgba(40,40,40,0.4)" });
           mir.dust = 0;
-          tw(take, { y: mir.y - 50 }, 150, EZ.out);
+          tw(take, { y: mir.y - 50 }, 180, EZ.out);
         }
-        if (s[0] === 5) { tw(take, { y: mir.y + 10 }, 90, EZ.in); F.shake(5); }
+        if (s[0] === 10) { tw(take, { y: mir.y + 8 }, 90, EZ.in); F.shake(5); }
         await wait(s[1]);
       }
       mir.eyes = "open"; mir.mouth = "smile"; mir.brows = false; F.faceNow(mir, "happy"); gesture(mir, "rest", 1);
@@ -644,15 +648,15 @@
     for (let i = 0; i < 3; i++) {
       await atw(6, w6[i][0], 0, w6[i][1]);
       ic[i].xp = 1; ic[i].s = 0.6;
-      if (tk) pose6(i * 2); else gesture(mir, ["one", "two", "three"][i], 200);
-      F.popIn(ic[i], 300, "pop");
+      // the drawn Mirror counts on its fingers: no crossed-out icons needed (they broke the style)
+      if (tk) { pose6(i * 2); sfx("pop", 1 + i * 0.15); } else { gesture(mir, ["one", "two", "three"][i], 200); F.popIn(ic[i], 300, "pop"); }
     }
     if (tk) {
       await wait(550); pose6(6);          // "I cannot call you": a sad shrug
       await wait(500); pose6(8);          // ...and it droops
     }
     await atw(6, "but", 0, 4.4);
-    ic.forEach((x) => F.popOut(x));
+    if (!tk) ic.forEach((x) => F.popOut(x));
     if (tk) {
       pose6(10); sfx("ting", 1.5);        // "But…": an idea, finger up
       wait(380).then(() => pose6(12)).then(() => wait(330)).then(() => pose6(14)).catch(() => {});
