@@ -102,6 +102,34 @@
     const r = F.rng(7), kinds = ["cielo_nube_a", "cielo_nube_b", "cielo_nube_c", "cielo_tormenta"];
     for (let i = 0; i < 16; i++) clouds.list.push({ x: r() * 1500 - 110, y: 30 + r() * 280, s: 0.3 + r() * 0.45, v: 10 + r() * 26, k: kinds[i % 4], a: 0 });
   })();
+  // the wind on Mars (secondary action): little puffs of dust drifting low over the ground, and now and then a
+  // tiny dust devil spinning past; more of both when the measured dust is high
+  const breeze = F.custom(function (c, t) {
+    const tau = tauNow(), d = 1 - Math.exp(-tau / 3);
+    this.acc += F.dt * (1.2 + d * 6);
+    while (this.acc > 1) {
+      this.acc -= 1;
+      this.list.push({ x: -40, y: 470 + Math.random() * 230, r: 5 + Math.random() * 9, v: 90 + Math.random() * 120 + d * 160, a: 0.25 + Math.random() * 0.3, ph: Math.random() * 6 });
+    }
+    if (t - this.lastDevil > 9000 - d * 5000) { this.lastDevil = t; this.devils.push({ x: -60, y: 560 + Math.random() * 90, v: 140 + d * 120, h: 70 + Math.random() * 60 }); }
+    c.fillStyle = "#c98d5d"; c.strokeStyle = "rgba(90,50,25,0.45)"; c.lineWidth = 2;
+    this.list = this.list.filter((p) => {
+      p.x += p.v * F.dt; p.ph += F.dt * 3;
+      c.globalAlpha = p.a * (0.6 + 0.4 * Math.sin(p.ph));
+      c.beginPath(); c.ellipse(p.x, p.y + Math.sin(p.ph) * 4, p.r * 1.8, p.r, 0, 0, 6.2832); c.fill();
+      return p.x < W + 60;
+    });
+    this.devils = this.devils.filter((dv) => {
+      dv.x += dv.v * F.dt;
+      for (let k = 0; k < 6; k++) {          // a little spinning column, wider at the top
+        const u = k / 5, wob = Math.sin(t / 90 + k * 1.3) * (6 + u * 10);
+        c.globalAlpha = 0.28 * (1 - u * 0.4);
+        c.beginPath(); c.ellipse(dv.x + wob, dv.y - u * dv.h, 8 + u * 22, 4 + u * 7, 0, 0, 6.2832); c.fill(); c.stroke();
+      }
+      return dv.x < W + 80;
+    });
+    c.globalAlpha = 1;
+  }, { z: 26, list: [], devils: [], acc: 0, lastDevil: 0 });
   // the plain: two copies side by side, one mirrored, so it can scroll forever
   const plain = F.custom(function (c) {
     const im = IM.sc_marte_llanura;
@@ -192,7 +220,7 @@
     P = F.particles({ z: 50 });
     rv = rv || F.rover({});
     rv.puffs = P;
-    F.scene([plain, marsSky, sun, clouds, rv, P, marsDark, inset, F.credit("Painted scene: AI image generator. Sky colour, Sun and dust follow Opportunity's real measurements (NASA PDS).")].concat(extra || []), { bg: "#7a5636" });
+    F.scene([plain, marsSky, sun, clouds, breeze, rv, P, marsDark, inset, F.credit("Painted scene: AI image generator. Sky colour, Sun and dust follow Opportunity's real measurements (NASA PDS).")].concat(extra || []), { bg: "#7a5636" });
   }
   function resetRover() {
     rv = F.rover({ x: 760, y: 640, s: 0.46 });

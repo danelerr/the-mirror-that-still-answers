@@ -816,7 +816,10 @@
       else if ((mood === "worried" || mood === "scared" || mood === "sad") && has("R5_rover_tormenta")) { set = "R5_rover_tormenta"; k = 0; }
       else if (mood === "surprised" && has("R6_rover_sacude")) { set = "R6_rover_sacude"; k = 0; }
       else if ((mood === "happy" || mood === "proud") && has("R3_rover_mira_sol")) { set = "R3_rover_mira_sol"; k = 14 + (Math.floor(st / 6) % 2); }
-      else if (has("R3_rover_mira_sol")) { set = "R3_rover_mira_sol"; k = Math.floor(st / 6) % 2; }
+      else if (has("R3_rover_mira_sol")) {        // idle: it looks around, and now and then up at the sky
+        const cyc = [0, 0, 1, 1, 0, 0, 1, 1, 2, 3, 3, 2, 1, 1];
+        set = "R3_rover_mira_sol"; k = cyc[Math.floor(st / 5) % cyc.length];
+      }
       const im = set ? IM["spr_" + set + "_" + k] : null;
       return F.ready(im) ? im : null;
     };
@@ -833,8 +836,8 @@
       const body = IM.rover_cuerpo;
       if (!F.ready(body)) return;
       const st = F.step(t);
-      const bob = this.drive ? -Math.abs(Math.sin(st * 1.3)) * 14 * this.drive : -Math.sin(t / 900) * 2;
-      const sq = this.drive ? (st % 3 === 0 ? 0.08 : st % 3 === 1 ? -0.03 : 0) * this.drive : Math.sin(t / 900) * 0.012;
+      const bob = this.drive ? -Math.abs(Math.sin(st * 1.3)) * 14 * this.drive : -Math.sin(t / 700) * 4;            // idle: it breathes
+      const sq = this.drive ? (st % 3 === 0 ? 0.08 : st % 3 === 1 ? -0.03 : 0) * this.drive : Math.sin(t / 700) * 0.02;
       const rock = this.drive ? Math.sin(st * 1.3) * 0.025 * this.drive : 0;
       c.globalAlpha = this.op;
       c.fillStyle = "rgba(40,20,10,0.35)";
