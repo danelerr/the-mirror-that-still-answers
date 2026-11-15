@@ -99,7 +99,7 @@ button.tool:hover, button.tool:focus-visible { background: rgba(0, 0, 0, 0.75); 
 
 /* ---------- captions: each word turns gold as it is spoken ---------- */
 #cc span { transition: color 0.12s linear; }
-#cc span.said { color: #ffe07a; }
+#cc span.now { color: #ffe07a; }
 
 /* ---------- the Start button, in the same art deco line work as the title frame ---------- */
 #go {
@@ -131,3 +131,12 @@ button.big {
 button.big:hover, button.big:focus-visible { background: #1a140d; color: #ffe07a; }
 button.big:not(.hidden):not(.small) { animation: decoGlow 1.4s ease-in-out infinite alternate; }
 @media (prefers-reduced-motion: reduce) { button.big:not(.hidden):not(.small) { animation: none; } }
+
+/* the title screen waits for one click to start the projector (and its music) before showing Start */
+.gateHint { display: none; margin: 26px 0 0; font-size: 22px; letter-spacing: 0.12em; color: #f3d98b; font-variant: small-caps; }
+#start.gated #go, #start.gated #loadHint { display: none; }
+#start.gated .gateHint { display: block; animation: gateBlink 1.1s steps(2) infinite; }
+@keyframes gateBlink { to { opacity: 0.35; } }
+#start.lit .cardInner { animation: projectorOn 0.6s steps(6) 1; }
+@keyframes projectorOn { 0% { opacity: 0.3; } 30% { opacity: 1; } 45% { opacity: 0.55; } 60% { opacity: 1; } 75% { opacity: 0.8; } 100% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { #start.gated .gateHint, #start.lit .cardInner { animation: none; } }
