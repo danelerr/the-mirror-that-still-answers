@@ -422,7 +422,13 @@
       F.caption(n);
     }));
   };
-  F.vt = () => (!cur ? Infinity : cur.silent ? (performance.now() - cur.t0) / 1000 : cur.a.currentTime);
+  // the voice clock: the audio's own time, but never more than 1 s behind the real clock, so a voice that
+  // stalls or starts late can never freeze the story (with a healthy voice, the audio time always wins)
+  F.vt = () => {
+    if (!cur) return Infinity;
+    const wall = (performance.now() - cur.t0) / 1000;
+    return cur.silent ? wall : Math.max(cur.a.currentTime, wall - 1);
+  };
   F.speaking = () => !!cur;
   F.stopVoice = function () {
     if (!cur) return;
@@ -437,7 +443,8 @@
     if (cur) {
       const sec = F.vt();
       if (cur.onLevel) cur.onLevel(F.voiceLevel(cur.n, sec));
-      if (cur.silent && sec >= VOICE[cur.n].d) { cur.finish(); F.caption(0); }
+      const late = !cur.silent && (performance.now() - cur.t0) / 1000 > VOICE[cur.n].d + 2;   // the audio never said "ended"
+      if ((cur.silent && sec >= VOICE[cur.n].d) || late) { if (late) cur.a.pause(); cur.finish(); F.caption(0); }
     }
     if (music) {
       const want = F.muted ? 0 : musicTarget * (cur ? 0.35 : 1);
