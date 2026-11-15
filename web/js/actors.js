@@ -762,8 +762,21 @@
   // (each reaction drawn in two steps: interest 2-3, "oh" 4-5, warm smile 6-7, a laugh 10-11, sad sigh 12-13, proud nod 14-15)
   const LISTEN = "E14_espejo_escucha";
   const LISTEN_K = { neutral: 2, curious: 2, happy: 6, proud: 14, determined: 14, surprised: 4, scared: 4, worried: 12, sad: 12, tired: 12 };
+  // hopping: the team's hop drawings (E16) follow the hop's phase (take-off squash, spring, stretch, air, down,
+  // landing squash); the arc itself is done in the draw. The drawings face right: flipped when it hops left.
+  const HOP = "E16_espejo_salta", HOP_SEQ = [1, 2, 3, 4, 11, 12, 10, 5, 8, 9];
   function mirrorDrawing(m, t) {
     let e;
+    if (m.force && F.hasSprites(m.force[0])) {          // a scene can hold one exact drawing (m.force = [set, frame])
+      const key = m.force.join(":");
+      if (key !== m.drawnKey) { m.drawnKey = key; m.drawnT = t; }
+      return { im: IM["spr_" + m.force[0] + "_" + m.force[1]], flip: 1, since: t - m.drawnT, set: m.force[0] };
+    }
+    if (m.hopping && F.hasSprites(HOP)) {
+      const k = HOP_SEQ[Math.min(HOP_SEQ.length - 1, Math.floor((m.hopPhase || 0) * HOP_SEQ.length))];
+      m.drawnKey = HOP; m.drawnT = t - 1000;
+      return { im: IM["spr_" + HOP + "_" + k], flip: m.hopDir < 0 ? -1 : 1, since: 1000, set: HOP };
+    }
     const mood = m.faceName || "neutral", resting = !MP[m.pose] || m.pose === "rest" || m.pose === "ground";
     if (m.level > 0.12 || m.loudT === undefined) m.loudT = t;
     if (m.eyes === "open" && resting && t - m.loudT > 450 && LISTEN_K[mood] !== undefined && F.hasSprites(LISTEN)) {
@@ -832,6 +845,9 @@
       }
       c.translate(0, -air * 34 * this.s);
       this.hopSq = land * 0.09 - air * 0.05;          // + squashed (landing), - stretched (in the air)
+      this.hopping = moving || (this.hopPh || 0) % 1 > 0.001;
+      this.hopPhase = (this.hopPh || 0) % 1;
+      if (Math.abs(dx) > 0.5) this.hopDir = Math.sign(dx);
       const dr = this.drawn === false ? null : mirrorDrawing(this, t);
       if (dr && F.ready(dr.im)) {
         // the drawn Mirror: a little squash as each new pose lands, then it settles (and breathes)
@@ -844,7 +860,7 @@
           this.prevLv = lv;
         }
         const hop = dr.talking && t - (this.hopT || 0) < 260 ? Math.sin((t - this.hopT) / 260 * Math.PI) : 0;
-        const hs = this.hopSq || 0;
+        const hs = (this.hopSq || 0) * (dr.set === HOP ? 0.35 : 1);   // (the hop drawings squash on their own)
         c.translate(0, -(lv * 5 + hop * 9) * this.s);
         // a gentle sway all the time (a little more while talking), so a held pose is never frozen
         c.rotate(this.rot + Math.sin(t / 900 + this.seed) * (dr.talking ? 0.022 : 0.01));

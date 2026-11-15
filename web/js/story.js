@@ -987,14 +987,65 @@
       c.globalAlpha = this.op; c.fillStyle = g;
       c.beginPath(); c.moveTo(620, 760); c.lineTo(SCREEN.x0, SCREEN.y0); c.lineTo(SCREEN.x1, SCREEN.y0); c.lineTo(SCREEN.x1, SCREEN.y1); c.lineTo(SCREEN.x0, SCREEN.y1); c.lineTo(660, 760); c.closePath(); c.fill();
     }, { z: 11, op: 0 });
-    const presenter = F.mirror({ x: 1135, y: 650, s: 0.4, eyes: "open", mouth: "smile", z: 30, par: 0 });
-    gesture(presenter, "left", 1);
+    // the presenter hops in from the wings to its place by the screen, then the curtains open
+    const presenter = F.mirror({ x: 1430, y: 650, s: 0.4, eyes: "open", mouth: "smile", z: 30, par: 0 });
+    F.faceNow(presenter, "happy");
     const p = fx();
     F.scene([hall, chart, beam, curtains, presenter, p, F.credit("Dots: NASA CDDIS / ILRS laser ranging normal points, 2025-2026. Line: NASA/JPL Horizons.")], { bg: "#1a0e0a", cam: { x: 640, y: 360, z: 1.05 } });
-    sfx("whoosh");
-    tw(curtains, { k: 1 }, 1100, EZ.inOut);
-    tw(beam, { op: 1 }, 600, EZ.inOut);
-    await tw(chart, { op: 1 }, 600, EZ.inOut);
+    await tw(presenter, { x: 1135 }, 1400, EZ.inOut);
+    await wait(200);
+    if (F.hasSprites("E16_espejo_salta")) {
+      // a curtain rope drops from the flies; it reaches up, grabs it and pulls it down hard (the curtains open with
+      // the pull), lets go with a bounce, and the rope flies back up. Drawings of the hop sheet; the glove positions
+      // in those drawings were measured so the rope sits in its hand.
+      const GL = { 3: [439, 63], 1: [468, 266], 8: [413, 287], 9: [428, 249], 14: [481, 271] };
+      const meta = window.SPRITES.E16_espejo_salta, M = F.CHAR.mirror, kk = M.k * M.U / meta.u;
+      const glove = (f) => [presenter.x + (GL[f][0] - meta.cx) * kk * presenter.s, presenter.y + (13 + (GL[f][1] - meta.cy - M.RHO * meta.u) * kk) * presenter.s];
+      const rope = F.custom(function (c, tt) {
+        const sway = Math.sin(tt / 260) * 3 * this.swing;
+        c.lineCap = "round";
+        for (const [col, lw] of [[F.INK, 10], ["#c79a5b", 5]]) {
+          c.strokeStyle = col; c.lineWidth = lw;
+          c.beginPath(); c.moveTo(this.x + 4, -200); c.quadraticCurveTo(this.x + sway, (this.y - 200) / 2, this.x, this.y + 16); c.stroke();
+        }
+        c.strokeStyle = "rgba(60,30,10,0.55)"; c.lineWidth = 2;          // the twist of the rope
+        for (let y = this.y - 6; y > -200; y -= 14) { c.beginPath(); c.moveTo(this.x - 2, y); c.lineTo(this.x + 3, y + 6); c.stroke(); }
+        c.fillStyle = "#b8432f"; c.strokeStyle = F.INK; c.lineWidth = 3;   // a red tassel at its end
+        c.beginPath(); c.moveTo(this.x - 7, this.y + 14); c.lineTo(this.x + 7, this.y + 14); c.lineTo(this.x + 9, this.y + 34); c.lineTo(this.x - 9, this.y + 34); c.closePath(); c.fill(); c.stroke();
+      }, { z: 29, par: 0, x: 0, y: -220, swing: 1 });
+      const g3 = glove(3), g1 = glove(1);
+      rope.x = g3[0]; F.add(rope);
+      F.faceNow(presenter, "curious");
+      sfx("slideUp", 0.7);
+      await tw(rope, { y: g3[1] }, 520, EZ.back);
+      presenter.force = ["E16_espejo_salta", 3]; sfx("pop");        // reaches up and grabs it
+      rope.swing = 0;
+      await wait(380);
+      presenter.force = ["E16_espejo_salta", 1];                    // pulls it down hard, squashed with effort
+      sfx("whoosh");
+      tw(rope, { x: g1[0], y: g1[1] }, 240, EZ.in);
+      tw(curtains, { k: 1 }, 950, EZ.out);
+      tw(beam, { op: 1 }, 600, EZ.inOut);
+      await wait(160);
+      presenter.force = ["E16_espejo_salta", 8];
+      await wait(260);
+      presenter.force = ["E16_espejo_salta", 9];
+      await wait(200);
+      presenter.force = ["E16_espejo_salta", 14];                   // lets go with a happy bounce; the rope flies up
+      presenter.sy = 1.1; presenter.sx = 0.94; tw(presenter, { sx: 1, sy: 1 }, 380, EZ.elastic);
+      rope.swing = 1;
+      tw(rope, { y: -240 }, 650, EZ.inBack).then(() => F.remove(rope)).catch(() => {});
+      await wait(360);
+      presenter.force = null;
+      F.face(presenter, "happy"); gesture(presenter, "left", 1);
+      await tw(chart, { op: 1 }, 600, EZ.inOut);
+    } else {
+      gesture(presenter, "left", 1);
+      sfx("whoosh");
+      tw(curtains, { k: 1 }, 1100, EZ.inOut);
+      tw(beam, { op: 1 }, 600, EZ.inOut);
+      await tw(chart, { op: 1 }, 600, EZ.inOut);
+    }
     tw(F.cam, { x: (SCREEN.x0 + SCREEN.x1) / 2 + 40, y: (SCREEN.y0 + SCREEN.y1) / 2 + 40, z: 1.25 }, 2000, EZ.inOut);
 
     // 10. every dot is a real measurement
