@@ -56,15 +56,56 @@
     for (let i = 0; i < meta.n; i++) frames.push("spr_" + name + "_" + i);
     return F.sprite(frames[0], Object.assign({ frames, fps: 12, w: meta.w, ax: 0.5, ay: meta.center ? 0.5 : 1, loop: true }, o));
   };
+  // One size and one place for every sheet of a character. The cutter (web/tools/cut_sprites.py --body) writes,
+  // for each sheet, the size of the character's body in it ("u") and where the body's centre is in the frames
+  // ("cx", "cy"). Every sheet is drawn so that the body has the size U and sits at the same point: k is the
+  // scale of a sheet whose body is exactly U, and RHO says how far below the body's centre the ground is.
+  F.CHAR = {
+    mirror: { U: 351, RHO: 0.538, k: 1.086 },
+    probe: { U: 287, RHO: 0, k: 0.821 / 0.45 }
+  };
+  // where a frame of the sheet `name` goes for a character of scale s standing (or floating) at x, y
+  F.place = function (sp, name, ch, s, x, y) {
+    const meta = (window.SPRITES || {})[name], C = F.CHAR[ch];
+    if (!meta || !meta.u) return false;
+    const k = C.k * s * C.U / meta.u;
+    sp.x = x; sp.y = y; sp.w = meta.w * k;
+    sp.ax = meta.cx / meta.w; sp.ay = (meta.cy + C.RHO * meta.u) / meta.h;
+    return true;
+  };
+  // the drawn frames of the Mirror, where the Mirror m is (its feet 13 units below its y, like the puppet)
+  F.mirrorFrames = function (name, m, o) {
+    const sp = F.spriteSet(name, Object.assign({ z: 21, frame: 0 }, o));
+    if (!F.place(sp, name, "mirror", m.s, m.x, m.y + 13 * m.s)) Object.assign(sp, { x: m.x + 4, y: m.y + 8, w: 330 * m.s / 0.62, ax: 0.5, ay: 1 });
+    if (o && o.x !== undefined) sp.x = o.x;
+    if (o && o.y !== undefined) sp.y = o.y;
+    return sp;
+  };
+  // the width to draw a rover sheet at, so the rover's wheels span the same distance in every sheet
+  F.roverW = function (name, s) {
+    const meta = (window.SPRITES || {})[name] || {};
+    return (meta.wb ? meta.w * 360 / meta.wb : 470) * (s === undefined ? 0.46 : s) / 0.46;
+  };
+  F.R1_CYCLE = [0, 1, 2, 4, 6, 7];        // the drive cycle (drawings 3 and 5 have a panel painted the wrong colour)
+  // the drawn frames of Pioneer 10, centred where the probe pr is
+  F.probeFrames = function (name, pr, o) {
+    const sp = F.spriteSet(name, Object.assign({ z: 31, frame: 0 }, o));
+    if (!F.place(sp, name, "probe", pr.s, pr.x, pr.y)) Object.assign(sp, { x: pr.x, y: pr.y, w: 400 * pr.s / 0.45, ax: 0.5, ay: 0.5 });
+    if (o && o.x !== undefined) sp.x = o.x;
+    if (o && o.y !== undefined) sp.y = o.y;
+    return sp;
+  };
   // play once from the first frame (or loop again with loop: true)
   F.playOnce = (a) => { a.loop = false; a.frame = null; a.t0 = F.t; return F.wait(a.frames.length / a.fps * 1000); };
-  F.loadSprites = () => {
+  // (the frames are packed as WebP by web/tools/pack_webp.py: five times lighter than PNG)
+  F.spriteList = () => {
     const list = [];
     Object.keys(window.SPRITES || {}).forEach((n) => {
-      for (let i = 0; i < window.SPRITES[n].n; i++) list.push(["spr_" + n + "_" + i, "assets/sprites/" + n + "/" + (i < 10 ? "0" : "") + i + ".png"]);
+      for (let i = 0; i < window.SPRITES[n].n; i++) list.push(["spr_" + n + "_" + i, "assets/sprites/" + n + "/" + (i < 10 ? "0" : "") + i + ".webp"]);
     });
-    return F.load(list);
+    return list;
   };
+  F.loadSprites = (onOne) => F.load(F.spriteList(), onOne);
 
   // ---------- anything drawn by a function ----------
   F.custom = (draw, o) => Object.assign({ z: 0, par: 1, op: 1, draw }, o);
@@ -125,11 +166,24 @@
   // ignition (the flame flickers on, smoke rolls out along the ground), anticipation (the rocket squats
   // and trembles while the engines build up), lift-off (it creeps off the pad, then goes faster and
   // faster, stretching, leaving a column of smoke), and the smoke stays behind after it is gone.
+  // the rocket of the team's O3 sheet: drawings 0-9 are the ignition on the pad (smoke building, the rocket
+  // squatting); obj_cohete2 is the same rocket cut clean from drawing 0, for the climb. Where it sits in a drawing:
+  const O3 = "O3_cohete_despega", O3_BODY = { cx: 208, bottom: 451, w: 116, fw: 441, fh: 487 };
   F.rocketLaunch = async function (rocket, p, o) {
     o = o || {};
-    const x0 = rocket.x, y0 = rocket.y, k0 = rocket.w / 120;
+    const x0 = rocket.x, y0 = rocket.y, k0 = (rocket.im === "obj_cohete2" ? rocket.w / 0.6 : rocket.w) / 120;
+    // the drawn ignition plays in place of the rocket until it lets go of the pad
+    let pad = null;
+    if (rocket.im === "obj_cohete2" && F.hasSprites(O3)) {
+      pad = F.spriteSet(O3, { x: x0, y: y0, w: rocket.w * O3_BODY.fw / O3_BODY.w, ax: O3_BODY.cx / O3_BODY.fw,
+        ay: O3_BODY.bottom / O3_BODY.fh, z: rocket.z, frame: 0 });
+      F.add(pad);
+      rocket.op = 0;
+    }
+    const padT0 = F.t, padMs = 220 + 300 + (o.build || 800) + (o.hold === undefined ? 220 : o.hold);
+    const padRun = pad ? F.onFrame((t) => { pad.frame = Math.min(9, Math.floor((t - padT0) / padMs * 10)); pad.x = rocket.x; }) : null;
     const flame = F.custom(function (c, t) {
-      if (this.k <= 0.01) return;
+      if (this.k <= 0.01 || pad) return;          // (the drawn frames have their own flame on the pad)
       const st = F.step(t), L = (64 + (st % 3) * 16) * this.k * (1 + this.boost) * k0, W2 = 22 * k0;
       c.translate(rocket.x, rocket.y + 2); c.scale(rocket.sx, 1);
       c.fillStyle = "#ffb347"; c.strokeStyle = INK; c.lineWidth = 4; c.lineJoin = "round";
@@ -139,21 +193,21 @@
     F.add(flame);
     const smokeFill = o.smoke || "#f6efe2", smokeInk = o.ink || "rgba(60,40,30,0.5)";
     // smoke rolling out to both sides along the ground while the rocket is still low
-    const ground = setInterval(() => {
-      if (flame.k < 0.2 || rocket.y < y0 - 260) return;
+    const ground = F.every(60, () => {
+      if (pad || flame.k < 0.2 || rocket.y < y0 - 260) return;
       for (const s of [-1, 1]) {
         p.emit("smoke", x0 + s * 26 * k0, y0 + 6, 1, { spread: 10, vx: s * (150 + 120 * flame.k), vxr: 80, vy: -12, vyr: 20, g: -6, r: 20 * k0, grow: 2.6, life: 1.8, fill: smokeFill, ink: smokeInk });
       }
-    }, 60);
+    });
     // a column of smoke left behind as it climbs
-    const trail = setInterval(() => {
+    const trail = F.every(45, () => {
       if (rocket.y > y0 - 12 || rocket.y < -200) return;
       p.emit("smoke", rocket.x, rocket.y + 40 * k0, 2, { spread: 14, vx: 0, vxr: 50, vy: 30, vyr: 20, g: -4, r: 16 * k0, grow: 2.4, life: 2.6, fill: smokeFill, ink: smokeInk });
-    }, 45);
+    });
     const build = o.build || 800;
     // 1. ignition: a cough of smoke, then the flame flickers on
     F.sfx("rumble", 1.4);
-    p.emit("smoke", x0, y0 + 6, 6, { spread: 40, vy: -40, vxr: 200, g: -8, r: 22 * k0, grow: 2, life: 1.2, fill: smokeFill, ink: smokeInk });
+    if (!pad) p.emit("smoke", x0, y0 + 6, 6, { spread: 40, vy: -40, vxr: 200, g: -8, r: 22 * k0, grow: 2, life: 1.2, fill: smokeFill, ink: smokeInk });
     await F.tw(flame, { k: 0.45 }, 220, F.EZ.out);
     // 2. anticipation, in two beats: a small false start (a dip and back), then a deep squat while the
     //    engines build up and the trembling grows (exaggerated, as a cartoon would)
@@ -171,6 +225,10 @@
     //    wobble dying out as it climbs; the camera follows a moment late
     tremble = 0;
     F.sfx("whoosh", 2); F.shake(11); F.flash(0.25);
+    if (pad) {                       // on the flash, the clean rocket takes over and the drawn smoke bank bursts out
+      padRun(); F.remove(pad); pad = null; rocket.op = 1;
+      for (const s of [-1, 1]) p.emit("smoke", x0 + s * 60 * k0, y0, 9, { spread: 70, vx: s * 260, vxr: 160, vy: -20, vyr: 30, g: -6, r: 26 * k0, grow: 2.4, life: 2, fill: smokeFill, ink: smokeInk });
+    }
     rocket.sx = 0.8; rocket.sy = 1.3;
     F.tw(rocket, { sx: 0.9, sy: 1.15 }, 420, F.EZ.out);
     F.tw(flame, { boost: 1 }, 1100, F.EZ.in);
@@ -184,7 +242,9 @@
     F.sfx("ting", 1.6);
     } finally {                      // also when a chapter jump cuts the launch short
       if (wob) wob();
-      shake(); clearInterval(ground); clearInterval(trail);
+      if (padRun) padRun();
+      if (pad) { F.remove(pad); pad = null; rocket.op = 1; }
+      shake(); ground(); trail();
       F.remove(flame);
       rocket.x = x0; rocket.rot = 0;
     }
@@ -395,9 +455,57 @@
   // ---------- a big cartoon stopwatch ----------
   F.stopwatch = (o) => {
     const a = Object.assign({ x: W / 2, y: H / 2, s: 1, sx: 1, sy: 1, rot: 0, op: 1, z: 85, par: 0, sec: 0, label: "", split: 0, digits: 3 }, o);
+    // the team's drawn stopwatch (X1 sheet): it bounces, squashes and tilts on its own; the face markings and
+    // the hand are drawn on top, fitted to the face of each drawing. Drawings 6, 12-14 have a broken ring.
+    const X1 = "X1_cronometro", X1_SEQ = [0, 0, 1, 2, 1, 0, 3, 5, 3, 0, 7, 8, 9, 10, 11, 10, 9, 8, 15];
+    a.face = function (c) {                       // the face markings, in a circle of radius 100
+      if (this.split > 0) {                      // the two halves of the trip
+        c.fillStyle = "rgba(232,181,63,0.55)";
+        c.beginPath(); c.moveTo(0, 0); c.arc(0, 0, 96, -Math.PI / 2, -Math.PI / 2 + Math.PI * this.split); c.closePath(); c.fill();
+        c.fillStyle = "rgba(143,211,255,0.55)";
+        c.beginPath(); c.moveTo(0, 0); c.arc(0, 0, 96, Math.PI / 2, Math.PI / 2 + Math.PI * this.split); c.closePath(); c.fill();
+      }
+      c.strokeStyle = INK; c.lineWidth = 8;
+      for (let i = 0; i < 12; i++) {             // twelve fat ticks, the four main ones longer
+        const an = i / 12 * 6.2832, r0 = i % 3 ? 74 : 62;
+        c.beginPath(); c.moveTo(Math.sin(an) * r0, -Math.cos(an) * r0); c.lineTo(Math.sin(an) * 84, -Math.cos(an) * 84); c.stroke();
+      }
+      const an = (this.sec % 1) * 6.2832;       // the hand goes round once every second
+      c.save(); c.rotate(an);                    // a fat cartoon hand: ink outline, red body, round tail
+      c.fillStyle = RED; c.lineWidth = 6;
+      c.beginPath(); c.moveTo(-9, 20); c.lineTo(-6, -48); c.lineTo(0, -76); c.lineTo(6, -48); c.lineTo(9, 20); c.closePath(); c.fill(); c.stroke();
+      c.restore();
+      c.fillStyle = INK; c.beginPath(); c.arc(0, 0, 13, 0, 6.2832); c.fill();
+      c.fillStyle = "#e3b04a"; c.beginPath(); c.arc(0, 0, 5, 0, 6.2832); c.fill();
+    };
+    a.readout = function (c, y) {
+      c.font = "bold 52px " + FONT; c.textAlign = "center"; c.textBaseline = "middle";
+      const txt = this.sec.toFixed(this.digits) + " s";
+      const tw = c.measureText(txt).width + 40;
+      c.fillStyle = INK; roundRect(c, -tw / 2, y, tw, 70, 12); c.fill();
+      c.fillStyle = "#ffe07a"; c.fillText(txt, 0, y + 37);
+      if (this.label) { c.font = "bold 24px " + FONT; c.fillStyle = PAPER; c.lineWidth = 5; c.strokeStyle = INK; c.strokeText(this.label, 0, y + 100); c.fillText(this.label, 0, y + 100); }
+    };
+    a.drawSheet = function (c) {
+      const meta = (window.SPRITES || {})[X1];
+      if (!meta || !meta.faces || this.drawn === false) return false;
+      const i = X1_SEQ[F.step(F.t || 0) % X1_SEQ.length], im = IM["spr_" + X1 + "_" + i], f = meta.faces[i], f0 = meta.faces[0];
+      if (!F.ready(im) || !f || !f0) return false;
+      const k = 1.0;                             // the face of the first drawing is about 104 px wide, like the old one
+      c.fillStyle = "rgba(0,0,0,0.28)"; c.beginPath(); c.ellipse(8, 14, 118, 150, 0, 0, 6.2832); c.fill();   // soft drop shadow
+      c.drawImage(im, -f0[0] * k, -f0[1] * k, meta.w * k, meta.h * k);
+      c.save();
+      c.translate((f[0] - f0[0]) * k, (f[1] - f0[1]) * k); c.rotate(f[4]); c.scale(f[2] * k / 100, f[3] * k / 100);
+      c.lineJoin = "round"; c.lineCap = "round";
+      this.face(c);
+      c.restore();
+      this.readout(c, (meta.h - f0[1]) * k + 14);
+      return true;
+    };
     a.draw = function (c) {
       c.globalAlpha = this.op;
       c.translate(this.x, this.y); c.rotate(this.rot); c.scale(this.s * this.sx, this.s * this.sy);
+      if (this.drawSheet(c)) return;
       // drawn like the team's sheets: chunky ink lines, a painted gold case, a few fat tick marks
       c.lineJoin = "round"; c.lineCap = "round";
       c.strokeStyle = INK;
@@ -620,9 +728,20 @@
   const TALK = "E12_espejo_habla";
   const TALK_ROW = { neutral: 0, curious: 0, surprised: 0, scared: 0, happy: 1, proud: 1, determined: 2, worried: 3, sad: 3, tired: 3 };
   const mouthIdx = (lv) => (lv < 0.12 ? 0 : lv < 0.28 ? 1 : lv < 0.5 ? 3 : 2);
+  // the listening sheet: when the Mirror is quiet for a moment it reacts with its face instead of freezing
+  // (each reaction drawn in two steps: interest 2-3, "oh" 4-5, warm smile 6-7, a laugh 10-11, sad sigh 12-13, proud nod 14-15)
+  const LISTEN = "E14_espejo_escucha";
+  const LISTEN_K = { neutral: 2, curious: 2, happy: 6, proud: 14, determined: 14, surprised: 4, scared: 4, worried: 12, sad: 12, tired: 12 };
   function mirrorDrawing(m, t) {
     let e;
     const mood = m.faceName || "neutral", resting = !MP[m.pose] || m.pose === "rest" || m.pose === "ground";
+    if (m.level > 0.12 || m.loudT === undefined) m.loudT = t;
+    if (m.eyes === "open" && resting && t - m.loudT > 450 && LISTEN_K[mood] !== undefined && F.hasSprites(LISTEN)) {
+      const k0 = LISTEN_K[mood], key = LISTEN + k0;
+      if (key !== m.drawnKey) { m.drawnKey = key; m.drawnT = t; }
+      const since = t - m.drawnT;
+      return { im: IM["spr_" + LISTEN + "_" + (k0 + (since > 110 ? 1 : 0))], flip: 1, since, set: LISTEN };
+    }
     if (m.eyes !== "closed" && F.hasSprites(TALK)) {
       let k = -1, key = "";
       if (resting && !(m.level <= 0.12 && (mood === "surprised" || mood === "scared"))) {
@@ -633,7 +752,7 @@
       }
       if (k >= 0) {
         if (key !== m.drawnKey) { m.drawnKey = key; m.drawnT = t; }
-        return { im: IM["spr_" + TALK + "_" + k], flip: 1, since: t - m.drawnT };
+        return { im: IM["spr_" + TALK + "_" + k], flip: 1, since: t - m.drawnT, set: TALK };
       }
     }
     if (m.eyes === "closed") e = MF.asleep;
@@ -649,7 +768,7 @@
       k = e[1] + (since > 110 ? 1 : 0);                         // the pose lands in two small steps
       if (since > 400 && m.level > 0.15 && Math.floor(st / 3) % 2) k = e[1];   // talking: a gentle alternation
     }
-    return { im: IM["spr_" + e[0] + "_" + k], flip: e[2] || 1, since };
+    return { im: IM["spr_" + e[0] + "_" + k], flip: e[2] || 1, since, set: e[0] };
   }
 
   F.mirror = (o) => {
@@ -677,8 +796,13 @@
         const u = Math.min(1, dr.since / 240), sq = 0.06 * (1 - u) * (1 - u);
         c.rotate(this.rot);
         c.scale(this.s * this.sx * (1 + sq) * dr.flip, this.s * this.sy * (1 - sq) * (1 + breathe * 0.004));
-        const w = dr.im.width * 1.086, h = dr.im.height * 1.086;
-        c.drawImage(dr.im, -w / 2 + 6, -h + 13 - breathe * 0.6, w, h);
+        const meta = (window.SPRITES || {})[dr.set] || {}, M = F.CHAR.mirror;
+        let w = dr.im.width * 1.086, h = dr.im.height * 1.086, x0 = -w / 2 + 6, y0 = -h + 13;
+        if (meta.u) {                              // same body size and same body position for every sheet
+          const k = M.k * M.U / meta.u;
+          w = meta.w * k; h = meta.h * k; x0 = -meta.cx * k; y0 = 13 - (meta.cy + M.RHO * meta.u) * k;
+        }
+        c.drawImage(dr.im, x0, y0 - breathe * 0.6, w, h);
         if (this.glow > 0.01) {
           c.globalCompositeOperation = "lighter";
           const g = c.createRadialGradient(0, -h * 0.55, 10, 0, -h * 0.55, 230);
@@ -808,7 +932,7 @@
       if (this.drawn === false) return null;
       const st = Math.floor(t / 1000 * 12), has = F.hasSprites, mood = this.faceName || "neutral";
       let set = null, k = 0;
-      if (this.drive > 0.3 && has("R1_rover_avanza")) { set = "R1_rover_avanza"; k = st % 8; }
+      if (this.drive > 0.3 && has("R1_rover_avanza")) { set = "R1_rover_avanza"; k = F.R1_CYCLE[st % F.R1_CYCLE.length]; }
       else if ((this.eyes === "closed" || mood === "asleep") && has("R7_rover_ultimos_dias")) { set = "R7_rover_ultimos_dias"; k = 15; }
       else if (this.dusty > 0.5 && has("R5_rover_tormenta")) { set = "R5_rover_tormenta"; k = 6 + (Math.floor(st / 8) % 2); }
       else if (this.armT > 1.5 && has("R8_rover_celebra")) { set = "R8_rover_celebra"; k = 5; }
@@ -821,12 +945,13 @@
         set = "R3_rover_mira_sol"; k = cyc[Math.floor(st / 5) % cyc.length];
       }
       const im = set ? IM["spr_" + set + "_" + k] : null;
+      this.drawnSet = set;
       return F.ready(im) ? im : null;
     };
     a.head = function () {
       const im = this.drawing(F.t || 0);
       if (im) {                                   // the camera head on the drawings: about 68% across, 25% down
-        const w = 470 * this.s / 0.46, h = w * im.height / im.width;
+        const w = F.roverW(this.drawnSet, this.s), h = w * im.height / im.width;
         return { x: this.x + 0.18 * w * this.flip, y: this.y + 8 * this.s / 0.46 - h * 0.75 };
       }
       const bx = this.x + (300 - 466) * this.s * this.sx * this.flip, by = this.y + (330 - 789) * this.s * this.sy, L = 565 * 0.62 * this.s * this.mastLen;
@@ -844,7 +969,7 @@
       c.beginPath(); c.ellipse(this.x, this.y + 4, 230 * this.s * this.sx, 22 * this.s, 0, 0, 6.2832); c.fill();
       const dimg = this.drawing(t);
       if (dimg) {
-        const w = 470 * this.s / 0.46, h = w * dimg.height / dimg.width;
+        const w = F.roverW(this.drawnSet, this.s), h = w * dimg.height / dimg.width;
         c.translate(this.x, this.y + bob);
         c.rotate(this.tilt + rock);
         c.scale(this.sx * (1 + sq) * this.flip, this.sy * (1 - sq));

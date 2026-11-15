@@ -19,7 +19,7 @@
     return { au: F.lerp(a.au, b.au, u), km: F.lerp(a.km, b.km, u), lt: F.lerp(a.lt, b.lt, u) };
   }
   const today = () => p10At(Date.now());
-  const hm = (h) => Math.floor(h) + " h " + Math.round((h % 1) * 60) + " min";
+  const hm = (h) => { const m = Math.round(h * 60); return Math.floor(m / 60) + " h " + (m % 60) + " min"; };
   const bil = (km) => (km / 1e9).toFixed(1) + " billion km";
 
   // ---------- the narrator window (shared look with chapter 2) ----------
@@ -75,7 +75,7 @@
         if (k === 0 || k === 8) k += Math.floor(st / 6) % 2;     // a gentle two-step while it floats
       }
       const im = set ? IM["spr_" + set + "_" + k] : null;
-      return F.ready(im) ? im : null;
+      return F.ready(im) ? { im, set } : null;
     };
     a.draw = function (c, t) {
       const body = IM.sonda_cuerpo;
@@ -85,11 +85,16 @@
       c.globalAlpha = this.op;
       c.translate(this.x, this.y + drift);
       c.rotate(this.rot + Math.sin(t / 2100) * 0.03);
-      const dimg = this.drawing(t);
-      if (dimg) {
-        const w = 400 * this.s / 0.45, h = w * dimg.height / dimg.width;
+      const dr = this.drawing(t);
+      if (dr) {
+        const meta = (window.SPRITES || {})[dr.set] || {}, P = F.CHAR.probe;
+        let w = 400 * this.s / 0.45, h = w * dr.im.height / dr.im.width, x0 = -w / 2, y0 = -h / 2;
+        if (meta.u) {                              // same dish size and same dish position for every sheet
+          const k = P.k * this.s * P.U / meta.u;
+          w = meta.w * k; h = meta.h * k; x0 = -meta.cx * k; y0 = -meta.cy * k;
+        }
         c.scale(this.sx, this.sy);
-        c.drawImage(dimg, -w / 2, -h / 2, w, h);
+        c.drawImage(dr.im, x0, y0, w, h);
         return;
       }
       c.scale(this.s * this.sx, this.sy * this.s);
@@ -158,15 +163,20 @@
   }
   const clock = F.custom(function (c) {
     c.translate(this.x, this.y); c.scale(this.s, this.s);
-    c.fillStyle = F.PAPER; c.strokeStyle = F.INK; c.lineWidth = 8;
-    c.beginPath(); c.arc(0, 0, 110, 0, 6.2832); c.fill(); c.stroke();
-    c.lineWidth = 4;
-    for (let i = 0; i < 12; i++) { const a = i / 12 * 6.2832; c.beginPath(); c.moveTo(Math.sin(a) * 88, -Math.cos(a) * 88); c.lineTo(Math.sin(a) * 100, -Math.cos(a) * 100); c.stroke(); }
+    c.lineCap = "round"; c.lineJoin = "round";
+    c.fillStyle = "rgba(0,0,0,0.3)"; c.beginPath(); c.arc(7, 10, 118, 0, 6.2832); c.fill();           // soft drop shadow
+    c.fillStyle = "#e3b04a"; c.strokeStyle = F.INK; c.lineWidth = 9;
+    c.beginPath(); c.arc(0, 0, 116, 0, 6.2832); c.fill(); c.stroke();                                 // gold case
+    c.strokeStyle = "rgba(255,240,190,0.85)"; c.lineWidth = 8; c.beginPath(); c.arc(0, 0, 104, -2.6, -1.3); c.stroke();
+    c.strokeStyle = F.INK; c.fillStyle = "#f6ead0"; c.lineWidth = 7;
+    c.beginPath(); c.arc(0, 0, 92, 0, 6.2832); c.fill(); c.stroke();                                  // cream face
+    c.lineWidth = 7;
+    for (let i = 0; i < 12; i++) { const a = i / 12 * 6.2832, r0 = i % 3 ? 72 : 62; c.beginPath(); c.moveTo(Math.sin(a) * r0, -Math.cos(a) * r0); c.lineTo(Math.sin(a) * 81, -Math.cos(a) * 81); c.stroke(); }
     const h = this.h, ah = (h % 12) / 12 * 6.2832, am = (h % 1) * 6.2832;
-    c.lineCap = "round";
-    c.lineWidth = 9; c.beginPath(); c.moveTo(0, 0); c.lineTo(Math.sin(ah) * 55, -Math.cos(ah) * 55); c.stroke();
-    c.lineWidth = 5; c.strokeStyle = F.RED; c.beginPath(); c.moveTo(0, 0); c.lineTo(Math.sin(am) * 84, -Math.cos(am) * 84); c.stroke();
-    c.fillStyle = F.INK; c.beginPath(); c.arc(0, 0, 8, 0, 6.2832); c.fill();
+    c.lineWidth = 11; c.beginPath(); c.moveTo(0, 0); c.lineTo(Math.sin(ah) * 46, -Math.cos(ah) * 46); c.stroke();
+    c.lineWidth = 11; c.beginPath(); c.moveTo(0, 0); c.lineTo(Math.sin(am) * 68, -Math.cos(am) * 68); c.stroke();
+    c.lineWidth = 5; c.strokeStyle = F.RED; c.beginPath(); c.moveTo(0, 0); c.lineTo(Math.sin(am) * 68, -Math.cos(am) * 68); c.stroke();
+    c.fillStyle = F.INK; c.beginPath(); c.arc(0, 0, 11, 0, 6.2832); c.fill();
     c.font = "bold 40px " + F.FONT; c.textAlign = "center"; c.textBaseline = "middle";
     const txt = hm(this.h); const w = c.measureText(txt).width + 36;
     c.fillStyle = F.INK; F.roundRect(c, -w / 2, 128, w, 58, 12); c.fill();
@@ -176,7 +186,7 @@
   // ======================== CHAPTER 3 ========================
   async function launch72() {
     const pad = F.plate("sc_plataforma", { x: -30, y: -20, w: 1340, h: 754, tint: "#0b1030", tintA: 0.55 });
-    const rocket = F.sprite("obj_cohete", { x: 650, y: 552, w: 135, ax: 0.5, ay: 1, z: 20 });
+    const rocket = F.sprite("obj_cohete2", { x: 650, y: 552, w: 81, ax: 0.5, ay: 1, z: 20 });
     const p = F.particles({ z: 25 });
     F.scene([F.stars({ n: 120, par: 0.2, h: 300 }), pad, rocket, p, inset], { bg: "#0b1030", cam: { x: 640, y: 380, z: 1.05 } });
     await F.irisIn(650, 420, 600);
@@ -195,7 +205,7 @@
     await atw(21, "pioneer", 0, 5.2);
     if (F.hasSprites("P1_sonda_despliega")) {
       // the team's drawn frames: the booms swing out, bounce too far and settle, it wakes up, stretches and waves
-      const un = F.spriteSet("P1_sonda_despliega", { x: pr.x, y: pr.y, w: 400 * pr.s / 0.45, ay: 0.5, z: 31, frame: 0 });
+      const un = F.probeFrames("P1_sonda_despliega", pr);
       F.add(un); pr.op = 0;
       // pose to pose, each beat held long enough to read: folded and asleep, the booms swing out and overshoot
       // (a squash on each bounce), they settle, one eye opens, both open, a stretch, a wave
@@ -237,13 +247,13 @@
     let p2 = null;
     if (F.hasSprites("P2_sonda_esquiva")) {
       // the team's drawn frames: it ducks, leans, spins and squeezes between the rocks, then cheers
-      p2 = F.spriteSet("P2_sonda_esquiva", { x: 560, y: 380, w: 400, ay: 0.5, z: 31, frame: 0 });
+      p2 = F.probeFrames("P2_sonda_esquiva", pr, { x: 560, y: 380 });
       F.add(p2); pr.op = 0;
       F.guard((async () => { for (let i = 0; i < 4; i++) { p2.frame = i; await wait(900); } })());
     }
     await atw(22, "asteroid", 0, 4.1);
     if (p2) {
-      for (let i = 4; i < 16; i++) {
+      for (const i of [4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15]) {      // (drawing 12 came out with a dark, hollow dish)
         p2.frame = i;
         if (i % 3 === 1) sfx("swish");
         tw(p2, { y: 380 + Math.sin(i * 1.3) * 40 }, 110, EZ.inOut);
@@ -276,7 +286,7 @@
     let amaze = null;
     if (F.hasSprites("P3_sonda_jupiter")) {
       // the team's drawn frames: it looks up at the giant, eyes widening, "oh!", then smiles, waves and takes a photo
-      amaze = F.spriteSet("P3_sonda_jupiter", { x: pr.x, y: pr.y, w: 400 * pr.s / 0.45, ay: 0.5, z: 31, frame: 0 });
+      amaze = F.probeFrames("P3_sonda_jupiter", pr);
       F.add(amaze); pr.op = 0;
       F.guard((async () => {
         for (const [f, ms, snd] of [[0, 300], [1, 260], [2, 200], [3, 200, "boing"], [4, 360], [8, 260], [9, 260], [10, 180, "swish"], [11, 180],
@@ -314,10 +324,10 @@
     pr.radio = true;                       // drawn: it talks home through its dish, sending little radio waves
     const yr = F.stamp(["1972"], { x: 640, y: 170, size: 64, style: "gold" });
     F.add(yr);
-    const beeps = setInterval(() => sfx("radio", 1.2), 900);
+    const beeps = F.every(900, () => sfx("radio", 1.2));
     const yy = { y: 1972 };
     await F.tw(yy, { y: 2003 }, 2600, EZ.inOut, () => { yr.lines = [String(Math.round(yy.y))]; });
-    clearInterval(beeps);
+    beeps();
     yr.lines = ["2003"];
     const more = F.stamp(["more than 30 years"], { x: 640, y: 260, size: 34, style: "card", rot: 0.03 });
     F.popIn(more, 360, "tada");
@@ -394,15 +404,20 @@
     // one step is the distance from the Earth to the Sun; Pioneer 10 is about 141 steps away
     const steps = Math.round(now.au);
     const line = F.custom(function (c, t) {
-      const n = Math.floor(steps * this.k), gap = 24;
-      c.fillStyle = "#ffcf5a"; c.strokeStyle = F.INK; c.lineWidth = 3;
-      c.beginPath(); c.arc(60 + gap, 360, 9, 0, 6.2832); c.fill(); c.stroke();     // the Sun
+      const n = Math.floor(steps * this.k), gap = 24, q = 1 / Math.sqrt(F.cam.z);   // things grow a little as the camera pulls back
       for (let i = 2; i <= n; i++) {
         c.fillStyle = i % 10 === 0 ? "#ffe07a" : "rgba(244,236,216,0.7)";
-        c.beginPath(); c.arc(60 + i * gap, 360, i % 10 === 0 ? 5 : 3, 0, 6.2832); c.fill();
+        c.beginPath(); c.arc(60 + i * gap, 360, (i % 10 === 0 ? 4 : 2.4) * q, 0, 6.2832); c.fill();
       }
-      if (F.ready(IM.earth)) c.drawImage(IM.earth, 60 - 12, 348, 24, 24);
-      if (n >= steps - 1 && F.ready(IM.sonda_cuerpo)) c.drawImage(IM.sonda_cuerpo, 60 + steps * gap - 20, 330, 50, 54);
+      const sun = IM.cielo_sol, rs = 13 * q, re = 10 * q;
+      if (F.ready(sun)) c.drawImage(sun, 60 + gap - rs, 360 - rs, rs * 2, rs * 2 * sun.height / sun.width);
+      if (F.ready(IM.earth)) c.drawImage(IM.earth, 60 - re, 360 - re, re * 2, re * 2);
+      // Pioneer 10 flies at the head of the road (the same drawing as in the rest of the chapter)
+      const pim = IM.spr_P3_sonda_jupiter_8 || IM.sonda_cuerpo;
+      if (n >= 5 && F.ready(pim)) {
+        const w = 74 * q * q, h = w * pim.height / pim.width, bob = Math.sin(t / 300) * 3 * q;
+        c.drawImage(pim, 60 + (steps * this.k) * gap + 6 * q, 360 - h * 0.55 + bob, w, h);
+      }
     }, { z: 10, k: 0 });
     const count = F.stamp(["1"], { x: W / 2, y: 120, size: 56, style: "gold", kicker: "times the Earth-Sun distance" });
     const tag = F.stamp(["1 step = Earth to Sun"], { x: 250, y: 470, size: 26, style: "card", rot: -0.04 });
@@ -435,7 +450,7 @@
     // the team's drawn frames: it smiles, yawns, its booms droop and it falls asleep
     let p5 = null;
     if (F.hasSprites("P5_sonda_se_apaga")) {
-      p5 = F.spriteSet("P5_sonda_se_apaga", { x: 640, y: 350, w: 440, ay: 0.5, z: 31, frame: 0 });
+      p5 = F.probeFrames("P5_sonda_se_apaga", pr, { x: 640, y: 350 });
       F.add(p5); pr.op = 0;
       p5.update = function (dt, tt) { this.y = 350 + Math.sin(tt / 1300) * 6; };      // it drifts
     }

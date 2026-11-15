@@ -1,40 +1,104 @@
 // Sprite sets cut from the team's sprite sheets by web/tools/cut_sprites.py (frames, size).
 window.SPRITES = {
- "E2_espejo_despierta": {
-  "n": 8,
-  "w": 656,
-  "h": 636,
-  "center": false
+ "E11_espejo_mira_lejos": {
+  "n": 16,
+  "w": 539,
+  "h": 380,
+  "center": false,
+  "u": 351.8,
+  "cx": 262.0,
+  "cy": 184.0,
+  "g": 373.0
  },
- "R1_rover_avanza": {
-  "n": 8,
-  "w": 628,
-  "h": 553,
-  "center": false
+ "E12_espejo_habla": {
+  "n": 16,
+  "w": 474,
+  "h": 379,
+  "center": false,
+  "u": 365.7,
+  "cx": 222.0,
+  "cy": 184.0,
+  "g": 373.0
  },
- "R2_rover_despliega": {
-  "n": 8,
-  "w": 598,
-  "h": 578,
-  "center": false
+ "E13_espejo_gestos": {
+  "n": 16,
+  "w": 560,
+  "h": 379,
+  "center": false,
+  "u": 345.0,
+  "cx": 272.0,
+  "cy": 184.0,
+  "g": 373.0
  },
- "R5_rover_tormenta": {
-  "n": 8,
-  "w": 634,
-  "h": 568,
-  "center": false
+ "E14_espejo_escucha": {
+  "n": 16,
+  "w": 433,
+  "h": 380,
+  "center": false,
+  "u": 365.3,
+  "cx": 214.0,
+  "cy": 184.0,
+  "g": 373.5
  },
- "R6_rover_sacude": {
-  "n": 8,
-  "w": 625,
-  "h": 572,
-  "center": false
+ "E2_espejo_despierta_brazos": {
+  "n": 16,
+  "w": 544,
+  "h": 519,
+  "center": false,
+  "u": 354.8,
+  "cx": 258.0,
+  "cy": 222.0,
+  "g": 411.0
  },
- "O2_bolsas_rebotan": {
-  "n": 8,
-  "w": 634,
-  "h": 614,
-  "center": false
+ "E3_espejo_saluda": {
+  "n": 16,
+  "w": 482,
+  "h": 379,
+  "center": false,
+  "u": 348.0,
+  "cx": 228.0,
+  "cy": 184.0,
+  "g": 373.0
+ },
+ "E5_espejo_anios": {
+  "n": 16,
+  "w": 519,
+  "h": 449,
+  "center": false,
+  "u": 358.6,
+  "cx": 258.0,
+  "cy": 246.0,
+  "g": 437.0
+ },
+ "E6_espejo_cuenta": {
+  "n": 16,
+  "w": 554,
+  "h": 379,
+  "center": false,
+  "u": 350.0,
+  "cx": 266.0,
+  "cy": 184.0,
+  "g": 373.5
+ },
+ "E7_espejo_atrapa": {
+  "n": 16,
+  "w": 536,
+  "h": 471,
+  "center": false,
+  "u": 349.0,
+  "cx": 236.0,
+  "cy": 244.0,
+  "g": 434.0
+ },
+ "E9_espejo_secreto": {
+  "n": 16,
+  "w": 543,
+  "h": 472,
+  "center": false,
+  "u": 351.0,
+  "cx": 262.0,
+  "cy": 276.0,
+  "g": 465.0
  },
  "F1_foton_vuela": {
   "n": 8,
@@ -42,34 +106,16 @@ window.SPRITES = {
   "h": 351,
   "center": true
  },
- "P5_sonda_se_apaga": {
+ "F2_foton_cronometro": {
   "n": 16,
-  "w": 479,
-  "h": 438,
+  "w": 350,
+  "h": 490,
   "center": false
  },
- "R4_rover_excava": {
+ "F4_foton_llega": {
   "n": 16,
-  "w": 486,
-  "h": 450,
-  "center": false
- },
- "R7_rover_ultimos_dias": {
-  "n": 16,
-  "w": 488,
-  "h": 444,
-  "center": false
- },
- "E7_espejo_atrapa": {
-  "n": 16,
-  "w": 490,
-  "h": 445,
-  "center": false
- },
- "P2_sonda_esquiva": {
-  "n": 16,
-  "w": 490,
-  "h": 455,
+  "w": 457,
+  "h": 407,
   "center": false
  },
  "O1_observatorio_dispara": {
@@ -78,94 +124,372 @@ window.SPRITES = {
   "h": 480,
   "center": false
  },
- "E6_espejo_cuenta": {
-  "n": 16,
-  "w": 490,
-  "h": 379,
+ "O2_bolsas_rebotan": {
+  "n": 8,
+  "w": 634,
+  "h": 614,
   "center": false
  },
- "F2_foton_cronometro": {
+ "O3_cohete_despega": {
   "n": 16,
-  "w": 350,
-  "h": 490,
+  "w": 441,
+  "h": 487,
   "center": false
  },
- "E9_espejo_secreto": {
+ "O5_luna_columpio": {
   "n": 16,
-  "w": 490,
-  "h": 455,
-  "center": false
+  "w": 382,
+  "h": 475,
+  "center": false,
+  "ropes": [
+   [
+    12,
+    12.5,
+    293.0,
+    0.2,
+    0.21
+   ],
+   [
+    12,
+    11.5,
+    291.0,
+    0.2,
+    0.2
+   ],
+   [
+    12,
+    11.5,
+    290.0,
+    0.2,
+    0.2
+   ],
+   [
+    12,
+    12.0,
+    290.0,
+    0.19,
+    0.18
+   ],
+   [
+    11,
+    12.0,
+    289.0,
+    0.19,
+    0.18
+   ],
+   [
+    11,
+    12.5,
+    288.0,
+    0.19,
+    0.18
+   ],
+   [
+    12,
+    13.0,
+    287.0,
+    0.18,
+    0.18
+   ],
+   [
+    8,
+    12.5,
+    286.0,
+    0.19,
+    0.18
+   ],
+   [
+    11,
+    15.0,
+    284.0,
+    0.18,
+    0.19
+   ],
+   [
+    10,
+    16.0,
+    284.0,
+    0.16,
+    0.18
+   ],
+   [
+    10,
+    16.0,
+    285.0,
+    0.18,
+    0.18
+   ],
+   [
+    13,
+    16.0,
+    284.5,
+    0.18,
+    0.17
+   ],
+   [
+    16,
+    14.5,
+    284.0,
+    0.18,
+    0.18
+   ],
+   [
+    17,
+    15.0,
+    284.0,
+    0.17,
+    0.18
+   ],
+   [
+    17,
+    15.0,
+    285.0,
+    0.18,
+    0.18
+   ],
+   [
+    18,
+    15.0,
+    284.5,
+    0.18,
+    0.19
+   ]
+  ]
  },
- "E5_espejo_anios": {
+ "P1_sonda_despliega": {
   "n": 16,
-  "w": 487,
-  "h": 418,
-  "center": false
+  "w": 526,
+  "h": 407,
+  "center": true,
+  "u": 288.9,
+  "cx": 262.0,
+  "cy": 196.0,
+  "g": 196.0
  },
- "E3_espejo_saluda": {
+ "P2_sonda_esquiva": {
   "n": 16,
-  "w": 446,
-  "h": 379,
-  "center": false
- },
- "E11_espejo_mira_lejos": {
-  "n": 16,
-  "w": 490,
-  "h": 379,
-  "center": false
- },
- "E12_espejo_habla": {
-  "n": 16,
-  "w": 440,
-  "h": 379,
-  "center": false
- },
- "E13_espejo_gestos": {
-  "n": 16,
-  "w": 490,
-  "h": 379,
-  "center": false
- },
- "E2_espejo_despierta_brazos": {
-  "n": 16,
-  "w": 490,
+  "w": 580,
   "h": 483,
-  "center": false
+  "center": true,
+  "u": 283.8,
+  "cx": 288.0,
+  "cy": 254.0,
+  "g": 254.0
+ },
+ "P3_sonda_jupiter": {
+  "n": 16,
+  "w": 538,
+  "h": 404,
+  "center": true,
+  "u": 286.8,
+  "cx": 274.0,
+  "cy": 184.0,
+  "g": 184.0
+ },
+ "P4_sonda_llama": {
+  "n": 16,
+  "w": 493,
+  "h": 450,
+  "center": true,
+  "u": 284.8,
+  "cx": 244.0,
+  "cy": 240.0,
+  "g": 240.0
+ },
+ "P5_sonda_se_apaga": {
+  "n": 16,
+  "w": 489,
+  "h": 455,
+  "center": true,
+  "u": 341.7,
+  "cx": 276.0,
+  "cy": 226.0,
+  "g": 226.0
+ },
+ "R1_rover_avanza": {
+  "n": 8,
+  "w": 628,
+  "h": 553,
+  "center": false,
+  "wb": 481
+ },
+ "R2_rover_despliega": {
+  "n": 8,
+  "w": 598,
+  "h": 578,
+  "center": false,
+  "wb": 458
  },
  "R3_rover_mira_sol": {
   "n": 16,
   "w": 462,
   "h": 407,
-  "center": false
+  "center": false,
+  "wb": 346
+ },
+ "R4_rover_excava": {
+  "n": 16,
+  "w": 486,
+  "h": 450,
+  "center": false,
+  "wb": 411
+ },
+ "R5_rover_tormenta": {
+  "n": 8,
+  "w": 634,
+  "h": 568,
+  "center": false,
+  "wb": 501
+ },
+ "R6_rover_sacude": {
+  "n": 8,
+  "w": 625,
+  "h": 572,
+  "center": false,
+  "wb": 476
+ },
+ "R7_rover_ultimos_dias": {
+  "n": 16,
+  "w": 488,
+  "h": 444,
+  "center": false,
+  "wb": 405
  },
  "R8_rover_celebra": {
   "n": 16,
   "w": 475,
   "h": 442,
-  "center": false
+  "center": false,
+  "wb": 345
  },
- "P1_sonda_despliega": {
+ "X1_cronometro": {
   "n": 16,
-  "w": 490,
-  "h": 389,
-  "center": false
+  "w": 323,
+  "h": 467,
+  "center": false,
+  "faces": [
+   [
+    170.9,
+    296.1,
+    104.6,
+    142.4,
+    -0.026
+   ],
+   [
+    169.8,
+    313.1,
+    107.2,
+    124.9,
+    -0.043
+   ],
+   [
+    170.3,
+    318.4,
+    110.5,
+    120.8,
+    -0.088
+   ],
+   [
+    170.5,
+    295.0,
+    103.1,
+    142.6,
+    -0.022
+   ],
+   [
+    170.1,
+    294.7,
+    101.3,
+    143.6,
+    -0.025
+   ],
+   [
+    171.1,
+    273.1,
+    83.0,
+    162.6,
+    -0.011
+   ],
+   [
+    171.3,
+    273.9,
+    87.2,
+    159.1,
+    -0.021
+   ],
+   [
+    170.4,
+    294.7,
+    102.6,
+    143.2,
+    -0.02
+   ],
+   [
+    171.9,
+    284.3,
+    86.7,
+    154.1,
+    -0.135
+   ],
+   [
+    171.9,
+    284.6,
+    86.3,
+    153.6,
+    -0.121
+   ],
+   [
+    172.4,
+    283.9,
+    86.7,
+    154.6,
+    -0.11
+   ],
+   [
+    171.9,
+    283.6,
+    87.9,
+    154.8,
+    -0.059
+   ],
+   [
+    172.1,
+    285.0,
+    85.2,
+    153.8,
+    -0.128
+   ],
+   [
+    171.4,
+    284.9,
+    85.4,
+    154.0,
+    -0.112
+   ],
+   [
+    172.1,
+    284.6,
+    85.6,
+    154.1,
+    -0.117
+   ],
+   [
+    171.1,
+    296.7,
+    101.4,
+    141.4,
+    -0.036
+   ]
+  ]
  },
- "P3_sonda_jupiter": {
+ "O4_tierra_cara": {
   "n": 16,
-  "w": 477,
-  "h": 399,
-  "center": false
- },
- "P4_sonda_llama": {
-  "n": 16,
-  "w": 479,
-  "h": 450,
-  "center": false
- },
- "F4_foton_llega": {
-  "n": 16,
-  "w": 457,
-  "h": 407,
-  "center": false
+  "w": 506,
+  "h": 388,
+  "center": true,
+  "u": 342.0,
+  "cx": 226.0,
+  "cy": 180.0,
+  "g": 180.0
  }
 };
