@@ -1285,6 +1285,7 @@
   }
   (async function () {
     if (start === "mars") {
+      await waitStart();                 // one click first, so the browser lets the voice play
       hide(startEl); hide(sky); hide(obs); hide(photonLayer);
       shotsFired = 1;
       await chapter2();
