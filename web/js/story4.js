@@ -22,18 +22,42 @@
     }
   }, { z: 8, x: 1000, y: -120, s: 0.6, flame: 1 });
 
+  // the team's drawn frames over the puppet: show(set, frame) swaps in a drawn pose (in two small steps,
+  // with a little squash as it lands); hide() gives the stage back to the puppet
+  let ov = null;
+  function show(name, k) {
+    if (!F.hasSprites(name)) return false;
+    if (!ov || ov.set !== name) {
+      if (ov) F.remove(ov);
+      ov = F.spriteSet(name, { x: mir.x + 4, y: mir.y + 8, w: 330 * mir.s / 0.62, ay: 1, z: 21, frame: k });
+      ov.set = name;
+    }
+    ov.x = mir.x + 4; ov.y = mir.y + 8; ov.w = 330 * mir.s / 0.62;
+    F.add(ov);                       // (no-op if it is already on stage; puts it back after a scene change)
+    ov.frame = k; ov.sx = 1.04; ov.sy = 0.96;
+    tw(ov, { sx: 1, sy: 1 }, 240, EZ.back);
+    mir.op = 0;
+    const me = ov;
+    wait(100).then(() => { if (ov === me && me.frame === k) me.frame = k + 1; }).catch(() => {});
+    return true;
+  }
+  function hide() { if (ov) { F.remove(ov); ov = null; } mir.op = 1; }
+
   async function abandoned29() {
     const luna = F.plate("sc_luna", { x: -40, y: -24, w: 1360, h: 765 });
     mir.x = 640; mir.y = 600; mir.s = 0.62; mir.eyes = "half"; mir.mouth = "closed"; mir.brows = false; mir.lx = 0; mir.ly = 0; mir.glow = 0; mir.dust = 0;
     F.scene([luna, F.stars({ n: 120, par: 0.2, w: W * 1.4, h: 260, y: -40 }), mir], { bg: "#05060a", cam: { x: 640, y: 420, z: 1.5 } });
-    await F.irisIn(640, 400, 800);
     F.faceNow(mir, "sad"); F.gesture(mir, "droop", 1);
+    show("E11_espejo_mira_lejos", 4);                         // small and lonely, looking down
+    await F.irisIn(640, 400, 800);
     const v = S.speak(29, mir);
     tw(F.cam, { z: 0.95, y: 360 }, 5200, EZ.inOut);          // we pull back: the Mirror looks very small and alone
     await atw(29, "abandoned", 0, 3.3);
     mir.ly = -3;
+    show("E11_espejo_mira_lejos", 0);                         // it looks up at the sky
     await v;
     await wait(400);
+    hide();
   }
 
   async function no30() {
@@ -44,15 +68,21 @@
     const v = S.speak(30, mir);
     // "No." — a firm little hop
     mir.brows = true; F.face(mir, "determined"); F.gesture(mir, "one", 180);
-    await tw(mir, { sy: 1.1, sx: 0.94 }, 140, EZ.out);
-    await tw(mir, { sy: 1, sx: 1 }, 380, EZ.elastic);
+    if (show("E6_espejo_cuenta", 10)) {                       // drawn: one finger up
+      ov.sy = 1.1; ov.sx = 0.94; await tw(ov, { sy: 1, sx: 1 }, 420, EZ.elastic);
+    } else {
+      await tw(mir, { sy: 1.1, sx: 0.94 }, 140, EZ.out);
+      await tw(mir, { sy: 1, sx: 1 }, 380, EZ.elastic);
+    }
     mir.brows = false;
     await atw(30, "answer", 0, 2.6);
     mir.glow = 1; tw(mir, { glow: 0 }, 700, EZ.out); sfx("ting");
     F.face(mir, "happy"); F.gesture(mir, "cheer", 200);
+    show("E11_espejo_mira_lejos", 12);                        // drawn: beaming
     p.emit("spark", mir.x, mir.y - 230, 8, { spread: 200, vy: -40, g: 0, r: 12, life: 0.8, fill: "#fff6c8" });
     await atw(30, "quiet", 0, 5.4);
     F.face(mir, "sad"); F.gesture(mir, "droop");
+    show("E11_espejo_mira_lejos", 4);                         // drawn: sad, looking down
     // two framed portraits of the neighbors who went quiet
     const frames = [
       F.proof("ph_opp", "Opportunity, 2004-2018", { x: 300, y: 250, w: 230, rot: -0.07, label: "QUIET" }),
@@ -73,13 +103,16 @@
       const k = cards[i];
       await atw(30, ["time", "number", "measurement"][i], 0, k[0]);
       F.face(mir, "proud"); F.gesture(mir, ["one", "two", "three"][i], 200);
+      show("E6_espejo_cuenta", i * 2);                        // drawn: one, two, three fingers
       const st = F.stamp([k[2]], { x: 260 + i * 380, y: 170, size: 46, style: "card", rot: (i - 1) * 0.04, kicker: k[1] });
       made.push(st);
       F.popIn(st, 360, "stamp");
     }
     await v;
+    show("E6_espejo_cuenta", 14);                             // drawn: gloves open, smiling
     await wait(500);
     made.forEach((st) => F.popOut(st));
+    hide();
   }
 
   async function true31() {
@@ -87,7 +120,9 @@
     mir.x = 640; mir.y = 610; mir.s = 0.6; mir.eyes = "open"; mir.mouth = "smile";
     F.scene([luna, F.stars({ n: 120, par: 0.2, w: W * 1.4, h: 260, y: -40 }), mir], { bg: "#05060a", cam: { x: 640, y: 380, z: 1.1 } });
     const v = S.speak(31, mir);
-    tw(F.cam, { z: 1.75, y: 330 }, 6500, EZ.inOut);           // closer and closer: the most important line
+    const drawn = show("E6_espejo_cuenta", 14);               // drawn: gloves open toward the viewer
+    // closer and closer: the most important line (the drawn Mirror sits lower in its frame, so aim lower)
+    tw(F.cam, drawn ? { z: 1.5, y: 450 } : { z: 1.75, y: 330 }, 6500, EZ.inOut);
     const warm = F.custom(function (c) {
       c.globalCompositeOperation = "soft-light";
       c.fillStyle = "rgba(255,200,120," + this.k + ")"; c.fillRect(0, 0, W, H);
@@ -97,12 +132,14 @@
     F.faceNow(mir, "neutral"); F.gesture(mir, "present", 1);
     await atw(31, "told", 0, 4.6);
     F.face(mir, "worried"); F.gesture(mir, "shrug");
+    show("E6_espejo_cuenta", 6);                              // drawn: a doubtful shrug
     const rumor = F.icon("voice", { x: 330, y: 220, s: 0.7 });
     F.popIn(rumor, 300, "squeak");
     await wait(450);
     sfx("rip"); tw(rumor, { xp: 1 }, 380, EZ.out);
     await atw(31, "check", 0, 6.7);
     F.face(mir, "happy"); F.gesture(mir, "thumb", 200);
+    show("E11_espejo_mira_lejos", 14);                        // drawn: a wink and a thumbs up
     F.popOut(rumor);
     const tick = F.custom(function (c) {
       c.translate(this.x, this.y); c.scale(this.s, this.s);
@@ -114,6 +151,7 @@
     sfx("tada");
     await v;
     await wait(500);
+    hide();
   }
 
   async function back32() {
