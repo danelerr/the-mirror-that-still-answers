@@ -717,15 +717,17 @@
     await say("Every dot is a real measurement from 2025 and 2026. <b>" + DATA.length + "</b> times, someone on Earth sent me light. " + DATA.length + " times, <b>I answered.</b>", "smile", 10);
     await say("See the wave? The Moon swings closer and farther every month. The line is the distance between the centers of the Earth and the Moon.", "smile", 11);
     await say("My dots sit a little below the line, because the telescope and I both stand on the surface, facing each other. <b>The numbers agree.</b>", "smile", 12);
-    hide(balloon);
-    balloon.classList.remove("overChart");
-    show(againBtn);
+    await say("I have neighbors, you know. They cannot answer anymore… but they left their measurement behind. <b>Let me introduce one.</b>", "smile", 13);
+    await chapter2();
   }
 
   async function backToSky() {
     hide(againBtn);
     await iris(285, 450, 1500, 0, 700);
     hide(chart); hide(mirror); hide(balloon);
+    if (typeof marsCv !== "undefined") { hide(marsCv); hide(oppPanel); }
+    mirror.classList.remove("inset");
+    balloon.classList.remove("caption");
     flight = null;
     clearPhotons();
     timer.textContent = "0.000 s";
@@ -757,6 +759,518 @@
     backToSky();
   });
 
+  // =================== Chapter 2: Opportunity on Mars ===================
+  // The sky, the Sun and the dust follow the rover's own measurements of the atmosphere.
+  var marsCv = $("mars"), mctx = marsCv.getContext("2d");
+  var oppPanel = $("oppPanel"), oppChartEl = $("oppChart"), occ = oppChartEl.getContext("2d");
+  var oppSlider = $("oppSlider"), oppRead = $("oppRead");
+  var OPP = window.OPP_TAU;
+  var OPP_FINAL = [5111, 10.8];              // NASA Photojournal PIA22930: "a tau of about 10.8" on sol 5,111
+  var OPP_ALL = OPP.concat([OPP_FINAL]);      // every slider position is a real measurement
+  var LAND_MS = Date.UTC(2004, 0, 25, 5, 5), SOL_MS = 88775244;   // Opportunity's sol 1, and one Martian day
+  function monthYear(sol) {
+    return new Date(LAND_MS + (sol - 1) * SOL_MS).toLocaleDateString("en-US", { month: "long", year: "numeric", timeZone: "UTC" });
+  }
+  function idxOfSol(sol) {
+    var lo = 0, hi = OPP_ALL.length - 1;
+    while (lo < hi) {
+      var mid = (lo + hi + 1) >> 1;
+      if (OPP_ALL[mid][0] <= sol) lo = mid; else hi = mid - 1;
+    }
+    return lo;
+  }
+  // When key words are spoken inside each recorded line (seconds from the start of the line)
+  var CUE = {
+    15: { sun: 5.6, dust: 7.9 },
+    17: { darkened: 4.0, waited: 7.1, cleared: 9.3, work: 11.2 },
+    18: { km: 2.8, june: 5.0, covered: 8.9 },
+    19: { climb1: 5.6, climb2: 6.8, stop: 9.5 },
+    20: { quiet: 1.7, check: 6.9 }
+  };
+
+  var mi = {};
+  ["mars_ground", "art/rover_cuerpo", "art/rover_mastil", "art/rover_brazo", "art/rover_ojos_abiertos", "art/rover_ojos_medio",
+    "art/rover_ojos_cerrados", "art/cielo_sol", "art/cielo_nube_a", "art/cielo_nube_b", "art/cielo_nube_c", "art/cielo_tormenta"].forEach(function (f) {
+    var im = new Image();
+    im.src = "assets/" + f + ".png";
+    mi[f.replace("art/", "")] = im;
+  });
+
+  var GROUND_Y = 692, RS = 0.46;            // where the wheels touch the ground; rover scale
+  var M = {
+    idx: 0, shown: OPP[0][1], lastIdx: -1, pan: 0, panV: 6, clouds: [], puffs: [], tweens: [], beam: 0, sunPop: 0,
+    view: null, reveal: 999, finalShown: false, odoShow: false, lastPuff: 0,
+    rv: { x: 1500, px: 1500, lvx: 0, y: 0, sx: 1, sy: 1, tilt: 0, mast: 0, mastV: 0, mastT: 0, arm: 0.1, armV: 0, armT: 0.1, look: 0, lookX: 0, eyes: "open", drive: 0 }
+  };
+  (function () {
+    var seed = 7;
+    function rnd() { seed = (seed * 16807) % 2147483647; return seed / 2147483647; }
+    var kinds = ["cielo_nube_a", "cielo_nube_b", "cielo_nube_c", "cielo_tormenta"];
+    for (var i = 0; i < 16; i++) {
+      M.clouds.push({ x: rnd() * 1500 - 110, y: 40 + rnd() * 300, s: 0.3 + rnd() * 0.45, v: 10 + rnd() * 26, k: kinds[i % 4], a: 0 });
+    }
+  })();
+
+  var EZ = {
+    inOut: function (u) { return u < 0.5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2; },
+    out: function (u) { return 1 - Math.pow(1 - u, 3); },
+    in: function (u) { return u * u * u; },
+    back: function (u) { var c = 1.70158, d = u - 1; return 1 + (c + 1) * d * d * d + c * d * d; }
+  };
+  function tween(obj, to, ms, ease) {
+    return new Promise(function (res) {
+      var from = {};
+      for (var k in to) from[k] = obj[k];
+      M.tweens.push({ obj: obj, from: from, to: to, t0: performance.now(), ms: REDUCED ? 1 : Math.max(1, ms), ease: ease || EZ.inOut, res: res });
+    });
+  }
+  function runTweens(now) {
+    M.tweens = M.tweens.filter(function (tw) {
+      var u = Math.min(1, (now - tw.t0) / tw.ms), e = tw.ease(u);
+      for (var k in tw.to) tw.obj[k] = tw.from[k] + (tw.to[k] - tw.from[k]) * e;
+      if (u >= 1) { tw.res(); return false; }
+      return true;
+    });
+  }
+  function springStep(o, k, vk, target, stiff, damp, dt) {
+    var a = (target - o[k]) * stiff - o[vk] * damp;
+    o[vk] += a * dt;
+    o[k] += o[vk] * dt;
+  }
+  function puff(x, y, n, spread) {
+    for (var i = 0; i < n; i++) {
+      M.puffs.push({ x: x + (Math.random() - 0.5) * spread, y: y + (Math.random() - 0.5) * 20, vx: 20 + Math.random() * 60, vy: -40 - Math.random() * 50,
+        s: 0.07 + Math.random() * 0.07, life: 0, max: 0.8 + Math.random() * 0.6 });
+    }
+  }
+  function lerp(a, b, u) { return a + (b - a) * u; }
+  function mix(c1, c2, u) {
+    return "rgb(" + Math.round(lerp(c1[0], c2[0], u)) + "," + Math.round(lerp(c1[1], c2[1], u)) + "," + Math.round(lerp(c1[2], c2[2], u)) + ")";
+  }
+
+  function drawRoverEyes(c, rv, now) {
+    var e = rv.eyes;
+    if (e === "open" && now % 4300 < 140) e = "closed";      // a blink now and then
+    var im = mi[e === "closed" ? "rover_ojos_cerrados" : e === "half" ? "rover_ojos_medio" : "rover_ojos_abiertos"];
+    if (!im.complete) return;
+    var half = im.width / 2, f = 0.7, w = half * f, h = im.height * f;
+    var sockets = [[78 - 172, 75 - 640], [262 - 172, 75 - 640]];   // the two camera "eyes" at the top of the mast (mast pivot at 172, 640)
+    for (var i = 0; i < 2; i++) {
+      c.drawImage(im, i * half, 0, half, im.height, sockets[i][0] - w / 2 + rv.lookX, sockets[i][1] - h / 2 + rv.look, w, h);
+    }
+  }
+  function drawRover(c, now, x, y, sx, sy, tilt) {
+    var rv = M.rv;
+    if (!mi.rover_cuerpo.complete) return;
+    c.save();
+    c.translate(x, y);
+    c.rotate(tilt);
+    c.scale(RS * sx, RS * sy);
+    c.drawImage(mi.rover_cuerpo, -466, -789);
+    c.save();                                                 // the mast stands on the front of the deck
+    c.translate(300 - 466, 330 - 789);
+    c.rotate(rv.mast);
+    c.scale(0.62, 0.62);
+    c.drawImage(mi.rover_mastil, -172, -640);
+    drawRoverEyes(c, rv, now);
+    c.restore();
+    c.save();                                                 // the arm hangs from the front of the body
+    c.translate(210 - 466, 395 - 789);
+    c.rotate(rv.arm);
+    c.scale(0.5, 0.5);
+    c.drawImage(mi.rover_brazo, -205, -45);
+    c.restore();
+    c.restore();
+  }
+  function roverHead() {
+    var rv = M.rv, bx = rv.x + (300 - 466) * RS * rv.sx, by = GROUND_Y + (330 - 789) * RS * rv.sy, L = 565 * 0.62 * RS;
+    return { x: bx + Math.sin(rv.mast) * L, y: by - Math.cos(rv.mast) * L };
+  }
+
+  var lastMars = 0;
+  function drawMars(now) {
+    var dt = Math.min(0.05, (now - (lastMars || now)) / 1000);
+    lastMars = now;
+    runTweens(now);
+    var i0 = Math.max(0, Math.min(OPP_ALL.length - 1, Math.round(M.idx)));
+    if (i0 !== M.lastIdx) { M.lastIdx = i0; updateOppRead(); }
+    M.shown += (OPP_ALL[i0][1] - M.shown) * Math.min(1, dt * 5);      // slow in and slow out from day to day
+    var tau = M.shown, d = 1 - Math.exp(-tau / 3), c = mctx;
+
+    // the sky: its colour comes from the measured dust
+    var g = c.createLinearGradient(0, 0, 0, 430);
+    g.addColorStop(0, mix([196, 150, 106], [34, 22, 14], d));
+    g.addColorStop(1, mix([236, 200, 152], [94, 62, 38], d));
+    c.fillStyle = g;
+    c.fillRect(0, 0, W, H);
+
+    // the Sun dims as the dust gets thicker
+    var sunA = Math.max(0.03, Math.exp(-tau / 2.2)), sp = 1 + 0.14 * M.sunPop;
+    var glow = c.createRadialGradient(1075, 165, 10, 1075, 165, 230);
+    glow.addColorStop(0, "rgba(255,236,180," + (0.6 * sunA).toFixed(3) + ")");
+    glow.addColorStop(1, "rgba(255,236,180,0)");
+    c.fillStyle = glow;
+    c.fillRect(780, 0, 500, 430);
+    if (mi.cielo_sol.complete) {
+      c.globalAlpha = sunA;
+      c.drawImage(mi.cielo_sol, 1075 - 85 * sp, 165 - 83 * sp, 170 * sp, 166 * sp);
+      c.globalAlpha = 1;
+    }
+
+    // dust clouds: more of them, and thicker, as tau rises
+    var nC = Math.min(M.clouds.length, Math.round(tau * 3));
+    for (var i = 0; i < M.clouds.length; i++) {
+      var cl = M.clouds[i], im = mi[cl.k];
+      cl.x += cl.v * dt * (0.4 + d);
+      if (cl.x > W + 60) cl.x = -470;
+      var want = i < nC ? Math.min(1, 0.3 + d) : 0;
+      cl.a += (want - cl.a) * Math.min(1, dt * 2);
+      if (cl.a > 0.02 && im.complete) {
+        c.globalAlpha = cl.a;
+        c.drawImage(im, cl.x, cl.y, im.width * cl.s, im.height * cl.s);
+      }
+    }
+    c.globalAlpha = 1;
+
+    // the ground: Opportunity's own last panorama
+    c.fillStyle = "#7a5636";
+    c.fillRect(0, 560, W, H - 560);
+    if (mi.mars_ground.complete) {
+      var gh = 400, gw = 4096 * gh / 410, gy = 330;
+      M.pan = ((M.pan + M.panV * dt) % gw + gw) % gw;
+      c.drawImage(mi.mars_ground, -M.pan, gy, gw, gh);
+      c.drawImage(mi.mars_ground, -M.pan + gw, gy, gw, gh);
+    }
+    c.fillStyle = "rgba(70, 42, 24, " + (d * 0.62).toFixed(3) + ")";
+    c.fillRect(0, 300, W, H - 300);
+
+    // the rover. Follow-through: the mast and the arm lag behind every change of speed, then spring back
+    var rv = M.rv;
+    var vx = (rv.x - rv.px) / Math.max(dt, 0.001), acc = (vx - rv.lvx) / Math.max(dt, 0.001);
+    rv.lvx = vx;
+    rv.px = rv.x;
+    var lag = Math.max(-0.35, Math.min(0.35, -acc * 0.00022));
+    springStep(rv, "mast", "mastV", rv.mastT + lag, 90, 9, dt);
+    springStep(rv, "arm", "armV", rv.armT + lag * 1.4, 70, 6, dt);
+    var step = Math.floor(now / 83);                          // drawn on twos
+    var bob = rv.drive ? -Math.abs(Math.sin(step * 1.3)) * 7 * rv.drive : -Math.sin(now / 900) * 1.5;
+    var sq = rv.drive && step % 3 === 0 ? 0.03 * rv.drive : 0;
+    drawRover(c, now, rv.x, GROUND_Y + rv.y + bob, rv.sx * (1 + sq), rv.sy * (1 - sq), rv.tilt);
+    if (rv.drive && step - M.lastPuff >= 4) {
+      M.lastPuff = step;
+      puff(rv.x + 170 * rv.sx, GROUND_Y - 30, 2, 60);
+    }
+
+    // dust puffs rise and drift back in arcs, then fade
+    for (var p = 0; p < M.puffs.length; p++) {
+      var pf = M.puffs[p], im2 = mi.cielo_nube_b;
+      pf.life += dt;
+      pf.x += pf.vx * dt;
+      pf.y += pf.vy * dt;
+      pf.vy += 30 * dt;
+      var u = pf.life / pf.max, s = pf.s * (1 + u * 1.6);
+      if (im2.complete) {
+        c.globalAlpha = Math.max(0, 0.85 * (1 - u));
+        c.drawImage(im2, pf.x - im2.width * s / 2, pf.y - im2.height * s / 2, im2.width * s, im2.height * s);
+      }
+    }
+    c.globalAlpha = 1;
+    M.puffs = M.puffs.filter(function (pf) { return pf.life < pf.max; });
+
+    // Opportunity looks straight at the Sun to measure the dust
+    if (M.beam > 0.01) {
+      var hd = roverHead();
+      c.save();
+      c.globalAlpha = M.beam;
+      c.setLineDash([10, 9]);
+      c.lineDashOffset = -now / 25;
+      c.strokeStyle = "#ffe07a";
+      c.lineWidth = 4;
+      c.beginPath();
+      c.moveTo(hd.x, hd.y);
+      c.lineTo(1075, 165);
+      c.stroke();
+      c.restore();
+    }
+
+    c.fillStyle = "rgba(0,0,0," + (d * 0.3).toFixed(3) + ")";
+    c.fillRect(0, 0, W, H);
+    c.fillStyle = "rgba(255,255,255,0.6)";
+    c.font = "13px Arial, sans-serif";
+    c.fillText("Ground: Opportunity's last panorama, May 13 - June 10, 2018 (NASA/JPL-Caltech, PIA22909). Sky and dust follow its real measurements.", 16, H - 12);
+  }
+
+  function drawOppChart() {
+    var c = occ, w = 540, h = 150, L = 36, R = 10, T = 12, B = 22;
+    c.clearRect(0, 0, w, h);
+    var v = M.view || { s0: 1, s1: 5118, tMax: 5 };
+    var full = v.s1 - v.s0 > 500;
+    function x(s) { return L + (s - v.s0) / (v.s1 - v.s0) * (w - L - R); }
+    function y(t) { return T + (1 - Math.min(t, v.tMax) / v.tMax) * (h - T - B); }
+    c.font = "11px Arial, sans-serif";
+    c.lineWidth = 1;
+    c.strokeStyle = "rgba(244,236,216,0.16)";
+    c.fillStyle = "rgba(244,236,216,0.78)";
+    c.textAlign = "right";
+    c.textBaseline = "middle";
+    for (var t = 0; t <= v.tMax; t += v.tMax > 6 ? 2 : 1) {
+      c.beginPath(); c.moveTo(L, y(t)); c.lineTo(w - R, y(t)); c.stroke();
+      c.fillText(String(t), L - 6, y(t));
+    }
+    c.textAlign = "center";
+    c.textBaseline = "top";
+    if (full) {
+      for (var yr = 2004; yr <= 2018; yr += 2) c.fillText(String(yr), x(1 + (Date.UTC(yr, 0, 1) - LAND_MS) / SOL_MS), h - B + 6);
+    } else {
+      for (var s2 = Math.ceil(v.s0 / 5) * 5; s2 <= v.s1; s2 += 5) c.fillText("sol " + s2, x(s2), h - B + 6);
+    }
+    c.save();
+    c.beginPath(); c.rect(L, 0, w - L - R, h - B + 2); c.clip();
+    if (full) {
+      c.strokeStyle = "#ffe07a";
+      c.lineWidth = 1.2;
+      c.beginPath();
+      for (var i = 0; i < OPP.length; i++) {
+        if (i === 0) c.moveTo(x(OPP[i][0]), y(OPP[i][1])); else c.lineTo(x(OPP[i][0]), y(OPP[i][1]));
+      }
+      c.stroke();
+    } else {
+      var n = 0;
+      for (var j = 0; j < OPP.length; j++) {
+        if (OPP[j][0] < v.s0) continue;
+        if (n++ >= M.reveal) break;
+        c.fillStyle = "#ffe07a";
+        c.beginPath(); c.arc(x(OPP[j][0]), y(OPP[j][1]), 4, 0, 6.2832); c.fill();
+        if (OPP[j][0] >= 5103) {                          // label only the climb, so the numbers never overlap
+          c.fillStyle = "#f4ecd8";
+          c.textBaseline = "bottom";
+          c.fillText(OPP[j][1].toFixed(2), x(OPP[j][0]), y(OPP[j][1]) - 7);
+        }
+      }
+    }
+    if (M.finalShown) {
+      c.strokeStyle = "#ff9a6a";
+      c.lineWidth = 2.5;
+      c.beginPath(); c.arc(x(OPP_FINAL[0]), y(OPP_FINAL[1]), 6, 0, 6.2832); c.stroke();
+    }
+    c.restore();
+    if (M.finalShown) {
+      c.fillStyle = "#ff9a6a";
+      c.textAlign = "right";
+      c.textBaseline = "middle";
+      c.fillText("about 10.8 on its last day (NASA)", x(OPP_FINAL[0]) - 10, y(OPP_FINAL[1]) + (full ? 10 : 2));
+    }
+    if (full) {
+      var cur = OPP_ALL[Math.max(0, Math.min(OPP_ALL.length - 1, Math.round(M.idx)))];
+      c.strokeStyle = "#ffffff";
+      c.lineWidth = 2;
+      c.beginPath(); c.moveTo(x(cur[0]), T); c.lineTo(x(cur[0]), h - B); c.stroke();
+    }
+    c.save();
+    c.translate(11, (h - B) / 2 + 4);
+    c.rotate(-Math.PI / 2);
+    c.textAlign = "center";
+    c.textBaseline = "middle";
+    c.fillStyle = "rgba(244,236,216,0.78)";
+    c.fillText("dust (tau)", 0, 0);
+    c.restore();
+  }
+  function updateOppRead() {
+    var i = Math.max(0, Math.min(OPP_ALL.length - 1, Math.round(M.idx)));
+    var sol = OPP_ALL[i][0], tau = OPP_ALL[i][1], direct = Math.exp(-tau) * 100;
+    var pct = direct >= 1 ? Math.round(direct) + "%" : "less than 1%";
+    var est = i === OPP_ALL.length - 1 ? " (NASA estimate)" : "";
+    oppRead.innerHTML = "Sol <b>" + sol + "</b> &middot; " + monthYear(sol) + " &middot; dust (tau): <b>" + tau.toFixed(2) + "</b>" + est +
+      "<br>Sunlight shining straight through the dust: <b>" + pct + "</b>" +
+      (M.odoShow ? " &middot; total driven: <b>45.16 km</b>" : "");
+    if (document.activeElement !== oppSlider) oppSlider.value = String(i);
+  }
+
+  oppSlider.max = String(OPP_ALL.length - 1);
+  var lastSlide = 0, sliderHeld = false;
+  oppSlider.addEventListener("input", function () {
+    M.idx = +oppSlider.value;
+    lastSlide = performance.now();
+    updateOppRead();
+  });
+  ["pointerdown", "click", "keydown"].forEach(function (ev) {
+    oppSlider.addEventListener(ev, function (e) { e.stopPropagation(); if (ev === "pointerdown") sliderHeld = true; });
+  });
+  window.addEventListener("pointerup", function () { sliderHeld = false; });
+  function waitSlide() {
+    return new Promise(function (res) {
+      var t0 = performance.now();
+      oppPanel.classList.add("invite");
+      (function check() {
+        var now = performance.now();
+        var done = lastSlide > t0 ? now - lastSlide > 4500 && !sliderHeld : now - t0 > 12000;
+        if (done) { oppPanel.classList.remove("invite"); res(); } else setTimeout(check, 200);
+      })();
+    });
+  }
+
+  (function marsLoop(now) {
+    if (!marsCv.classList.contains("hidden")) { drawMars(now || 0); drawOppChart(); }
+    requestAnimationFrame(marsLoop);
+  })();
+
+  function resetMars() {
+    M.idx = 0; M.shown = OPP[0][1]; M.lastIdx = -1; M.view = null; M.reveal = 999; M.finalShown = false; M.odoShow = false;
+    M.beam = 0; M.sunPop = 0; M.panV = 6; M.puffs = []; M.tweens = [];
+    var rv = M.rv;
+    rv.x = rv.px = 1500; rv.lvx = 0; rv.y = 0; rv.sx = rv.sy = 1; rv.tilt = 0; rv.mast = rv.mastV = rv.mastT = 0;
+    rv.arm = rv.armT = 0.1; rv.armV = 0; rv.look = 0; rv.lookX = 0; rv.eyes = "open"; rv.drive = 0;
+    M.clouds.forEach(function (cl) { cl.a = 0; });
+  }
+  function showPanel() {
+    if (!oppPanel.classList.contains("hidden")) return;
+    updateOppRead();
+    show(oppPanel);
+    anim(oppPanel, [{ transform: "scale(0.6)" }, { transform: "scale(1.05)", offset: 0.65 }, { transform: "scale(1)" }], { duration: 450, easing: EASE.out });
+  }
+
+  // Opportunity drives in from the right, front first
+  async function roverDriveIn() {
+    var rv = M.rv;
+    await wait(250);
+    // anticipation: it rocks back before it rolls
+    await tween(rv, { sx: 1.05, sy: 0.94, tilt: 0.03 }, 220);
+    rv.drive = 1;
+    tween(rv, { sx: 1, sy: 1, tilt: 0 }, 200, EZ.out);
+    await tween(rv, { x: 420 }, 2700, EZ.out);           // slows in as it arrives
+    rv.drive = 0;
+    // it stops: squash, rebound, settle
+    await tween(rv, { sx: 1.06, sy: 0.93 }, 130, EZ.out);
+    await tween(rv, { sx: 0.97, sy: 1.04 }, 170, EZ.out);
+    await tween(rv, { sx: 1, sy: 1 }, 220);
+  }
+  // It tilts its cameras up toward the Sun, and the measurements appear
+  async function lookAtSun() {
+    var rv = M.rv;
+    await wait(Math.max(0, CUE[15].sun * 1000 - 1100));
+    await tween(rv, { mastT: -0.1 }, 260);               // anticipation: a small dip the other way
+    tween(rv, { mastT: 0.3, look: -10, lookX: 6 }, 650, EZ.back);
+    await tween(M, { beam: 1 }, 600, EZ.out);
+    tween(M, { sunPop: 1 }, 170, EZ.out).then(function () { return tween(M, { sunPop: 0 }, 420, EZ.back); });
+    await wait(Math.max(0, (CUE[15].dust - CUE[15].sun) * 1000 - 500));
+    showPanel();
+    await wait(1200);
+    tween(M, { beam: 0 }, 500, EZ.in);
+    tween(rv, { mastT: 0, look: 0, lookX: 0 }, 700);
+  }
+  // 2007: the days roll on to the storm, Opportunity waits it out, then shakes off the dust
+  async function storm2007() {
+    var rv = M.rv, c = CUE[17];
+    await tween(M, { idx: idxOfSol(1150) }, 1400);
+    await tween(M, { idx: idxOfSol(1236) }, Math.max(300, (c.darkened + 0.5) * 1000 - 1400), EZ.in);
+    rv.eyes = "half";
+    tween(rv, { sy: 0.9, sx: 1.05, mastT: -0.2, armT: 0.25 }, 700);
+    await wait(Math.max(0, (c.waited - c.darkened) * 1000 - 200));
+    rv.eyes = "closed";
+    await wait(Math.max(0, (c.cleared - c.waited) * 1000 - 900));
+    await tween(M, { idx: idxOfSol(1420) }, 1300, EZ.out);
+    rv.eyes = "open";                                      // the take: eyes pop open and it springs up
+    await tween(rv, { sy: 1.12, sx: 0.94, mastT: 0.05 }, 160, EZ.out);
+    for (var k = 0; k < 3; k++) {                          // it shakes off the dust
+      await tween(rv, { tilt: 0.05, sx: 1.03 }, 70);
+      await tween(rv, { tilt: -0.05, sx: 0.98 }, 70);
+    }
+    puff(rv.x + 60, GROUND_Y - 150, 8, 260);
+    tween(rv, { sy: 1, sx: 1, tilt: 0, mastT: 0, armT: 0.1 }, 320, EZ.back);
+    rv.drive = 0.6;
+    await wait(900);
+    rv.drive = 0;
+  }
+  // Years go by; then the 2018 storm rolls in
+  async function drive2018() {
+    var rv = M.rv, c = CUE[18];
+    rv.drive = 1;
+    M.panV = -70;                                          // a time-lapse: the ground slides by
+    await tween(M, { idx: idxOfSol(5050) }, c.km * 1000, EZ.inOut);
+    M.odoShow = true;
+    updateOppRead();
+    anim(oppRead, [{ transform: "scale(1)" }, { transform: "scale(1.06)", offset: 0.4 }, { transform: "scale(1)" }], { duration: 400, easing: EASE.out });
+    await wait(Math.max(0, (c.june - c.km) * 1000));
+    rv.drive = 0;
+    M.panV = 6;
+    await tween(M, { idx: idxOfSol(5105) }, Math.max(400, (c.covered - c.june + 0.6) * 1000), EZ.in);
+    rv.eyes = "half";
+    tween(rv, { sy: 0.95, sx: 1.03, mastT: -0.12 }, 900);
+  }
+  // The last days, one dot at a time: the numbers climb, and climb, and stop
+  async function lastDays() {
+    var rv = M.rv, c = CUE[19];
+    M.view = { s0: 5084, s1: 5114, tMax: 11 };
+    M.reveal = 0;
+    anim(oppChartEl, [{ transform: "scale(0.9)", opacity: 0.3 }, { transform: "scale(1)", opacity: 1 }], { duration: 400, easing: EASE.out });
+    var calm = OPP.filter(function (r) { return r[0] >= 5084 && r[0] <= 5102; }).length;
+    for (var i = 1; i <= calm; i++) {
+      M.reveal = i;
+      await wait(Math.max(40, (c.climb1 * 1000 - 500) / calm));
+    }
+    M.reveal = calm + 1;
+    M.idx = idxOfSol(5103);
+    await wait((c.climb2 - c.climb1) * 1000);
+    M.reveal = calm + 2;
+    M.idx = idxOfSol(5105);
+    await wait(Math.max(0, (c.stop - c.climb2) * 1000 - 400));
+    M.finalShown = true;
+    M.idx = OPP_ALL.length - 1;
+    // it settles, slowly, and its eyes close
+    tween(rv, { mastT: -0.42, armT: 0.35, sy: 0.92, sx: 1.04 }, 1900);
+    await wait(800);
+    rv.eyes = "closed";
+  }
+  // The chart steps back out: fourteen years of numbers, still there
+  async function goQuiet() {
+    var c = CUE[20];
+    await wait((c.quiet + 0.6) * 1000);
+    M.view = null;
+    anim(oppChartEl, [{ transform: "scale(1.05)" }, { transform: "scale(1)" }], { duration: 500, easing: EASE.out });
+    await wait(Math.max(0, (c.check - c.quiet - 0.6) * 1000));
+    anim(oppPanel, [{ transform: "scale(1)" }, { transform: "scale(1.04)", offset: 0.4 }, { transform: "scale(1)" }], { duration: 600, easing: EASE.out });
+  }
+
+  async function chapter2() {
+    await iris(640, 360, 1500, 0, 800);
+    hide(chart); hide(balloon); hide(mirror);
+    balloon.classList.remove("overChart");
+    resetMars();
+    show(marsCv);
+    await wait(400);
+    await iris(420, 560, 0, 1500, 900);
+    // the Mirror keeps telling the story from a small window in the corner
+    mirror.classList.add("inset");
+    balloon.classList.add("caption");
+    setEyes("open");
+    setMouth("smile");
+    show(mirror);
+    var line = say("This is <b>Opportunity</b>. It landed on Mars in January 2004, to look for signs of ancient water.", "smile", 14);
+    roverDriveIn();
+    await line;
+    line = say("It ran on <b>sunlight</b>. And every day, it looked straight at the Sun and measured how much dust was in the sky.", "smile", 15);
+    lookAtSun();
+    await line;
+    showPanel();
+    await say("<b>Slide through its days.</b> When the sky gets dusty, less sunlight reaches its solar panels.", "smile", 16);
+    await waitSlide();
+    line = say("In 2007, a huge dust storm darkened the sky. Opportunity <b>waited</b>… and when the dust cleared, it went back to work.", "smile", 17);
+    storm2007();
+    await line;
+    line = say("It drove more than <b>45 kilometers</b>. Then, in June 2018, the biggest storm of all covered the whole planet.", "smile", 18);
+    drive2018();
+    await line;
+    line = say("Look at its last measurement. The numbers climb… and climb… and then they <b>stop</b>.", "closed", 19);
+    lastDays();
+    await line;
+    line = say("Opportunity went quiet. But its numbers are still here, and <b>anyone</b> can check them.", "smile", 20);
+    goQuiet();
+    await line;
+    await wait(800);
+    hide(balloon);
+    show(againBtn);
+  }
+
   // Skip straight to a scene with ?scene=sky (useful while building)
   var start = new URLSearchParams(location.search).get("scene");
   var startEl = $("start"), goBtn = $("go");
@@ -770,6 +1284,12 @@
     });
   }
   (async function () {
+    if (start === "mars") {
+      hide(startEl); hide(sky); hide(obs); hide(photonLayer);
+      shotsFired = 1;
+      await chapter2();
+      return;
+    }
     if (start !== "sky") {
       await waitStart();
       await anim(goBtn, [{ transform: "scale(1)" }, { transform: "scale(1.12, 0.84)", offset: 0.4 }, { transform: "scale(0.96, 1.06)", offset: 0.75 }, { transform: "scale(1)" }],
