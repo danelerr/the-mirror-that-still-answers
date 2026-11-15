@@ -23,7 +23,7 @@
   const bil = (km) => (km / 1e9).toFixed(1) + " billion km";
 
   // ---------- the narrator window (shared look with chapter 2) ----------
-  const nar = F.mirror({ x: 0, y: 0, s: 0.33, eyes: "open", mouth: "smile", shadow: false, bobAmt: 0.6 });
+  const nar = F.mirror({ x: 0, y: 0, s: 0.33, eyes: "open", mouth: "smile", shadow: false, bobAmt: 0.6, hands: false });
   const inset = F.custom(function (c, t) {
     const R = 78, cx = 104, cy = 100;
     c.globalAlpha = this.op;
@@ -41,8 +41,9 @@
   // ======================== Pioneer 10, the puppet ========================
   // Body and dish, two long trusses with power units and a thin boom: pieces of the team's illustration.
   F.probe = (o) => {
-    const a = Object.assign({ x: 640, y: 360, s: 0.5, sx: 1, sy: 1, rot: 0, op: 1, z: 30, par: 1, eyes: "open", lx: 0, unfold: 1,
-      ba: 0, baV: 0, bb: 0, bbV: 0, bl: 0, blV: 0, sleepy: 0 }, o);
+    const a = Object.assign({ x: 640, y: 360, s: 0.5, sx: 1, sy: 1, rot: 0, op: 1, z: 30, par: 1, eyes: "open", lx: 0, ly: 0, unfold: 1,
+      ba: 0, baV: 0, bb: 0, bbV: 0, bl: 0, blV: 0, sleepy: 0, seed: Math.random() * 3000,
+      lid: 0, browY: 0, browT: 0, pup: 1, happy: 0, eyeS: 1 }, o);
     a.update = function (dt) {
       const k = this.unfold, droop = this.sleepy * 0.25;
       spring(this, "ba", "baV", (1 - k) * 1.3 + droop, 60, 6, dt);
@@ -72,13 +73,10 @@
       boom(c, "sonda_brazo_b", hx, hy, -2.35 + this.bb, 200);
       boom(c, "sonda_brazo_largo", hx + 40, hy + 30, 2.5 + this.bl, 260);
       c.drawImage(body, -bw / 2, -bh / 2, bw, bh);
-      let e = this.eyes;
-      if (e === "open" && t % 4100 < 130) e = "closed";
-      const im = IM[e === "closed" ? "sonda_ojos_cerrados" : e === "half" ? "sonda_ojos_medio" : "sonda_ojos_abiertos"];
-      if (F.ready(im)) {
-        const w = bw * 0.36, h = w * im.height / im.width;
-        c.drawImage(im, -bw / 2 + 0.6 * bw - w / 2 + this.lx, -bh / 2 + 0.4 * bh - h / 2 + (st % 2) * 0.5, w, h);
-      }
+      const base = { open: 0, half: 0.5, closed: 1 }[this.eyes] || 0, ex = -bw / 2 + 0.6 * bw, ey = -bh / 2 + 0.42 * bh;
+      F.drawEyes(c, [[ex - 38, ey], [ex + 38, ey]], { lid: Math.max(base, this.lid), browY: this.browY, browT: this.browT, pup: this.pup,
+        happy: this.happy, eyeS: this.eyeS, lx: this.lx / 10, ly: this.ly / 10, seed: this.seed, blinkEvery: 4100 }, t,
+        { rx: 30, ry: 38, lidColor: "#f4ecd6", browGap: 12, lw: 6 });
     };
     return a;
   };
@@ -177,7 +175,8 @@
     await atw(21, "pioneer", 0, 5.2);
     pr.unfold = 1; sfx("slideUp");
     await wait(400);
-    pr.eyes = "open"; sfx("ting");
+    pr.eyes = "open"; F.faceNow(pr, "surprised"); sfx("ting");
+    wait(500).then(() => F.face(pr, "happy")).catch(() => {});
     const name = F.stamp(["Pioneer 10"], { x: 1020, y: 140, size: 52, style: "card", rot: 0.04, kicker: "spacecraft, 1972" });
     F.popIn(name, 400, "tada");
     await v;
@@ -197,6 +196,7 @@
     // it dodges the rocks: leans, squashes, and its eyes go wide
     const dodges = [[-0.25, -90, 900], [0.3, 110, 1000], [-0.2, -40, 800]];
     await atw(22, "asteroid", 0, 4.1);
+    F.face(pr, "scared");
     for (const d of dodges) {
       sfx("swish"); pr.lx = d[0] > 0 ? 8 : -8;
       tw(pr, { rot: d[0], y: 380 + d[1], sx: 0.92, sy: 1.08 }, 260, EZ.out);
@@ -204,7 +204,7 @@
       tw(pr, { sx: 1, sy: 1 }, 300, EZ.elastic);
       await wait(d[2] / 3);
     }
-    pr.lx = 0;
+    pr.lx = 0; F.face(pr, "happy");
     tw(pr, { rot: 0, y: 380 }, 400, EZ.inOut);
     await atw(22, "jupiter", 0, 5.9);
     go();
@@ -215,7 +215,8 @@
     tw(jupiter, { x: 900 }, 3600, EZ.inOut);
     sfx("whoosh", 1.5);
     await tw(pr, { x: 620, y: 300 }, 2200, EZ.out);
-    pr.eyes = "open"; pr.lx = 10;
+    pr.eyes = "open"; pr.lx = 10; F.face(pr, "surprised");
+    wait(900).then(() => F.face(pr, "curious")).catch(() => {});
     await v;
     const art = F.proof("ph_p10art", "How NASA pictured Pioneer 10 at Jupiter. NASA Ames artwork ARC-1972-AC72-1354.", { x: 380, y: 470, w: 380, rot: -0.04, label: "NASA ART" });
     F.popIn(art, 400, "shutter");
@@ -226,7 +227,7 @@
 
   async function years23(pr) {
     const earth = F.sprite("earth", { x: 140, y: 560, w: 90, z: 10 });
-    pr.x = 980; pr.y = 300; pr.s = 0.38; pr.rot = 0;
+    pr.x = 980; pr.y = 300; pr.s = 0.38; pr.rot = 0; F.faceNow(pr, "happy");
     const r1 = rings({ ax: 900, ay: 330, bx: 160, by: 560, k: 1, op: 0 });
     F.scene([F.stars({ n: 260, par: 0.1 }), earth, r1, pr, inset], { bg: "#05060a" });
     const v = say(23);
@@ -360,9 +361,9 @@
     F.scene([F.stars({ n: 260, par: 0.1 }), pr, inset], { bg: "#05060a" });
     const v = say(27);
     await atw(27, "powers", 0, 3.0);
-    pr.eyes = "half"; sfx("sad");
+    pr.eyes = "open"; F.face(pr, "tired", 500); sfx("sad");
     tw(pr, { sleepy: 1 }, 1200, EZ.inOut);
-    await wait(600); pr.eyes = "closed";
+    await wait(600); F.face(pr, "asleep", 500);
     await atw(27, "know", 0, 5.5);
     // its path: real distances from 1972 to today, and the line keeps going because we know how it moves
     const graph = F.custom(function (c, t) {
@@ -423,7 +424,7 @@
       c.globalAlpha = 0.5; c.fillStyle = "#fff8d0";
       c.beginPath(); c.moveTo(-180 + sh * 400, -110); c.lineTo(-140 + sh * 400, -110); c.lineTo(-220 + sh * 400, 110); c.lineTo(-260 + sh * 400, 110); c.closePath(); c.fill();
     }, { par: 0, z: 60, x: 820, y: 330, s: 0.01 });
-    pr.x = 380; pr.y = 360; pr.s = 0.42; pr.eyes = "closed"; pr.sleepy = 1; pr.rot = 0;
+    pr.x = 380; pr.y = 360; pr.s = 0.42; pr.eyes = "closed"; pr.sleepy = 1; pr.rot = 0; F.faceNow(pr, "asleep");
     F.scene([F.stars({ n: 260, par: 0.1 }), pr, plaque, inset, F.credit("Drawing inspired by the Pioneer plaque.")], { bg: "#05060a" });
     const v = say(28);
     tw(pr, { x: 300 }, 3000, EZ.inOut);

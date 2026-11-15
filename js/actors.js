@@ -380,6 +380,103 @@
     }
   }, o);
 
+  // ======================== faces and gloves, drawn by code ========================
+  // Expressions: every puppet keeps these numbers and they are tweened from one face to the next.
+  const FACES = {
+    neutral: { lid: 0, browY: 0, browT: 0, pup: 1, happy: 0, eyeS: 1 },
+    happy: { lid: 0, browY: -6, browT: 0.1, pup: 1, happy: 1, eyeS: 1 },
+    surprised: { lid: 0, browY: -16, browT: 0, pup: 0.6, happy: 0, eyeS: 1.2 },
+    scared: { lid: 0, browY: -8, browT: 0.55, pup: 0.5, happy: 0, eyeS: 1.12 },
+    worried: { lid: 0.15, browY: -3, browT: 0.45, pup: 0.85, happy: 0, eyeS: 1 },
+    tired: { lid: 0.55, browY: 4, browT: 0.2, pup: 0.9, happy: 0, eyeS: 1 },
+    asleep: { lid: 1, browY: 5, browT: 0, pup: 1, happy: 0, eyeS: 1 },
+    determined: { lid: 0.28, browY: 3, browT: -0.45, pup: 1, happy: 0, eyeS: 1 },
+    proud: { lid: 0.4, browY: -7, browT: -0.1, pup: 1, happy: 0, eyeS: 1 },
+    curious: { lid: 0.1, browY: -10, browT: 0.25, pup: 1.1, happy: 0, eyeS: 1.05 },
+    sad: { lid: 0.3, browY: 0, browT: 0.6, pup: 1, happy: 0, eyeS: 0.95 }
+  };
+  F.FACES = FACES;
+  F.face = function (p, name, ms) {
+    const f = FACES[name] || FACES.neutral;
+    p.faceName = name;
+    if (p.happy > 0.5 !== f.happy > 0.5) p.happy = f.happy;           // happy eyes switch like a new drawing
+    return F.tw(p, { lid: f.lid, browY: f.browY, browT: f.browT, pup: f.pup, eyeS: f.eyeS }, ms || 140, EZ.out);
+  };
+  F.faceNow = function (p, name) { Object.assign(p, FACES[name] || FACES.neutral); p.faceName = name; };
+  // Two cartoon eyes with pupils, lids and brows. eyes: [[x, y], [x, y]]; o: rx, ry, lidColor, browGap, ink width
+  F.drawEyes = function (c, eyes, p, t, o) {
+    const blink = p.blink !== false && p.lid < 0.9 && !p.happy && (t + (p.seed || 0)) % (p.blinkEvery || 3900) < 120;
+    const lid = blink ? 1 : p.lid, lw = o.lw || 5;
+    c.lineCap = "round"; c.lineJoin = "round";
+    for (let i = 0; i < 2; i++) {
+      const x = eyes[i][0], y = eyes[i][1], inner = i === 0 ? 1 : -1;
+      const rx = o.rx * p.eyeS, ry = o.ry * p.eyeS;
+      if (p.happy > 0.5) {
+        c.strokeStyle = INK; c.lineWidth = lw * 1.3;
+        c.beginPath(); c.arc(x, y + ry * 0.35, rx * 0.8, Math.PI * 1.12, Math.PI * 1.88); c.stroke();
+      } else {
+        c.fillStyle = "#fff"; c.strokeStyle = INK; c.lineWidth = lw;
+        c.beginPath(); c.ellipse(x, y, rx, ry, 0, 0, 6.2832); c.fill();
+        c.save(); c.clip();
+        const px = x + F.clamp(p.lx || 0, -1, 1) * rx * 0.42, py = y + F.clamp(p.ly || 0, -1, 1) * ry * 0.38;
+        const pr = rx * 0.5 * p.pup, pry = ry * 0.58 * p.pup;
+        c.fillStyle = INK; c.beginPath(); c.ellipse(px, py, pr, pry, 0, 0, 6.2832); c.fill();
+        c.fillStyle = "#fff";                                     // the little pie-cut wedge of 1930s eyes
+        c.beginPath(); c.moveTo(px + pr * 0.15, py - pry * 0.1); c.lineTo(px + pr * 0.95, py - pry * 0.55); c.lineTo(px + pr * 0.95, py - pry * 0.05); c.closePath(); c.fill();
+        if (lid > 0.01) {
+          const ly = y - ry + 2 * ry * lid;
+          c.fillStyle = o.lidColor || "#d8d2c4";
+          c.beginPath(); c.moveTo(x - rx - 2, y - ry - 2); c.lineTo(x + rx + 2, y - ry - 2); c.lineTo(x + rx + 2, ly); c.quadraticCurveTo(x, ly + ry * 0.25, x - rx - 2, ly); c.closePath(); c.fill();
+          c.strokeStyle = INK; c.lineWidth = lw * 0.9;
+          c.beginPath(); c.moveTo(x - rx, ly); c.quadraticCurveTo(x, ly + ry * 0.25, x + rx, ly); c.stroke();
+        }
+        c.restore();
+        c.strokeStyle = INK; c.lineWidth = lw;
+        c.beginPath(); c.ellipse(x, y, rx, ry, 0, 0, 6.2832); c.stroke();
+      }
+      if (o.brows !== false) {
+        const yb = y - o.ry - (o.browGap || o.ry * 0.45) + p.browY * (o.ry / 30);
+        const ox = x - inner * rx * 0.85, ix = x + inner * rx * 0.85;
+        const oy = yb + p.browT * o.ry * 0.25, iy = yb - p.browT * o.ry * 0.5;
+        c.strokeStyle = INK; c.lineWidth = lw * 1.5;
+        c.beginPath(); c.moveTo(ox, oy); c.quadraticCurveTo(x, Math.min(oy, iy) - o.ry * 0.18, ix, iy); c.stroke();
+      }
+    }
+  };
+  // A white four-finger cartoon glove. pose: open, point, fist, thumb, one, two, three, wave
+  const GLOVE = {
+    open: [1, 1, 1, 1, 0.9], wave: [1, 1, 1, 1, 0.9], point: [1.15, 0.2, 0.2, 0.2, 0.35], fist: [0.2, 0.2, 0.2, 0.2, 0.3],
+    thumb: [0.2, 0.2, 0.2, 0.2, 1.2], one: [1.1, 0.2, 0.2, 0.2, 0.3], two: [1.1, 1.05, 0.2, 0.2, 0.3], three: [1.1, 1.05, 1, 0.2, 0.3]
+  };
+  F.glove = function (c, x, y, s, rot, pose, flip) {
+    const f = GLOVE[pose] || GLOVE.open;
+    c.save(); c.translate(x, y); c.rotate(rot || 0); c.scale(s * (flip || 1), s);
+    const fingers = [[-15, -0.28], [-5, -0.09], [5, 0.09], [14, 0.27]];
+    const parts = (inkPad) => {
+      // fingers
+      fingers.forEach((fg, i) => {
+        const L = 30 * f[i];
+        c.save(); c.translate(fg[0], -12); c.rotate(fg[1] * (pose === "open" || pose === "wave" ? 1 : 0.4));
+        c.beginPath(); c.moveTo(-5.5 - inkPad, 0); c.lineTo(-5.5 - inkPad, -L); c.arc(0, -L, 5.5 + inkPad, Math.PI, 0); c.lineTo(5.5 + inkPad, 0); c.closePath(); c.fill();
+        c.restore();
+      });
+      // thumb
+      c.save(); c.translate(-20, 2); c.rotate(pose === "thumb" ? -1.4 : -0.9);
+      const T = 22 * f[4];
+      c.beginPath(); c.moveTo(-6 - inkPad, 0); c.lineTo(-6 - inkPad, -T); c.arc(0, -T, 6 + inkPad, Math.PI, 0); c.lineTo(6 + inkPad, 0); c.closePath(); c.fill();
+      c.restore();
+      // palm and cuff
+      roundRect(c, -21 - inkPad, -16 - inkPad, 42 + inkPad * 2, 38 + inkPad * 2, 14 + inkPad); c.fill();
+      roundRect(c, -18 - inkPad, 20 - inkPad, 36 + inkPad * 2, 14 + inkPad * 2, 5 + inkPad); c.fill();
+    };
+    c.fillStyle = INK; parts(3.2);
+    c.fillStyle = "#fbf8f0"; parts(0);
+    c.strokeStyle = INK; c.lineWidth = 2.4; c.lineCap = "round";
+    for (let k = -1; k <= 1; k++) { c.beginPath(); c.moveTo(k * 8, -6); c.lineTo(k * 8, 6); c.stroke(); }
+    c.beginPath(); c.moveTo(-18, 25); c.lineTo(18, 25); c.stroke();
+    c.restore();
+  };
+
   // ======================== the Mirror ========================
   // The team's illustration (AI image generator), cut into a body and face pieces, animated here.
   const FACE = { brows: [1, 70], open: [21, 72], half: [24, 78], closed: [39, 80], happy: [39, 80],
@@ -394,7 +491,9 @@
   }
   F.mirror = (o) => {
     const a = Object.assign({ x: 380, y: 600, s: 1, sx: 1, sy: 1, rot: 0, op: 1, z: 20, par: 1, eyes: "closed", mouth: "closed", brows: false,
-      glow: 0, lx: 0, ly: 0, level: 0, bobAmt: 1, shadow: true, dust: 0 }, o);
+      glow: 0, lx: 0, ly: 0, level: 0, bobAmt: 1, shadow: true, dust: 0, hands: true, seed: Math.random() * 3000,
+      lid: 0, browY: 0, browT: 0, pup: 1, happy: 0, eyeS: 1,
+      gL: { x: -255, y: -170, rot: 0.25, s: 1.3, pose: "open" }, gR: { x: 255, y: -170, rot: -0.25, s: 1.3, pose: "open" } }, o);
     a.talk = (lv) => { a.level = lv; };
     a.draw = function (c, t) {
       const body = IM.espejo_cuerpo;
@@ -424,19 +523,31 @@
         g.addColorStop(1, "rgba(255,224,122,0)");
         c.fillStyle = g; c.fillRect(-40, -30, 230, 230);
       }
-      let eyes = this.eyes;
-      if (eyes === "open" && t % 3700 < 130) eyes = "closed";             // a blink now and then
       const part = (key, dx, dy) => {
         const img = IM[FACE_IM[key]], f = FACE[key];
         if (!F.ready(img) || !f) return;
         const w = f[1] / 100 * 148, h = w * img.height / img.width;
         c.drawImage(img, 74 - w / 2 + (dx || 0), f[0] / 100 * 169 + (dy || 0), w, h);
       };
-      if (this.brows) part("brows", this.lx * 0.5, -4);
-      part(eyes === "happy" ? "closed" : eyes, eyes === "open" ? this.lx : 0, eyes === "open" ? this.ly : 0);
+      // eyes drawn by code: they look around, blink, squint and raise their brows
+      const base = { open: 0, half: 0.5, closed: 1, happy: 0 }[this.eyes] || 0;
+      const ef = { lid: Math.max(base, this.lid), browY: this.browY + (this.brows ? -12 : 0) + (this.eyes === "closed" ? 4 : 0), browT: this.browT,
+        pup: this.pup, happy: this.happy || this.eyes === "happy" ? 1 : 0, eyeS: this.eyeS * (this.brows ? 1.12 : 1), lx: this.lx / 10, ly: this.ly / 10,
+        seed: this.seed, blinkEvery: 3700 };
+      F.drawEyes(c, [[48, 68], [100, 68]], ef, t, { rx: 20, ry: 27, lidColor: "#f2e8cc", browGap: 9, lw: 4 });
       const m = this.level > 0 ? mouthFor(this.level) : this.mouth;
       part("m_" + m);
       c.restore();
+      if (this.hands) {                       // two floating gloves, a little behind the body's movement
+        for (const side of [-1, 1]) {
+          const g = side < 0 ? this.gL : this.gR;
+          const ph = side < 0 ? 0 : 1.7, st2 = F.step(t);
+          const fy = Math.sin(st2 * 0.45 + ph) * 6 * this.bobAmt;
+          let r = g.rot;
+          if (g.pose === "wave") r += Math.sin(t / 110) * 0.45;
+          F.glove(c, 215 + g.x, 410 + g.y + fy + breathe, g.s, r, g.pose, side < 0 ? -1 : 1);
+        }
+      }
       if (this.dust > 0.01) {                  // dust that settled over the years
         c.globalAlpha = this.op * this.dust;
         c.fillStyle = "#cfc7b8";
@@ -483,7 +594,8 @@
   F.rover = (o) => {
     const a = Object.assign({ x: 640, y: 640, s: 0.46, sx: 1, sy: 1, tilt: 0, op: 1, z: 30, par: 1,
       mast: 0, mastV: 0, mastT: 0, mastLen: 1, arm: 0.1, armV: 0, armT: 0.1, look: 0, lookX: 0, eyes: "open", drive: 0, px: null, lvx: 0,
-      dim: 0, glow: 0, dusty: 0, puffs: null, lastPuff: 0, flip: 1 }, o);
+      dim: 0, glow: 0, dusty: 0, puffs: null, lastPuff: 0, flip: 1, seed: Math.random() * 3000,
+      lid: 0, browY: 0, browT: 0, pup: 1, happy: 0, eyeS: 1, hand: "open", handRot: 3.55, handS: 2.1 }, o);
     a.update = function (dt, t) {
       if (this.px === null) this.px = this.x;
       const vx = (this.x - this.px) / Math.max(dt, 0.001), acc = (vx - this.lvx) / Math.max(dt, 0.001);
@@ -509,13 +621,14 @@
       const body = IM.rover_cuerpo;
       if (!F.ready(body)) return;
       const st = F.step(t);
-      const bob = this.drive ? -Math.abs(Math.sin(st * 1.3)) * 7 * this.drive : -Math.sin(t / 900) * 1.5;
-      const sq = this.drive && st % 3 === 0 ? 0.03 * this.drive : 0;
+      const bob = this.drive ? -Math.abs(Math.sin(st * 1.3)) * 14 * this.drive : -Math.sin(t / 900) * 2;
+      const sq = this.drive ? (st % 3 === 0 ? 0.08 : st % 3 === 1 ? -0.03 : 0) * this.drive : Math.sin(t / 900) * 0.012;
+      const rock = this.drive ? Math.sin(st * 1.3) * 0.025 * this.drive : 0;
       c.globalAlpha = this.op;
       c.fillStyle = "rgba(40,20,10,0.35)";
       c.beginPath(); c.ellipse(this.x, this.y + 4, 230 * this.s * this.sx, 22 * this.s, 0, 0, 6.2832); c.fill();
       c.translate(this.x, this.y + bob);
-      c.rotate(this.tilt);
+      c.rotate(this.tilt + rock);
       c.scale(this.s * this.sx * (1 + sq) * this.flip, this.s * this.sy * (1 - sq));
       if (this.dim > 0) c.filter = "brightness(" + (1 - this.dim * 0.55).toFixed(2) + ") saturate(" + (1 - this.dim * 0.5).toFixed(2) + ")";
       c.drawImage(body, -466, -789);
@@ -532,20 +645,21 @@
       c.scale(0.62, 0.62 * this.mastLen);
       if (F.ready(IM.rover_mastil)) c.drawImage(IM.rover_mastil, -172, -640);
       c.scale(1, 1 / this.mastLen);
-      let e = this.eyes;
-      if (e === "open" && t % 4300 < 140) e = "closed";
-      const im = IM[e === "closed" ? "rover_ojos_cerrados" : e === "half" ? "rover_ojos_medio" : "rover_ojos_abiertos"];
-      if (F.ready(im)) {
-        const half = im.width / 2, f = 0.7, w = half * f, h = im.height * f, by = (75 - 640) * this.mastLen;
-        const sockets = [[78 - 172, by], [262 - 172, by]];
-        for (let i = 0; i < 2; i++) c.drawImage(im, i * half, 0, half, im.height, sockets[i][0] - w / 2 + this.lookX, sockets[i][1] - h / 2 + this.look, w, h);
-      }
+      const base = { open: 0, half: 0.5, closed: 1 }[this.eyes] || 0, by = (78 - 640) * this.mastLen;
+      F.drawEyes(c, [[80 - 172, by], [265 - 172, by]], { lid: Math.max(base, this.lid), browY: this.browY + (this.eyes === "closed" ? 6 : 0), browT: this.browT,
+        pup: this.pup, happy: this.happy, eyeS: this.eyeS, lx: this.lookX / 10, ly: this.look / 10, seed: this.seed, blinkEvery: 4300 }, t,
+        { rx: 50, ry: 54, lidColor: "#d9dadc", browGap: 16, lw: 7 });
       c.restore();
       c.save();
       c.translate(210 - 466, 395 - 789);
       c.rotate(this.arm);
       c.scale(0.5, 0.5);
       if (F.ready(IM.rover_brazo)) c.drawImage(IM.rover_brazo, -205, -45);
+      if (this.hand) {
+        let r = this.handRot;
+        if (this.hand === "wave") r += Math.sin(t / 110) * 0.5;
+        F.glove(c, -150, 392, this.handS, r, this.hand, 1);
+      }
       c.restore();
       c.filter = "none";
       if (this.dusty > 0.01) {

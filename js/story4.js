@@ -27,6 +27,7 @@
     mir.x = 640; mir.y = 600; mir.s = 0.62; mir.eyes = "half"; mir.mouth = "closed"; mir.brows = false; mir.lx = 0; mir.ly = 0; mir.glow = 0; mir.dust = 0;
     F.scene([luna, F.stars({ n: 120, par: 0.2, w: W * 1.4, h: 260, y: -40 }), mir], { bg: "#05060a", cam: { x: 640, y: 420, z: 1.5 } });
     await F.irisIn(640, 400, 800);
+    F.faceNow(mir, "sad"); F.gesture(mir, "droop", 1);
     const v = S.speak(29, mir);
     tw(F.cam, { z: 0.95, y: 360 }, 5200, EZ.inOut);          // we pull back: the Mirror looks very small and alone
     await atw(29, "abandoned", 0, 3.3);
@@ -42,14 +43,16 @@
     F.scene([luna, F.stars({ n: 120, par: 0.2, w: W * 1.4, h: 260, y: -40 }), mir, p], { bg: "#05060a", cam: { x: 640, y: 380, z: 1.1 } });
     const v = S.speak(30, mir);
     // "No." — a firm little hop
-    mir.brows = true;
+    mir.brows = true; F.face(mir, "determined"); F.gesture(mir, "one", 180);
     await tw(mir, { sy: 1.1, sx: 0.94 }, 140, EZ.out);
     await tw(mir, { sy: 1, sx: 1 }, 380, EZ.elastic);
     mir.brows = false;
     await atw(30, "answer", 0, 2.6);
     mir.glow = 1; tw(mir, { glow: 0 }, 700, EZ.out); sfx("ting");
+    F.face(mir, "happy"); F.gesture(mir, "cheer", 200);
     p.emit("spark", mir.x, mir.y - 230, 8, { spread: 200, vy: -40, g: 0, r: 12, life: 0.8, fill: "#fff6c8" });
     await atw(30, "quiet", 0, 5.4);
+    F.face(mir, "sad"); F.gesture(mir, "droop");
     // two framed portraits of the neighbors who went quiet
     const frames = [
       F.proof("ph_opp", "Opportunity, 2004-2018", { x: 300, y: 250, w: 230, rot: -0.07, label: "QUIET" }),
@@ -69,6 +72,7 @@
     for (let i = 0; i < 3; i++) {
       const k = cards[i];
       await atw(30, ["time", "number", "measurement"][i], 0, k[0]);
+      F.face(mir, "proud"); F.gesture(mir, ["one", "two", "three"][i], 200);
       const st = F.stamp([k[2]], { x: 260 + i * 380, y: 170, size: 46, style: "card", rot: (i - 1) * 0.04, kicker: k[1] });
       made.push(st);
       F.popIn(st, 360, "stamp");
@@ -90,12 +94,15 @@
     }, { par: 0, z: 100, k: 0 });
     F.add(warm);
     tw(warm, { k: 0.45 }, 4000, EZ.inOut);
+    F.faceNow(mir, "neutral"); F.gesture(mir, "present", 1);
     await atw(31, "told", 0, 4.6);
+    F.face(mir, "worried"); F.gesture(mir, "shrug");
     const rumor = F.icon("voice", { x: 330, y: 220, s: 0.7 });
     F.popIn(rumor, 300, "squeak");
     await wait(450);
     sfx("rip"); tw(rumor, { xp: 1 }, 380, EZ.out);
     await atw(31, "check", 0, 6.7);
+    F.face(mir, "happy"); F.gesture(mir, "thumb", 200);
     F.popOut(rumor);
     const tick = F.custom(function (c) {
       c.translate(this.x, this.y); c.scale(this.s, this.s);
@@ -115,6 +122,7 @@
     const p = S.fx();
     lander.x = 1010; lander.y = -140; lander.flame = 1;
     F.scene([luna, F.stars({ n: 120, par: 0.2, w: W * 1.4, h: 260, y: -40 }), lander, mir, p], { bg: "#05060a", cam: { x: 640, y: 380, z: 1 } });
+    F.faceNow(mir, "curious"); F.gesture(mir, "shade", 1);
     const v = S.speak(32, mir);
     await atw(32, "come", 0, 1.6);
     sfx("rumble", 0.8);
@@ -123,7 +131,7 @@
     p.emit("puff", lander.x, 460, 8, { spread: 160, vy: -30, vxr: 220, g: 20, r: 14, life: 1.2, fill: "#cfc7b8", ink: "rgba(40,40,40,0.4)" });
     sfx("thud");
     await atw(32, "waiting", 0, 5.2);
-    mir.eyes = "happy";
+    F.face(mir, "happy"); F.gesture(mir, "rest");
     await v;
     mir.eyes = "open"; mir.lx = 0; mir.ly = 0;
   }
@@ -134,6 +142,7 @@
     const p = S.fx();
     const ph = F.photon({ s: 0.6, op: 0 });
     F.scene([luna, F.stars({ n: 120, par: 0.2, w: W * 1.4, h: 260, y: -40 }), mir, ph, p], { bg: "#05060a", cam: { x: S.LUNA.earth.x + 100, y: S.LUNA.earth.y + 60, z: 1.4 } });
+    F.faceNow(mir, "neutral"); F.gesture(mir, "rest", 1);
     const v = S.speak(33, mir);
     await atw(33, "light", 0, 3.3);
     // a tiny spark leaves the Earth...
@@ -151,7 +160,7 @@
     p.emit("spark", tx, ty, 12, { spread: 30, vy: 0, vyr: 260, vxr: 260, g: 0, r: 14, life: 0.7, fill: "#ffe07a" });
     tw(mir, { glow: 0 }, 900, EZ.out);
     await atw(33, "answer", 0, 6.2);
-    mir.eyes = "happy"; sfx("ding");
+    F.face(mir, "happy"); F.gesture(mir, "wave", 220); sfx("ding");
     tw(F.cam, { x: mir.x, y: mir.y - 190, z: 2 }, 1500, EZ.inOut);
     await v;
     await wait(900);
