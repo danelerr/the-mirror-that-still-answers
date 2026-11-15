@@ -491,5 +491,12 @@ window.SPRITES = {
   "cx": 226.0,
   "cy": 180.0,
   "g": 180.0
+ },
+ "R10_rover_saluda": {
+  "n": 16,
+  "w": 488,
+  "h": 386,
+  "center": false,
+  "wb": 344
  }
 };

@@ -932,9 +932,15 @@
       if (this.drawn === false) return null;
       const st = Math.floor(t / 1000 * 12), has = F.hasSprites, mood = this.faceName || "neutral";
       let set = null, k = 0;
+      if (this.armT <= 1.5) this.waveT0 = -1;
       if (this.drive > 0.3 && has("R1_rover_avanza")) { set = "R1_rover_avanza"; k = F.R1_CYCLE[st % F.R1_CYCLE.length]; }
       else if ((this.eyes === "closed" || mood === "asleep") && has("R7_rover_ultimos_dias")) { set = "R7_rover_ultimos_dias"; k = 15; }
       else if (this.dusty > 0.5 && has("R5_rover_tormenta")) { set = "R5_rover_tormenta"; k = 6 + (Math.floor(st / 8) % 2); }
+      else if (this.armT > 1.5 && has("R10_rover_saluda")) {   // the team's wave: the arm comes up, then waves to and fro
+        if (!(this.waveT0 >= 0)) this.waveT0 = t;                // (drawing 13 has the arm painted blue: skipped)
+        const e = Math.floor((t - this.waveT0) / 1000 * 12), WV = [5, 6, 7, 8, 9, 10, 11, 12, 11, 10, 9, 8, 7, 6];
+        set = "R10_rover_saluda"; k = e < 2 ? 3 + e : WV[(e - 2) % WV.length];
+      }
       else if (this.armT > 1.5 && has("R8_rover_celebra")) { set = "R8_rover_celebra"; k = 5; }
       else if ((mood === "tired" || this.eyes === "half") && has("R7_rover_ultimos_dias")) { set = "R7_rover_ultimos_dias"; k = 3; }
       else if ((mood === "worried" || mood === "scared" || mood === "sad") && has("R5_rover_tormenta")) { set = "R5_rover_tormenta"; k = 0; }
