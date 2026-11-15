@@ -323,7 +323,13 @@
     sad: () => { [392, 370, 349, 330].forEach((f, i) => osc("triangle", f, 0, 0.45, 0.12, 0.02, i * 0.32)); },
     radio: (k) => { for (let i = 0; i < 3; i++) osc("sine", 1250 * k, 0, 0.08, 0.1, 0.003, i * 0.16); },
     // an old television: k seconds of grey "snow" hiss, then the dial clicking onto a station
-    static: (k) => { noise(k, "highpass", 1400, 0, 0.3, 0.6, 0.03); noise(k, "bandpass", 3800, 2600, 0.16, 0.5, 0.03); },
+    static: (k) => {
+      noise(k, "highpass", 1200, 0, 0.55, 0.6, 0.02);                  // the hiss of the grey snow, loud and wide
+      noise(k, "bandpass", 3800, 2600, 0.3, 0.5, 0.02);
+      noise(k, "lowpass", 260, 0, 0.18, 0.7, 0.05);                     // a low hum of the old set
+      for (let i = 0; i < k * 9; i++) noise(0.014, "highpass", 2500, 0, 0.55, 1, 0.001, Math.random() * k);   // crackles
+    },
+    tvon: () => { osc("sine", 15600, 15600, 0.25, 0.03, 0.002); noise(0.18, "bandpass", 900, 3200, 0.35, 1.2, 0.004); },
     tune: () => { noise(0.22, "bandpass", 4200, 500, 0.32, 2.5, 0.005); osc("sine", 90, 50, 0.12, 0.35, 0.002, 0.2); }
   };
   F.sfx = function (name, k) {
@@ -457,12 +463,53 @@
   const ccEl = $("cc"), ccBtn = $("ccBtn");
   let ccOn = false;
   F.LINES = {};
+  // each word lights up in gold as the voice says it (times from web/data/words.js; words the speech model
+  // missed are spread evenly between the ones it caught)
+  let ccWords = [], ccN = 0;
+  const norm = (s) => s.toLowerCase().replace(/[^a-z0-9]/g, "");
+  function wordTimes(n, words) {
+    const W = (window.WORDS || {})[n] || [];
+    const out = new Array(words.length).fill(null);
+    let j = 0;
+    for (let i = 0; i < words.length; i++) {
+      const a = norm(words[i]);
+      for (let k = j; k < Math.min(W.length, j + 5); k++) {
+        const b = norm(W[k][0]);
+        if (a && b && (a === b || a.startsWith(b.slice(0, 3)) || b.startsWith(a.slice(0, 3)))) { out[i] = W[k][1]; j = k + 1; break; }
+      }
+    }
+    const d = (VOICE[n] && VOICE[n].d) || words.length * 0.4;
+    let last = -1;
+    for (let i = 0; i <= words.length; i++) {
+      if (i === words.length || out[i] !== null) {
+        const t0 = last < 0 ? 0 : out[last], t1 = i === words.length ? d : out[i];
+        for (let m = last + 1; m < i; m++) out[m] = t0 + (t1 - t0) * (m - last) / (i - last);
+        last = i;
+      }
+    }
+    return out;
+  }
   F.caption = function (n) {
     if (!ccEl) return;
     const txt = n ? F.LINES[n] || "" : "";
-    ccEl.textContent = txt;
+    ccEl.textContent = "";
+    ccWords = []; ccN = n;
+    if (txt) {
+      const words = txt.split(/\s+/), times = wordTimes(n, words);
+      words.forEach((w, i) => {
+        const s = document.createElement("span");
+        s.textContent = w + (i < words.length - 1 ? " " : "");
+        ccEl.appendChild(s);
+        ccWords.push([s, times[i]]);
+      });
+    }
     ccEl.classList.toggle("hidden", !ccOn || !txt);
   };
+  F.onFrame(() => {
+    if (!ccOn || !ccWords.length || !cur || cur.n !== ccN) return;
+    const t = F.vt();
+    for (const [s, ts] of ccWords) s.classList.toggle("said", ts <= t + 0.05);
+  });
   if (ccBtn) {
     ccBtn.addEventListener("click", (e) => {
       e.stopPropagation();

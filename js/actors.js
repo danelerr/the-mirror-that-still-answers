@@ -150,26 +150,44 @@
       if (rocket.y > y0 - 12 || rocket.y < -200) return;
       p.emit("smoke", rocket.x, rocket.y + 40 * k0, 2, { spread: 14, vx: 0, vxr: 50, vy: 30, vyr: 20, g: -4, r: 16 * k0, grow: 2.4, life: 2.6, fill: smokeFill, ink: smokeInk });
     }, 45);
+    const build = o.build || 800;
     // 1. ignition: a cough of smoke, then the flame flickers on
     F.sfx("rumble", 1.4);
     p.emit("smoke", x0, y0 + 6, 6, { spread: 40, vy: -40, vxr: 200, g: -8, r: 22 * k0, grow: 2, life: 1.2, fill: smokeFill, ink: smokeInk });
     await F.tw(flame, { k: 0.45 }, 220, F.EZ.out);
-    // 2. anticipation: the engines build up, the rocket squats and trembles
-    const shake = F.onFrame((t) => { rocket.x = x0 + Math.sin(t / 16) * 2.4 * flame.k; });
-    F.tw(flame, { k: 1 }, o.build || 800, F.EZ.inOut);
-    await F.tw(rocket, { sx: 1.08, sy: 0.9 }, o.build || 800, F.EZ.inOut);
-    F.shake(5);
+    // 2. anticipation, in two beats: a small false start (a dip and back), then a deep squat while the
+    //    engines build up and the trembling grows (exaggerated, as a cartoon would)
+    let tremble = 0.4, wob = null;
+    const shake = F.onFrame((t) => { rocket.x = x0 + Math.sin(t / 15) * 3.2 * tremble * flame.k; });
+    try {
+    await F.tw(rocket, { sx: 1.05, sy: 0.93 }, 140, F.EZ.out);
+    await F.tw(rocket, { sx: 0.98, sy: 1.03 }, 160, F.EZ.inOut);
+    F.tw(flame, { k: 1 }, build, F.EZ.inOut);
+    F.tw({ v: 0.4 }, { v: 1.6 }, build, F.EZ.in, (e) => { tremble = 0.4 + 1.2 * e; });
+    await F.tw(rocket, { sx: 1.18, sy: 0.8 }, build, F.EZ.inOut);
+    F.shake(6);
     await F.wait(o.hold === undefined ? 220 : o.hold);
-    // 3. lift-off: it creeps off the pad, then faster and faster, stretching as it goes
-    F.sfx("whoosh", 2); F.shake(9);
-    F.tw(rocket, { sx: 0.9, sy: 1.16 }, 280, F.EZ.out);
-    F.tw(flame, { boost: 0.9 }, 1100, F.EZ.in);
+    // 3. release: it snaps tall with a flash, eases off the pad, then goes faster and faster, its little
+    //    wobble dying out as it climbs; the camera follows a moment late
+    tremble = 0;
+    F.sfx("whoosh", 2); F.shake(11); F.flash(0.25);
+    rocket.sx = 0.8; rocket.sy = 1.3;
+    F.tw(rocket, { sx: 0.9, sy: 1.15 }, 420, F.EZ.out);
+    F.tw(flame, { boost: 1 }, 1100, F.EZ.in);
+    const tA = F.t;
+    wob = F.onFrame((t) => { const u = (t - tA) / 1000; rocket.rot = Math.sin(u * 14) * 0.05 * Math.exp(-u * 2.2); });
     if (o.cam) F.tw(F.cam, o.cam, o.camMs || 2400, F.EZ.inOut);
-    await F.tw(rocket, { y: y0 - 26 * k0 }, o.creep || 650, F.EZ.inOut);
+    await F.tw(rocket, { y: y0 - 34 * k0 }, o.creep || 650, F.EZ.out);
     await F.tw(rocket, { y: -700 }, o.ms || 1900, F.EZ.in);
-    shake(); clearInterval(ground); clearInterval(trail);
-    F.remove(flame);
-    rocket.x = x0;
+    // 4. gone: a streak and a twinkle where it left the sky; the smoke column stays behind
+    p.emit("spark", x0, 30, 6, { spread: 30, vy: 0, vyr: 160, vxr: 160, g: 0, r: 14, life: 0.6, fill: "#fff6c8" });
+    F.sfx("ting", 1.6);
+    } finally {                      // also when a chapter jump cuts the launch short
+      if (wob) wob();
+      shake(); clearInterval(ground); clearInterval(trail);
+      F.remove(flame);
+      rocket.x = x0; rocket.rot = 0;
+    }
   };
 
   // ---------- particles: dust, smoke, sparkles, wind, data dots ----------
@@ -588,11 +606,13 @@
     tap: ["E5_espejo_anios", 6], up: ["E3_espejo_saluda", 0], big: G ? [G, 4] : ["E6_espejo_cuenta", 14]
   };
   // resting poses, chosen by the face it is making
+  const WK = F.hasSprites("E2_espejo_despierta_brazos") ? "E2_espejo_despierta_brazos" : null;   // asleep, arms resting
   const MF = {
     neutral: ["E11_espejo_mira_lejos", 6], happy: ["E11_espejo_mira_lejos", 6], proud: ["E11_espejo_mira_lejos", 6],
     surprised: ["E3_espejo_saluda", 0], scared: ["E3_espejo_saluda", 0], worried: ["E11_espejo_mira_lejos", 4],
-    sad: ["E11_espejo_mira_lejos", 4], tired: ["E5_espejo_anios", 10], asleep: ["E5_espejo_anios", 10],
-    curious: ["E3_espejo_saluda", 13], determined: ["E9_espejo_secreto", 2]
+    sad: ["E11_espejo_mira_lejos", 4],
+    tired: WK ? [WK, 2] : ["E5_espejo_anios", 10], asleep: WK ? [WK, 0] : ["E5_espejo_anios", 10],
+    curious: ["E11_espejo_mira_lejos", 8], determined: ["E9_espejo_secreto", 2]
   };
   F.MIRROR_POSES = MP; F.MIRROR_MOODS = MF;
   // the talking sheet: 4 rows (neutral, happy, explaining with a raised glove, gentle/sad) x 4 mouths

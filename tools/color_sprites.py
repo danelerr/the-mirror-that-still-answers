@@ -80,21 +80,26 @@ def rover(r, regs):
 
 
 def mirror(r, regs):
-    face = max((q for q in regs if 0.3 < q["rx"] < 0.7 and 0.2 < q["ry"] < 0.75), key=lambda q: q["area"], default=None)
+    # the tray full of round holes (cream): the biggest central area that is NOT a full rectangle; the face window
+    # itself is a full rectangle (fill near 1), so it never takes this place even when an arm cuts the tray in two
+    face = max((q for q in regs if 0.3 < q["rx"] < 0.7 and 0.2 < q["ry"] < 0.75 and q["fill"] < 0.75), key=lambda q: q["area"], default=None)
     if r["rx"] < 0.17 or r["rx"] > 0.83:
         return None                                   # the gloves stay white
     if r["ry"] > 0.86:
         return GRAY                                   # the frame it stands on
     if face is not None and r is face:
         return CREAM                                  # the face window
+    if face is not None and (r["frac"] < 0.03 or (r["frac"] < 0.07 and r["fill"] < 0.7)):
+        sl = face["sl"]
+        cy = r["sl"][0].start + r["h"] / 2
+        cx = r["sl"][1].start + r["w"] / 2
+        if sl[0].start < cy < sl[0].stop and sl[1].start < cx < sl[1].stop:
+            return None                               # eyes, mouth, teeth and gloves in front of the face stay white
+                                                      # (the face window itself is a full rectangle, so it keeps its colour)
     if r["frac"] < 0.004:
-        if face is not None:
-            sl = face["sl"]
-            cy = r["sl"][0].start + r["h"] / 2
-            cx = r["sl"][1].start + r["w"] / 2
-            if sl[0].start < cy < sl[0].stop and sl[1].start < cx < sl[1].stop:
-                return None                           # eyes and teeth inside the face
-        return GLASS                                  # the round reflectors
+        return None                                   # the round reflectors: all white, so none comes out blue by chance
+    if r["frac"] < 0.03 and r["fill"] < 0.62:
+        return None                                   # a glove (fingers make it lumpy) anywhere in the drawing stays white
     return GOLD                                       # the tray
 
 

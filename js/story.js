@@ -173,6 +173,9 @@
         this.cx.putImageData(this.img, 0, 0);
       }
       c.globalAlpha = this.op;
+      // the picture tube warming up: a bright line in the middle opens into the full screen of snow
+      const hh = Math.max(3, H * this.on), y0 = H / 2 - hh / 2;
+      c.save(); c.beginPath(); c.rect(0, y0, W, hh); c.clip();
       c.imageSmoothingEnabled = false;
       c.drawImage(this.cv, 0, 0, W, H);
       c.imageSmoothingEnabled = true;
@@ -182,14 +185,19 @@
       c.fillStyle = g; c.fillRect(0, band - 90, W, 180);
       c.fillStyle = "rgba(0,0,0,0.2)";
       for (let y = 0; y < H; y += 4) c.fillRect(0, y, W, 2);   // scan lines
+      if (this.on < 1) { c.fillStyle = "rgba(255,252,235," + (1 - this.on).toFixed(2) + ")"; c.fillRect(0, y0, W, hh); }
+      c.restore();
       const v = c.createRadialGradient(W / 2, H / 2, H * 0.35, W / 2, H / 2, H * 0.95);   // the rounded glass of an old set
       v.addColorStop(0, "rgba(0,0,0,0)"); v.addColorStop(1, "rgba(0,0,0,0.75)");
       c.fillStyle = v; c.fillRect(0, 0, W, H);
-    }, { par: 0, z: 200, op: 1 });
+    }, { par: 0, z: 200, op: 1, on: 0.004 });
     F.scene([snow], { bg: "#000" });
     F.fadeTo(0, 1);
-    sfx("static", 1.6);
-    await wait(1350);
+    F.music("assets/music/tierna.mp3", 0.28);           // music from the very first frame after Start
+    sfx("tvon");
+    await tw(snow, { on: 1 }, 300, EZ.out);
+    sfx("static", 1.5);
+    await wait(1250);
     // --- 1. A real photo from July 1969. The mirror is the small tray in the middle.
     const LR = { x: 507, y: 307 };                 // the retroreflector in the photo (AS11-40-5948)
     const photo = F.plate("as11", { x: 0, y: -330, w: 1280, h: 1280 });
@@ -420,8 +428,11 @@
     }
     const tip3 = tipPos();
     // they fly in from the Moon along curves and drop into the telescope, one by one, and get counted
-    const tally = F.stamp(["0"], { x: tip3.x + 170, y: tip3.y - 70, size: 44, style: "gold", par: 1, z: 60, kicker: "photons home" });
+    const tally = F.stamp(["0"], { x: tip3.x + 170, y: tip3.y - 70, size: 44, style: "gold", par: 1, z: 60, kicker: "real photons back" });
     F.add(tally);
+    // what the little photons mean, said once and plainly
+    const legend = F.stamp(["1 little photon = 1 real photon", "the telescope counted"], { x: 960, y: 230, size: 26, style: "card", rot: 0.03, kicker: STATIONS[m.station] + " · " + fmtDate(m.t) });
+    F.popIn(legend, 380, "pop");
     let got = 0;
     home.forEach((f, i) => {
       wait(i * 42).then(() => {
@@ -440,7 +451,8 @@
     await wait(n * 42 + 1000);
     tally.lines = [String(m.photons)];
     tally.sx = 1.2; tally.sy = 0.85; tw(tally, { sx: 1, sy: 1 }, 400, EZ.elastic);
-    const count = F.stamp([m.photons + " photons came home"], { x: 1020, y: 330, size: 32, rot: 0.05, kicker: STATIONS[m.station] });
+    F.popOut(legend);
+    const count = F.stamp([m.photons + " photons came home"], { x: 1000, y: 260, size: 34, rot: 0.04, kicker: STATIONS[m.station] });
     F.popIn(count, 420, "tada");
     if (F.hasSprites("F4_foton_llega")) {
       // the team's drawn frames: one photon lands at home, squashes, bounces, waves and cheers
@@ -590,10 +602,12 @@
       await atw(4, "you", 0, 3.4);
       waving = false;
       tw(F.cam, { z: 1.45, y: 400 }, 500, EZ.back);
-      await seq([[13, 110], [14, 110], [15, 0]]);
+      // "Was that you?": the talking Mirror asks, curious (drawings 13-15 of this sheet, gloves at the mouth, are not used)
+      F.remove(hi); mir.op = 1; mir.brows = false; mir.lx = 0;
+      F.faceNow(mir, "neutral"); gesture(mir, "present", 1);
       await v4;
       await wait(200);
-      F.remove(hi); mir.op = 1; mir.brows = false; mir.lx = 0;
+      gesture(mir, "rest", 1);
     } else {
       await atw(4, "hello", 0, 1.2);
       mir.brows = false; F.face(mir, "happy"); gesture(mir, "wave", 300);
@@ -633,13 +647,13 @@
       // the team's drawn frames: bored, a yawn, the dust piles up, it nods off... then a hard shrug blows the dust away
       const yrs = F.spriteSet("E5_espejo_anios", { x: mir.x + 4, y: mir.y + 8, w: 330, ay: 1, z: 21, frame: 15 });
       F.add(yrs); mir.op = 0;
-      for (const f of [2, 3, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]) { yrs.frame = f; await wait(140); }
+      // (drawings 10-11, arms tucked in odd stubs, and 13, colours swapped, are left out)
+      for (const f of [2, 3, 2, 3, 4, 5, 6, 7, 8, 9]) { yrs.frame = f; await wait(165); }
       await v5;
-      yrs.frame = 12; await wait(140);
-      yrs.frame = 13; sfx("boing", 0.8);
+      yrs.frame = 12; sfx("boing", 0.8);
       p.emit("puff", mir.x, mir.y - 260, 10, { spread: 280, vy: -90, g: 160, r: 12, life: 0.9, fill: "#cfc7b8", ink: "rgba(40,40,40,0.4)" });
-      yrs.sx = 1.06; yrs.sy = 0.94; tw(yrs, { sx: 1, sy: 1 }, 380, EZ.elastic);
-      await wait(170); yrs.frame = 14; await wait(220); yrs.frame = 15; await wait(260);
+      yrs.sx = 1.08; yrs.sy = 0.92; tw(yrs, { sx: 1, sy: 1 }, 420, EZ.elastic);
+      await wait(260); yrs.frame = 14; await wait(220); yrs.frame = 15; await wait(260);
       F.remove(yrs); mir.op = 1; mir.dust = 0; mir.eyes = "open"; F.faceNow(mir, "happy");
     } else {
       tw(mir, { dust: 0.7 }, 1700, EZ.lin);
@@ -687,7 +701,7 @@
     if (!tk) ic.forEach((x) => F.popOut(x));
     if (tk) {
       pose6(10); sfx("ting", 1.5);        // "But…": an idea, finger up
-      wait(380).then(() => pose6(12)).then(() => wait(330)).then(() => pose6(14)).catch(() => {});
+      wait(520).then(() => pose6(14)).catch(() => {});     // ...then both gloves open toward the viewer
     } else {
       mir.eyes = "open"; mir.brows = true; F.face(mir, "curious"); gesture(mir, "pointUp", 220);
       tw(mir, { sy: 1.05 }, 250, EZ.out).then(() => tw(mir, { sy: 1 }, 400, EZ.back)).catch(() => {});
@@ -698,11 +712,12 @@
       // the team's drawn frames: it catches the photon like a ball and throws it straight back
       const pitch = F.spriteSet("E7_espejo_atrapa", { x: mir.x + 4, y: mir.y + 8, w: 330, ay: 1, z: 21, frame: 0 });
       F.add(pitch); mir.op = 0;
-      for (let i = 0; i < 16; i++) {
+      // (drawings 4, 13 and 14 came out with the colours swapped, so they are skipped; the poses hold a little longer)
+      for (const [i, ms] of [[0, 140], [1, 140], [2, 180], [3, 140], [5, 130], [6, 130], [7, 160], [8, 110], [9, 110], [10, 110], [11, 200], [12, 140], [15, 220]]) {
         pitch.frame = i;
-        if (i === 2) { sfx("ting", 1.3); F.shake(6); }
-        if (i === 10) sfx("whoosh", 1.3);
-        await wait(i < 12 ? 100 : 80);
+        if (i === 2) { sfx("ting", 1.3); F.shake(6); pitch.sx = 1.1; pitch.sy = 0.9; tw(pitch, { sx: 1, sy: 1 }, 300, EZ.elastic); }
+        if (i === 10) { sfx("whoosh", 1.3); pitch.sx = 0.92; pitch.sy = 1.08; tw(pitch, { sx: 1, sy: 1 }, 300, EZ.back); }
+        await wait(ms);
       }
       mir.op = 1; F.remove(pitch);
     }
