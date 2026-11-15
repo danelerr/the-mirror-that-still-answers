@@ -82,14 +82,20 @@
     "sonda_ojos_cerrados"];
   const SCENES = ["luna", "espacio", "observatorio", "teatro", "marte_llanura", "marte_arriba", "plataforma", "marte_agua",
     "crater_atardecer", "espacio_profundo", "antena"];
-  const PROPS = ["obj_cohete", "obj_paracaidas", "obj_bolsas"];
-  const loading = F.load(
-    ART.map((n) => [n, "assets/art/" + n + ".png"])
-      .concat(SCENES.map((n) => ["sc_" + n, "assets/scenes/" + n + ".jpg"]))
-      .concat(PROPS.map((n) => [n, "assets/scenes/" + n + ".png"]))
-      .concat([["earth", "assets/earth.png"], ["moon", "assets/moon.png"], ["as11", "assets/tranquility_as11-40-5948.jpg"],
-        ["mars_ground", "assets/mars_ground.png"]])
-  ).then(() => F.loadSprites());
+  const PROPS = ["obj_cohete", "obj_cohete2", "obj_paracaidas", "obj_bolsas"];
+  const PICS = ART.map((n) => [n, "assets/art/" + n + ".webp"])
+    .concat(SCENES.map((n) => ["sc_" + n, "assets/scenes/" + n + ".jpg"]))
+    .concat(PROPS.map((n) => [n, "assets/scenes/" + n + ".webp"]))
+    .concat([["earth", "assets/earth.webp"], ["moon", "assets/moon.webp"], ["as11", "assets/tranquility_as11-40-5948.jpg"]]);
+  // everything is downloaded before Start is enabled; the start screen shows how far along it is
+  const picsTotal = PICS.length + F.spriteList().length;
+  let picsDone = 0;
+  const onePic = () => {
+    picsDone++;
+    const el = F.$("loadHint");
+    if (el && picsDone < picsTotal) el.textContent = "Loading the pictures… " + Math.round(100 * picsDone / picsTotal) + "%";
+  };
+  const loading = F.load(PICS, onePic).then(() => F.loadSprites(onePic));
 
   // ---------- the cast ----------
   const mir = F.mirror({ x: 640, y: 560, s: 0.62 });
@@ -315,8 +321,10 @@
     c.strokeStyle = F.PAPER; c.lineWidth = 3; c.stroke();
     c.fillStyle = "#ffe07a"; c.fillText(txt, 0, 3);
     if (this.note) {
-      c.font = "bold 22px " + F.FONT; c.fillStyle = F.PAPER; c.lineWidth = 5; c.strokeStyle = F.INK;
-      c.strokeText(this.note, 0, 64); c.fillText(this.note, 0, 64);
+      c.font = "bold 22px " + F.FONT;
+      const nw = c.measureText(this.note).width + 28;       // a dark plate behind it, so it reads over the bright Moon
+      c.fillStyle = "rgba(20,14,10,0.78)"; F.roundRect(c, -nw / 2, 47, nw, 34, 9); c.fill();
+      c.fillStyle = F.PAPER; c.fillText(this.note, 0, 65);
     }
   }, { par: 0, z: 150, sec: 0, digits: 3, s: 1, note: "" });
 
@@ -551,12 +559,11 @@
     // the drawn wake-up with arms (16 drawings), the same design as every other drawing of the Mirror
     const WAKE = "E2_espejo_despierta_brazos";
     if (F.hasSprites(WAKE)) {
-      const fw = (window.SPRITES[WAKE].w || 490) * 330 / 490;
-      const take = F.spriteSet(WAKE, { x: mir.x + 4, y: mir.y + 8, w: fw, ay: 1, z: 21, frame: 0 });
+      const take = F.mirrorFrames(WAKE, mir);
       F.add(take); mir.op = 0;
       // (drawings 6-8 of the sheet gave the Mirror legs, which it does not have: the jump is done by moving
       // the startled drawing instead, with stretch going up and squash on landing)
-      const y0 = mir.y + 8;
+      const y0 = take.y;
       const seq = [[0, 450], [1, 300], [2, 280, "ting"], [3, 240], [4, 110, "pop"], [5, 90, "boing", "up"], [5, 220, null, "air"],
         [9, 110, null, "down"], [10, 100, "thud", "land"], [11, 120], [12, 120], [13, 120], [14, 220], [15, 380]];
       for (const s of seq) {
@@ -590,7 +597,7 @@
     const v4 = speak(4, mir);
     if (F.hasSprites("E3_espejo_saluda")) {
       // the team's drawn frames: "Oh!" surprised, a shy smile, a friendly wave, then a curious "was that you?"
-      const hi = F.spriteSet("E3_espejo_saluda", { x: mir.x + 4, y: mir.y + 8, w: 330, ay: 1, z: 21, frame: 0 });
+      const hi = F.mirrorFrames("E3_espejo_saluda", mir);
       F.add(hi); mir.op = 0;
       const seq = async (s) => { for (const [f, ms] of s) { hi.frame = f; await wait(ms); } };
       await seq([[0, 120], [1, 120], [2, 0]]);
@@ -645,7 +652,7 @@
     tw(years, { year: 2026 }, 1700, EZ.inOut, () => { if (F.step(F.t) % 2) sfx("tick"); });
     if (F.hasSprites("E5_espejo_anios")) {
       // the team's drawn frames: bored, a yawn, the dust piles up, it nods off... then a hard shrug blows the dust away
-      const yrs = F.spriteSet("E5_espejo_anios", { x: mir.x + 4, y: mir.y + 8, w: 330, ay: 1, z: 21, frame: 15 });
+      const yrs = F.mirrorFrames("E5_espejo_anios", mir, { frame: 15 });
       F.add(yrs); mir.op = 0;
       // (drawings 10-11, arms tucked in odd stubs, and 13, colours swapped, are left out)
       for (const f of [2, 3, 2, 3, 4, 5, 6, 7, 8, 9]) { yrs.frame = f; await wait(165); }
@@ -681,7 +688,7 @@
       wait(90).then(() => { if (tk) tk.frame = k + 1; }).catch(() => {});
     };
     if (F.hasSprites("E6_espejo_cuenta")) {
-      tk = F.spriteSet("E6_espejo_cuenta", { x: mir.x + 4, y: mir.y + 8, w: 330, ay: 1, z: 21, frame: 9 });
+      tk = F.mirrorFrames("E6_espejo_cuenta", mir, { frame: 9 });
       F.add(tk); mir.op = 0;
     } else {
       mir.eyes = "open"; F.face(mir, "sad");
@@ -710,10 +717,10 @@
     if (tk) { F.remove(tk); tk = null; mir.op = 1; mir.sy = 1; F.faceNow(mir, "happy"); }
     if (F.hasSprites("E7_espejo_atrapa")) {
       // the team's drawn frames: it catches the photon like a ball and throws it straight back
-      const pitch = F.spriteSet("E7_espejo_atrapa", { x: mir.x + 4, y: mir.y + 8, w: 330, ay: 1, z: 21, frame: 0 });
+      const pitch = F.mirrorFrames("E7_espejo_atrapa", mir);
       F.add(pitch); mir.op = 0;
       // (drawings 4, 13 and 14 came out with the colours swapped, so they are skipped; the poses hold a little longer)
-      for (const [i, ms] of [[0, 140], [1, 140], [2, 180], [3, 140], [5, 130], [6, 130], [7, 160], [8, 110], [9, 110], [10, 110], [11, 200], [12, 140], [15, 220]]) {
+      for (const [i, ms] of [[0, 140], [1, 140], [2, 180], [3, 140], [5, 130], [6, 130], [7, 160], [8, 110], [9, 110], [10, 110], [11, 200], [12, 300]]) {
         pitch.frame = i;
         if (i === 2) { sfx("ting", 1.3); F.shake(6); pitch.sx = 1.1; pitch.sy = 0.9; tw(pitch, { sx: 1, sy: 1 }, 300, EZ.elastic); }
         if (i === 10) { sfx("whoosh", 1.3); pitch.sx = 0.92; pitch.sy = 1.08; tw(pitch, { sx: 1, sy: 1 }, 300, EZ.back); }
@@ -848,7 +855,7 @@
     F.face(mir, "happy"); gesture(mir, "present");
     sfx("slideUp");
     await tw(sw, { split: 1 }, 700, EZ.inOut);
-    const halfS = F.stamp([(shot.tof / 2).toFixed(6) + " s each way"], { x: 930, y: 560, size: 30, style: "card" });
+    const halfS = F.stamp([(shot.tof / 2).toFixed(6) + " s each way"], { x: 930, y: 612, size: 30, style: "card" });
     F.popIn(halfS, 360);
     await atw(7, "far", 0, 13.8);
     // how far: time each way multiplied by the speed of light
@@ -860,7 +867,15 @@
       for (let x = x0 + 30; x < x1; x += 30) { c.beginPath(); c.moveTo(x, y - 14); c.lineTo(x, y - (x % 150 < 30 ? 0 : 6)); c.stroke(); }
     }, { z: 30, k: 0 });
     const dist = F.stamp([fmtKm(shot.km * 0)], { x: W / 2, y: 140, size: 50, style: "gold", kicker: "telescope to mirror" });
-    F.scene([space, spacePatch(space), F.stars({ n: 160, par: 0.3, w: 2000, h: 900, x: -200, y: -100 }), tape], { bg: "#000", cam: { x: 840, y: 360, z: 0.78 } });
+    const edges = F.custom(function (c) {            // seen from farther away than the painting is big: its edges fade into the dark
+      for (const [y0, y1] of [[90, -4], [630, 724]]) {
+        const g = c.createLinearGradient(0, y0, 0, y1);
+        g.addColorStop(0, "rgba(0,0,0,0)"); g.addColorStop(1, "rgba(0,0,0,1)");
+        c.fillStyle = g; c.fillRect(-300, Math.min(y0, y1), 2300, Math.abs(y1 - y0));
+      }
+      c.fillStyle = "#000"; c.fillRect(-300, -300, 2300, 297); c.fillRect(-300, 723, 2300, 300);
+    }, { z: -98 });
+    F.scene([space, spacePatch(space), edges, F.stars({ n: 160, par: 0.3, w: 2000, h: 900, x: -200, y: -100 }), tape], { bg: "#000", cam: { x: 840, y: 360, z: 0.78 } });
     F.add(dist); dist.s = 1;
     sfx("slideUp", 0.6);
     await tw(tape, { k: 1 }, 1600, EZ.inOut, (e) => { dist.lines = [fmtKm(shot.km * e)]; });
@@ -879,13 +894,13 @@
     F.faceNow(mir, "neutral"); gesture(mir, "present", 1);
     const v8 = speak(8, mir);
     await atw(8, "guessed", 0, 3.9);
-    const guess = F.stamp(["100 km?", "1 million km?"], { x: 330, y: 220, size: 34, style: "card", rot: -0.08, kicker: "a guess" });
+    const guess = F.stamp(["100 km?", "1 million km?"], { x: 960, y: 250, size: 34, style: "card", rot: -0.06, kicker: "a guess" });
     F.popIn(guess, 380, "squeak");
-    mir.eyes = "open"; mir.lx = -8; F.face(mir, "worried"); gesture(mir, "shrug");
+    mir.eyes = "open"; mir.lx = 8; F.face(mir, "worried"); gesture(mir, "shrug");
     await wait(900);
     // the guess goes up in a little cartoon puff (instead of loose white sparks)
     sfx("pop", 0.5);
-    p.emit("puff", 330, 220, 9, { spread: 140, vy: -30, vyr: 60, vxr: 160, g: -10, r: 16, life: 0.7, fill: "#f3e6c8", ink: "rgba(60,40,30,0.45)" });
+    p.emit("puff", 960, 250, 9, { spread: 140, vy: -30, vyr: 60, vxr: 160, g: -10, r: 16, life: 0.7, fill: "#f3e6c8", ink: "rgba(60,40,30,0.45)" });
     F.popOut(guess, 160);
     await atw(8, "timed", 0, 5.6);
     mir.eyes = "open"; mir.lx = 0; F.face(mir, "proud"); gesture(mir, "thumb", 200);
@@ -907,7 +922,7 @@
     tw(F.cam, drawn9 ? { z: 1.5, y: 450 } : { z: 1.7, y: 330 }, 2600, EZ.inOut);
     if (drawn9) {
       // the team's drawn frames: it looks around, whispers, then pulls a rope to open the show
-      const se = F.spriteSet("E9_espejo_secreto", { x: mir.x + 4, y: mir.y + 8, w: 320, ay: 1, z: 21, frame: 0 });
+      const se = F.mirrorFrames("E9_espejo_secreto", mir);
       F.add(se); mir.op = 0;
       const seq = async (s) => { for (const [f, ms, snd] of s) { se.frame = f; if (snd) sfx(snd); await wait(ms); } };
       await seq([[0, 260], [1, 200], [2, 200, "tick"], [3, 260, "tock"], [4, 160], [5, 260, "sparkle"], [6, 160], [7, 0]]);
@@ -1002,20 +1017,52 @@
     const orbit = window.MOON_ORBIT;
     let kmMin = Infinity, kmMax = 0;
     orbit.forEach((p) => { kmMin = Math.min(kmMin, p[1]); kmMax = Math.max(kmMax, p[1]); });
-    const space = F.plate("sc_espacio", { x: -200, y: 0, w: 1680, h: 720 });
-    const moon = F.sprite("moon", { x: 1000, y: 360, w: 150, z: 20 });
-    const readout = F.stamp([fmtKm(kmMax)], { x: W / 2, y: 110, size: 44, style: "gold", kicker: "Earth to Moon, center to center" });
     const state = { u: 0 };
-    F.scene([space, spacePatch(space), F.stars({ n: 160, par: 0.3, w: 2000, h: 900, x: -200, y: -100 }), moon, readout], { bg: "#000", cam: { x: 640, y: 360, z: 1 } });
-    // one month of real data, played in about four seconds
-    const i0 = 0, i1 = Math.min(orbit.length - 1, 4 * 30);
+    const i0 = 0, i1 = Math.min(orbit.length - 1, 4 * 30);       // one month of real data, played in about four seconds
+    const kAt = (e) => { const km = orbit[Math.round(F.lerp(i0, i1, e))][1]; return { km, k: (km - kmMin) / (kmMax - kmMin) }; };
+    const SW = window.SPRITES || {};
+    if (!(F.hasSprites("O5_luna_columpio") && F.hasSprites("O4_tierra_cara") && SW.O5_luna_columpio.ropes)) {
+      // (without the team's drawings: the photo of the Moon slides nearer and farther)
+      const space = F.plate("sc_espacio", { x: 0, y: -15, w: 1750, h: 750 });
+      const moon = F.sprite("moon", { x: 1000, y: 232, w: 150, z: 20 });
+      const readout = F.stamp([fmtKm(kmMax)], { x: W / 2, y: 500, size: 44, style: "gold", kicker: "Earth to Moon, center to center" });
+      F.scene([space, F.stars({ n: 160, par: 0.3, w: 2000, h: 900, x: -200, y: -100 }), moon, readout], { bg: "#000", cam: { x: 640, y: 360, z: 1 } });
+      await F.tw(state, { u: 1 }, 4200, EZ.inOut, (e) => { const d = kAt(e); moon.x = 640 + d.k * 470; moon.s = 1.15 - d.k * 0.3; readout.lines = [fmtKm(d.km)]; });
+      return;
+    }
+    // The Moon on a swing (the team's O5 drawings): the swing's angle and the Moon's size follow the real distance,
+    // nearer means swung toward the Earth and drawn bigger. The Earth (O4 drawings) watches and reacts.
+    const swing = F.custom(function (c, t) {
+      const meta = SW.O5_luna_columpio, i = Math.floor(t / 1000 * 8) % meta.n, im = IM["spr_O5_luna_columpio_" + i];
+      if (!F.ready(im)) return;
+      const r = meta.ropes[i] || meta.ropes[0], k = this.w / meta.w * this.s, mid = (r[1] + r[2]) / 2, top = this.L - this.hang * k;
+      c.translate(this.px, this.py); c.rotate(-this.phi);
+      c.lineCap = "round";
+      for (const [x, sl] of [[r[1], r[3]], [r[2], r[4]]]) {          // the ropes go on up, out of the picture
+        const xs = (x - mid) * k;
+        c.strokeStyle = F.INK; c.lineWidth = 9 * k; c.beginPath(); c.moveTo(xs, top + 3); c.lineTo(xs - sl * top, 0); c.stroke();
+        c.strokeStyle = "#b08a5a"; c.lineWidth = 4.5 * k; c.beginPath(); c.moveTo(xs, top + 3); c.lineTo(xs - sl * top, 0); c.stroke();
+      }
+      c.drawImage(im, -mid * k, top - r[0] * k, meta.w * k, meta.h * k);
+    }, { z: 20, px: 830, py: -430, L: 760, hang: 200, w: 260, s: 1, phi: 0.4 });
+    const earth = F.spriteSet("O4_tierra_cara", { x: 215, y: 380, w: 385, z: 21, frame: 2 });
+    const readout = F.stamp([fmtKm(kmMax)], { x: W / 2 + 120, y: 615, size: 44, style: "gold", kicker: "Earth to Moon, center to center" });
+    F.scene([F.stars({ n: 200, par: 0.2, w: 2000, h: 900, x: -200, y: -100 }), earth, swing, readout], { bg: "#05060a", cam: { x: 640, y: 360, z: 1 } });
+    // the Earth's face, landed in two small steps: waves hello, then smiles (far), is surprised (coming close),
+    // laughs (closest)
+    let pose = 2, since = F.t;
+    const setPose = (k0) => { if (k0 !== pose) { pose = k0; since = F.t; } };
+    const bob = F.onFrame((tt) => { earth.y = 380 + Math.sin(tt / 600) * 5; earth.frame = pose + (tt - since > 110 ? 1 : 0); });
+    const t0 = F.t;
     await F.tw(state, { u: 1 }, 4200, EZ.inOut, (e) => {
-      const i = Math.round(F.lerp(i0, i1, e)), km = orbit[i][1];
-      const k = (km - kmMin) / (kmMax - kmMin);
-      moon.x = 760 + k * 420;
-      moon.s = 1.15 - k * 0.3;
-      readout.lines = [fmtKm(km)];
+      const d = kAt(e);
+      swing.phi = F.lerp(-0.36, 0.42, d.k);          // swung toward the Earth when near
+      swing.s = 1.15 - d.k * 0.3;
+      readout.lines = [fmtKm(d.km)];
+      if (F.t - t0 > 900) setPose(d.k < 0.2 ? 8 : d.k < 0.55 ? 6 : 0);
     });
+    await wait(300);
+    bob();
   }
 
   // why the dots sit below the line: the telescope and the mirror stand on the surfaces
@@ -1068,7 +1115,7 @@
     // the team's drawn frames when they are there: it shades its eyes, grows sad, smiles bravely, looks up hopeful
     let far = null;
     if (F.hasSprites("E11_espejo_mira_lejos")) {
-      far = F.spriteSet("E11_espejo_mira_lejos", { x: mir.x + 4, y: mir.y + 8, w: 320, ay: 1, z: 21, frame: 0 });
+      far = F.mirrorFrames("E11_espejo_mira_lejos", mir);
       F.add(far); mir.op = 0;
     }
     const pose = (k) => { if (!far) return; far.frame = k; wait(100).then(() => { if (far) far.frame = k + 1; }).catch(() => {}); };
@@ -1171,6 +1218,7 @@
   goBtn.addEventListener("click", () => {
     F.renderLog.t0 = performance.now();
     F.audioInit();
+    F.playing = true;
     goBtn.blur();
     F.hide(startEl);
     F.show(chaptersNav);

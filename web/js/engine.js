@@ -20,6 +20,9 @@
   window.addEventListener("unhandledrejection", (e) => { if (e.reason === ABORT) e.preventDefault(); });
   F.guard = (p) => p.catch((e) => { if (e !== ABORT) console.error(e); });
   F.quiet = (p) => { p.catch(() => {}); return p; };
+  // a scene cancelled by a chapter jump ends its animations with ABORT; one started without await (a side
+  // animation) would otherwise show up as an unhandled rejection. Cancelling is normal, so it stays silent.
+  window.addEventListener("unhandledrejection", (e) => { if (e.reason === ABORT) e.preventDefault(); });
   F.wait = (ms) => {
     const id = F.runId;
     return F.quiet(new Promise((res, rej) => setTimeout(() => (id === F.runId ? res() : rej(ABORT)), ms)));
@@ -46,10 +49,10 @@
   // ---------- images ----------
   const IM = F.IM = {};
   F.ready = (im) => !!im && im.complete && im.naturalWidth > 0;
-  F.load = (list) => Promise.all(list.map(([name, src]) => new Promise((resolve) => {
-    if (IM[name]) { resolve(); return; }
+  F.load = (list, onOne) => Promise.all(list.map(([name, src]) => new Promise((resolve) => {
+    if (IM[name]) { if (onOne) onOne(); resolve(); return; }
     const im = new Image();
-    im.onload = im.onerror = () => resolve();
+    im.onload = im.onerror = () => { if (onOne) onOne(); resolve(); };
     im.src = src + (src.indexOf("?") < 0 ? "?" : "&") + "v=" + window.BUILD;
     IM[name] = im;
   })));
@@ -195,15 +198,30 @@
   F.flash = (v) => { ov.flash = v || 0.8; F.tw(ov, { flash: 0 }, 260, EZ.out); };
 
   // ---------- per-frame hooks and waits on the clock ----------
+  // A hook made while the film is playing belongs to its scene: when the viewer jumps to another chapter (a new
+  // run), it is dropped, so nothing from the old scene keeps moving the camera or the actors. Hooks made before
+  // the film starts (and those made with keep = true) stay for good.
   const hooks = [];
-  F.onFrame = (fn) => { hooks.push(fn); return () => { const i = hooks.indexOf(fn); if (i >= 0) hooks.splice(i, 1); }; };
+  F.playing = false;
+  F.onFrame = (fn, keep) => {
+    const h = { fn, id: F.playing && !keep ? F.runId : -1 };
+    hooks.push(h);
+    return () => { const i = hooks.indexOf(h); if (i >= 0) hooks.splice(i, 1); };
+  };
+  F.hookCount = () => hooks.length;          // (for the tests: nothing may pile up after many chapter jumps)
+  // the same for things that repeat on a timer (smoke, wind, beeps): they stop by themselves on a chapter jump
+  F.every = (ms, fn) => {
+    const id = F.runId;
+    const h = setInterval(() => { if (id !== F.runId) { clearInterval(h); return; } fn(); }, ms);
+    return () => clearInterval(h);
+  };
   F.until = (test) => {
     const id = F.runId;
     return F.quiet(new Promise((resolve, reject) => {
       const off = F.onFrame(() => {
         if (id !== F.runId) { off(); reject(ABORT); return; }
         if (test()) { off(); resolve(); }
-      });
+      }, true);
     }));
   };
 
@@ -216,7 +234,10 @@
     const dt = Math.min(0.05, (t - (last || t)) / 1000);
     last = t; F.t = t; F.dt = dt;
     runTweens(t);
-    hooks.slice().forEach((h) => h(t, dt));
+    hooks.slice().forEach((h) => {
+      if (h.id !== -1 && h.id !== F.runId) { const i = hooks.indexOf(h); if (i >= 0) hooks.splice(i, 1); return; }
+      h.fn(t, dt);
+    });
     if (cam.shake > 0.05) {
       shk.x = (Math.random() - 0.5) * 2 * cam.shake;
       shk.y = (Math.random() - 0.5) * 2 * cam.shake;

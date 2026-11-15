@@ -47,7 +47,18 @@ def regions(a):
         w = sl[1].stop - sl[1].start
         h = sl[0].stop - sl[0].start
         out.append(dict(i=i, sl=sl, area=area, frac=area / total, rx=(cx - box[0]) / bw, ry=(cy - box[1]) / bh,
-                        w=w, h=h, fill=area / max(1, w * h)))
+                        w=w, h=h, fill=area / max(1, w * h), cx=cx, cy=cy, holes=0))
+    # how many tiny areas (reflectors, eyes) each big area really surrounds
+    tiny = [q for q in out if q["frac"] < 0.004]
+    for r in out:
+        if r["frac"] < 0.01:
+            continue
+        sl = r["sl"]
+        filled = ndimage.binary_fill_holes(lab[sl] == r["i"])
+        for q in tiny:
+            y, x = int(q["cy"]) - sl[0].start, int(q["cx"]) - sl[1].start
+            if 0 <= y < filled.shape[0] and 0 <= x < filled.shape[1] and filled[y, x]:
+                r["holes"] += 1
     return lab, out, gray
 
 
@@ -80,27 +91,42 @@ def rover(r, regs):
 
 
 def mirror(r, regs):
-    # the tray full of round holes (cream): the biggest central area that is NOT a full rectangle; the face window
-    # itself is a full rectangle (fill near 1), so it never takes this place even when an arm cuts the tray in two
-    face = max((q for q in regs if 0.3 < q["rx"] < 0.7 and 0.2 < q["ry"] < 0.75 and q["fill"] < 0.75), key=lambda q: q["area"], default=None)
+    """The Mirror: a cream tray full of round reflectors, a gold face window in its middle, a grey stand,
+    and white gloves, eyes, teeth and reflectors."""
+    if r["frac"] < 0.004:
+        return None                                   # reflectors, eyes, teeth: white
+
+    def inside(q, box):
+        cy = q["sl"][0].start + q["h"] / 2
+        cx = q["sl"][1].start + q["w"] / 2
+        s = box["sl"]
+        return s[0].start < cy < s[0].stop and s[1].start < cx < s[1].stop
+
+    # tray pieces are full of reflectors (many per area); the face window only surrounds the eyes and the mouth
+    trays = [q for q in regs if q["frac"] > 0.008 and q["holes"] >= 4 and q["holes"] * 1400 > q["area"]]
+    if any(r is q for q in trays):
+        return CREAM                                  # the tray (every piece of it, if an arm cuts it in two)
+    if trays:
+        # the tray's box (all its pieces together)
+        y0 = min(q["sl"][0].start for q in trays); y1 = max(q["sl"][0].stop for q in trays)
+        x0 = min(q["sl"][1].start for q in trays); x1 = max(q["sl"][1].stop for q in trays)
+        th, tw = y1 - y0, x1 - x0
+        beside = r["cx"] < x0 + 0.08 * tw or r["cx"] > x1 - 0.08 * tw
+        if r["cy"] > y1 - 0.12 * th:
+            return None if beside else GRAY           # below the tray: a glove resting beside it, or the stand
+        within = lambda q: y0 < q["cy"] < y1 and x0 < q["cx"] < x1
+        cands = [q for q in regs if q["frac"] > 0.01 and within(q) and not any(q is z for z in trays) and q["cy"] <= y1 - 0.12 * th]
+        if cands and r is max(cands, key=lambda q: q["area"]):
+            return GOLD                               # the face window
+        if any(r is q for q in cands):
+            return GOLD if r["fill"] > 0.62 else None  # another piece of the window, or a glove in front of the tray
     if r["rx"] < 0.17 or r["rx"] > 0.83:
         return None                                   # the gloves stay white
     if r["ry"] > 0.86:
         return GRAY                                   # the frame it stands on
-    if face is not None and r is face:
-        return CREAM                                  # the face window
-    if face is not None and (r["frac"] < 0.03 or (r["frac"] < 0.07 and r["fill"] < 0.7)):
-        sl = face["sl"]
-        cy = r["sl"][0].start + r["h"] / 2
-        cx = r["sl"][1].start + r["w"] / 2
-        if sl[0].start < cy < sl[0].stop and sl[1].start < cx < sl[1].stop:
-            return None                               # eyes, mouth, teeth and gloves in front of the face stay white
-                                                      # (the face window itself is a full rectangle, so it keeps its colour)
-    if r["frac"] < 0.004:
-        return None                                   # the round reflectors: all white, so none comes out blue by chance
     if r["frac"] < 0.03 and r["fill"] < 0.62:
-        return None                                   # a glove (fingers make it lumpy) anywhere in the drawing stays white
-    return GOLD                                       # the tray
+        return None                                   # a glove (fingers make it lumpy) stays white
+    return GOLD
 
 
 def photon(r, regs):
@@ -147,29 +173,30 @@ def probe(r, regs):
 
 
 def probe_plain(r, regs):
-    """Pioneer 10 without flying rocks: only the dish (cream) and the small body (gold) get colour;
-    gloves, eyes and booms stay white, so no glove or eye is painted by mistake."""
+    """Pioneer 10: only the big dish gets colour (cream); eyes, gloves, booms and the small body stay white,
+    so every sheet of the probe looks the same."""
+    dish = max(regs, key=lambda q: q["area"])
+    return CREAM if r is dish else None
+
+
+def probe_rocks(r, regs):
+    """Pioneer 10 among the asteroids: the dish is cream and the loose round rocks far from it are brown."""
     dish = max(regs, key=lambda q: q["area"])
     if r is dish:
         return CREAM
-    sl = dish["sl"]
-
-    def inside(q):
-        cy = q["sl"][0].start + q["h"] / 2
-        cx = q["sl"][1].start + q["w"] / 2
-        return sl[0].start < cy < sl[0].stop and sl[1].start < cx < sl[1].stop
-    if inside(r):
-        return None
-    rest = sorted((q for q in regs if q is not dish and not inside(q)), key=lambda q: -q["area"])
-    if rest and r is rest[0] and r["frac"] > 0.01 and r["fill"] > 0.6 and r["ry"] > 0.45:
-        return GOLD
+    dx, dy = r["cx"] - dish["cx"], r["cy"] - dish["cy"]
+    d = (dx * dx + dy * dy) ** 0.5 / max(dish["w"], dish["h"])
+    if dx < 0 and dy > 0 and d < 0.85:
+        return None                                   # the small body, below and to the left of the dish
+    if d > 0.5 and r["frac"] > 0.008 and r["fill"] > 0.55:
+        return "#9a8670"
     return None
 
 
 RULES = {"R1_rover_avanza": rover, "R2_rover_despliega": rover, "R5_rover_tormenta": rover, "R6_rover_sacude": rover,
          "E2_espejo_despierta": mirror, "F1_foton_vuela": photon, "O2_bolsas_rebotan": bags,
-         "E7_espejo_atrapa": mirror, "E6_espejo_cuenta": mirror, "E9_espejo_secreto": mirror, "E5_espejo_anios": mirror, "E3_espejo_saluda": mirror, "E11_espejo_mira_lejos": mirror, "E12_espejo_habla": mirror, "E13_espejo_gestos": mirror, "E2_espejo_despierta_brazos": mirror, "R3_rover_mira_sol": rover, "R8_rover_celebra": rover, "P1_sonda_despliega": probe_plain, "P3_sonda_jupiter": probe_plain, "P4_sonda_llama": probe_plain, "R4_rover_excava": rover,
-         "R7_rover_ultimos_dias": rover, "P2_sonda_esquiva": probe, "P5_sonda_se_apaga": probe}
+         "E7_espejo_atrapa": mirror, "E6_espejo_cuenta": mirror, "E9_espejo_secreto": mirror, "E5_espejo_anios": mirror, "E3_espejo_saluda": mirror, "E11_espejo_mira_lejos": mirror, "E12_espejo_habla": mirror, "E13_espejo_gestos": mirror, "E14_espejo_escucha": mirror, "E2_espejo_despierta_brazos": mirror, "R3_rover_mira_sol": rover, "R8_rover_celebra": rover, "P1_sonda_despliega": probe_plain, "P3_sonda_jupiter": probe_plain, "P4_sonda_llama": probe_plain, "R4_rover_excava": rover,
+         "R7_rover_ultimos_dias": rover, "P2_sonda_esquiva": probe_rocks, "P5_sonda_se_apaga": probe_plain}
 
 ONLY = None   # set from the command line to colour just some sets
 

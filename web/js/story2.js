@@ -30,7 +30,7 @@
   const nar = F.mirror({ x: 0, y: 0, s: 0.33, eyes: "open", mouth: "smile", shadow: false, bobAmt: 0.6, hands: false });
   // the team's drawn frames: show them where the rover is, then give the stage back to the puppet
   function framesAt(name, o) {
-    const a = F.spriteSet(name, Object.assign({ x: rv.x, y: rv.y + 8, w: 470, ay: 1, z: 31, frame: 0 }, o));
+    const a = F.spriteSet(name, Object.assign({ x: rv.x, y: rv.y + 8, w: F.roverW(name), ay: 1, z: 31, frame: 0 }, o));
     F.add(a);
     return a;
   }
@@ -229,7 +229,7 @@
   // =================== the wordless start: launch, landing, waking up ===================
   async function launch() {
     const pad = F.plate("sc_plataforma", { x: -30, y: -20, w: 1340, h: 754 });
-    const rocket = F.sprite("obj_cohete", { x: 650, y: 552, w: 140, ax: 0.5, ay: 1, z: 20 });
+    const rocket = F.sprite("obj_cohete2", { x: 650, y: 552, w: 84, ax: 0.5, ay: 1, z: 20 });
     const p = F.particles({ z: 25 });
     F.scene([pad, rocket, p, F.credit("Painted scene: AI image generator.")], { bg: "#e8c9a0", cam: { x: 640, y: 380, z: 1.05 } });
     await F.irisIn(650, 420, 700);
@@ -312,8 +312,8 @@
     if (F.hasSprites("R2_rover_despliega")) {
       await tw(bags, { op: 0 }, 250, EZ.out);
       F.remove(bags);
-      const un = framesAt("R2_rover_despliega", { w: 470 });
-      await playSeq(un, [[0, 500], [1, 260, "slideUp", 0.7], [2, 220], [3, 360, "pop"], [4, 260], [5, 420, "slideUp", 1.2], [6, 260, "ting"], [7, 700, "tada"]]);
+      const un = framesAt("R2_rover_despliega");
+      await playSeq(un, [[0, 500], [1, 260, "slideUp", 0.7], [2, 300], [4, 320, "pop"], [5, 420, "slideUp", 1.2], [6, 260, "ting"], [7, 700, "tada"]]);
       F.cam.z = 1.15;
       backToPuppet(un);
       rv.mastT = 0; rv.mast = 0; rv.eyes = "open"; rv.armT = 0.1; F.faceNow(rv, "happy");
@@ -363,7 +363,7 @@
     if (F.hasSprites("R4_rover_excava")) {
       // the team's drawn frames: it reaches, scrapes, peers, finds a tiny round pebble and jumps for joy
       rv.op = 0;
-      const dig = framesAt("R4_rover_excava", { w: 470 });
+      const dig = framesAt("R4_rover_excava");
       const dream = F.thought("sc_marte_agua", { x: 840, y: 230, w: 440, h: 280, fromX: rv.x + 150, fromY: rv.y - 300, z: 70 });
       F.add(dream);
       for (let i = 0; i < 16; i++) {
@@ -405,7 +405,7 @@
     // the team's drawn frames when they are there: it looks up, squints at the Sun, thinks, notes it down, smiles
     let look = null;
     if (F.hasSprites("R3_rover_mira_sol")) {
-      rv.op = 0; look = framesAt("R3_rover_mira_sol", { w: 470, frame: 0 });
+      rv.op = 0; look = framesAt("R3_rover_mira_sol");
       playSeq(look, [[0, 260], [1, 260], [2, 200], [3, 0]]).catch(() => {});
     }
     // where the camera head is: on the drawing (about 68% across and 25% down) or on the puppet
@@ -471,7 +471,7 @@
     F.add(wall);
     sfx("wind", 1.6);
     tw(wall, { x: 640 }, 2200, EZ.out);
-    const gust = setInterval(() => P.emit("streak", -40, 120 + Math.random() * 480, 2, { vx: 900, vxr: 200, vy: 0, vyr: 20, g: 0, r: 14, len: 90, life: 1.6, fill: "rgba(240,200,150,0.6)" }), 120);
+    const gust = F.every(120, () => P.emit("streak", -40, 120 + Math.random() * 480, 2, { vx: 900, vxr: 200, vy: 0, vyr: 20, g: 0, r: 14, len: 90, life: 1.6, fill: "rgba(240,200,150,0.6)" }));
     tw(M, { idx: idxOfSol(1236) }, 2000, EZ.in);
     let storm = null;
     if (F.hasSprites("R5_rover_tormenta")) {
@@ -489,7 +489,7 @@
     F.popIn(zz, 300);
     tw(zz, { y: rv.y - 360 }, 1500, EZ.inOut);
     await atw(17, "cleared", 0, 9.3);
-    clearInterval(gust);
+    gust();
     F.remove(zz);
     tw(wall, { x: 1900 }, 1500, EZ.in);
     await tw(M, { idx: idxOfSol(1420) }, 1100, EZ.out);
@@ -498,7 +498,7 @@
       // the drawn shake, like a wet dog, then back to the puppet in a cloud of dust
       F.remove(storm);
       const sh = framesAt("R6_rover_sacude");
-      await playSeq(sh, [[0, 260, "boing", 1.2], [1, 110, "swish"], [2, 110], [3, 110, "swish"], [4, 110], [5, 160], [6, 220], [7, 500, "tada"]]);
+      await playSeq(sh, [[0, 260, "boing", 1.2], [1, 110, "swish"], [2, 110], [4, 110, "swish"], [2, 110], [4, 110], [5, 160], [6, 220], [7, 500, "tada"]]);
       rv.dusty = 0; rv.mastT = 0; rv.mast = 0; rv.armT = 0.1; rv.sx = rv.sy = 1; rv.tilt = 0; F.faceNow(rv, "happy");
       backToPuppet(sh);
       storm = null;
@@ -521,7 +521,7 @@
     const v = say(18);
     rv.drive = 1; plain.v = 420; F.face(rv, "determined");
     let cyc = null;
-    if (F.hasSprites("R1_rover_avanza")) { rv.op = 0; cyc = framesAt("R1_rover_avanza", { frame: null, loop: true, fps: 12 }); }
+    if (F.hasSprites("R1_rover_avanza")) { rv.op = 0; cyc = framesAt("R1_rover_avanza", { frame: null, loop: true, fps: 12, frames: F.R1_CYCLE.map((i) => "spr_R1_rover_avanza_" + i) }); }
     const odo = F.stamp(["0.0 km"], { x: 1010, y: 130, size: 52, style: "card", kicker: "distance driven" });
     F.popIn(odo, 360);
     const year = F.stamp(["2007"], { x: 300, y: 130, size: 52, style: "gold" });
@@ -540,7 +540,7 @@
     if (cyc && F.hasSprites("R8_rover_celebra")) {
       // the team's drawn frames: it stops and does a happy little dance for its 45 km
       F.remove(cyc); cyc = null; rv.drive = 0; plain.v = 0;
-      const dance = framesAt("R8_rover_celebra", { w: 470, frame: 0 });
+      const dance = framesAt("R8_rover_celebra");
       await playSeq(dance, [[0, 140], [1, 120], [2, 110, "boing"], [3, 150], [4, 110, "thud"], [5, 170, "swish"], [6, 110], [7, 130],
         [8, 110], [9, 120, "boing"], [10, 110], [11, 140, "thud"], [12, 120], [13, 110], [14, 150], [15, 320, "tada"]]);
       backToPuppet(dance);
@@ -558,8 +558,23 @@
     const planet = F.custom(function (c, t) {
       const cx = W / 2, cy = H / 2 + 20, R = 250;
       c.save(); c.beginPath(); c.arc(cx, cy, R, 0, 6.2832); c.clip();
-      const im = IM.sc_marte_arriba;
-      if (F.ready(im)) c.drawImage(im, cx - R * 1.6 - (t / 40) % 200, cy - R, R * 3.6, R * 2.1);
+      // a drawn planet (not a round window onto the landscape): ochre globe, darker lands that drift as it turns,
+      // a pale polar cap and a few craters
+      const g0 = c.createRadialGradient(cx - R * 0.35, cy - R * 0.4, R * 0.1, cx, cy, R * 1.05);
+      g0.addColorStop(0, "#e6a069"); g0.addColorStop(0.6, "#c9743f"); g0.addColorStop(1, "#8f4526");
+      c.fillStyle = g0; c.fillRect(cx - R, cy - R, R * 2, R * 2);
+      const turn = (t / 70) % (R * 4);
+      c.fillStyle = "rgba(122,58,30,0.5)";
+      for (const b of [[0.1, -0.28, 0.44, 0.15], [0.95, 0.12, 0.52, 0.2], [1.75, -0.06, 0.34, 0.13], [2.45, 0.38, 0.56, 0.17], [3.2, -0.42, 0.4, 0.11], [0.55, 0.55, 0.3, 0.09], [2.9, 0.02, 0.26, 0.1]]) {
+        const x = cx - R * 2 + ((b[0] * R + turn) % (R * 4));
+        for (const k of [0, -R * 4]) { c.beginPath(); c.ellipse(x + k, cy + b[1] * R, b[2] * R, b[3] * R, 0.12, 0, 6.2832); c.fill(); }
+      }
+      c.strokeStyle = "rgba(110,50,26,0.55)"; c.lineWidth = 4;
+      for (const k of [[1.3, 0.3, 16], [2.1, -0.3, 11], [3.5, 0.2, 14], [0.4, 0.05, 9]]) {
+        const x = cx - R * 2 + ((k[0] * R + turn) % (R * 4));
+        c.beginPath(); c.ellipse(x, cy + k[1] * R, k[2], k[2] * 0.7, 0, 0, 6.2832); c.stroke();
+      }
+      c.fillStyle = "rgba(250,240,226,0.92)"; c.beginPath(); c.ellipse(cx, cy - R * 0.95, R * 0.4, R * 0.11, 0, 0, 6.2832); c.fill();
       c.fillStyle = "rgba(196,120,70," + (this.cover * 0.85).toFixed(3) + ")"; c.fillRect(cx - R, cy - R, R * 2, R * 2);
       for (let i = 0; i < 18 * this.cover; i++) {
         const a = i * 2.4 + t / 3000, r = R * (0.2 + (i % 5) * 0.17);
@@ -591,7 +606,7 @@
     M.reveal = 0;
     // the team's drawn frames: a little more tired with every number, until it falls asleep
     let r7 = null;
-    if (F.hasSprites("R7_rover_ultimos_dias")) { rv.op = 0; r7 = framesAt("R7_rover_ultimos_dias", { w: 470, frame: 0 }); }
+    if (F.hasSprites("R7_rover_ultimos_dias")) { rv.op = 0; r7 = framesAt("R7_rover_ultimos_dias"); }
     const r7to = (a, b, ms) => { if (!r7) return; F.guard((async () => { for (let i = a; i <= b; i++) { r7.frame = i; await wait(ms / (b - a + 1)); } })()); };
     const v = say(19);
     // the numbers climb: each new measurement steps up like a stair, and the sky gets darker
@@ -639,9 +654,11 @@
       }
       c.globalAlpha = 1;
       if (this.k > 0.98) {
-        c.font = "bold 22px " + F.FONT; c.textAlign = "center"; c.lineWidth = 5; c.strokeStyle = F.INK; c.fillStyle = F.PAPER;
+        c.font = "bold 24px " + F.FONT; c.textAlign = "center"; c.textBaseline = "middle";
         const txt = OPP.length.toLocaleString("en-US") + " real measurements of dust in the sky · NASA Planetary Data System";
-        c.strokeText(txt, W / 2, 300); c.fillText(txt, W / 2, 300);
+        const tw2 = c.measureText(txt).width + 36;            // on a dark plate, so it reads over the crater's rim
+        c.fillStyle = "rgba(20,14,10,0.78)"; F.roundRect(c, W / 2 - tw2 / 2, 282, tw2, 40, 10); c.fill();
+        c.fillStyle = F.PAPER; c.fillText(txt, W / 2, 303);
       }
     }, { z: 10, k: 0, par: 1 });
     const p = F.particles({ z: 40 });
@@ -651,10 +668,10 @@
     const v = say(20);
     sfx("sad");
     await atw(20, "numbers", 0, 4.0);
-    const rise = setInterval(() => p.emit("dot", little.x, little.y - 40, 2, { spread: 30, vx: -60, vxr: 120, vy: -160, vyr: 60, g: 0, r: 5, life: 1.6, fill: "rgba(255,224,122,0.95)" }), 60);
+    const rise = F.every(60, () => p.emit("dot", little.x, little.y - 40, 2, { spread: 30, vx: -60, vxr: 120, vy: -160, vyr: 60, g: 0, r: 5, life: 1.6, fill: "rgba(255,224,122,0.95)" }));
     sfx("sparkle");
     await tw(sky, { k: 1 }, 2600, EZ.inOut);
-    clearInterval(rise);
+    rise();
     await atw(20, "check", 0, 6.9);
     const ok = F.stamp(["Anyone can check them"], { x: W / 2, y: 470, size: 40, style: "gold", rot: -0.03 });
     F.popIn(ok, 420, "tada");

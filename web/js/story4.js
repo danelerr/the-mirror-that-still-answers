@@ -10,9 +10,9 @@
   // people coming back: the same painted rocket as the launches, coming down tail first on its flame
   // (y is the bottom of the rocket; s squashes it as it touches down)
   const lander = F.custom(function (c, t) {
-    const img = IM.obj_cohete;
+    const img = F.ready(IM.obj_cohete2) ? IM.obj_cohete2 : IM.obj_cohete;   // the team's drawn rocket (O3 sheet)
     if (!F.ready(img)) return;
-    const w = 36, h = w * img.height / img.width;          // small: it lands far away on the plain
+    const w = img === IM.obj_cohete2 ? 22 : 36, h = w * img.height / img.width;          // small: it lands far away on the plain
     c.translate(this.x, this.y);
     if (this.flame > 0.01) {
       const L = (34 + (F.step(t) % 3) * 10) * this.flame;
@@ -31,10 +31,10 @@
     if (!F.hasSprites(name)) return false;
     if (!ov || ov.set !== name) {
       if (ov) F.remove(ov);
-      ov = F.spriteSet(name, { x: mir.x + 4, y: mir.y + 8, w: 330 * mir.s / 0.62, ay: 1, z: 21, frame: k });
+      ov = F.mirrorFrames(name, mir, { frame: k });
       ov.set = name;
     }
-    ov.x = mir.x + 4; ov.y = mir.y + 8; ov.w = 330 * mir.s / 0.62;
+    F.place(ov, name, "mirror", mir.s, mir.x, mir.y + 13 * mir.s);
     F.add(ov);                       // (no-op if it is already on stage; puts it back after a scene change)
     ov.frame = k; ov.sx = 1.04; ov.sy = 0.96;
     tw(ov, { sx: 1, sy: 1 }, 240, EZ.back);
@@ -106,7 +106,7 @@
       await atw(30, ["time", "number", "measurement"][i], 0, k[0]);
       F.face(mir, "proud"); F.gesture(mir, ["one", "two", "three"][i], 200);
       show("E6_espejo_cuenta", i * 2);                        // drawn: one, two, three fingers
-      const st = F.stamp([k[2]], { x: 260 + i * 380, y: 170, size: 46, style: "card", rot: (i - 1) * 0.04, kicker: k[1] });
+      const st = F.stamp([k[2]], { x: 520 + i * 290, y: 170, size: 44, style: "card", rot: (i - 1) * 0.04, kicker: k[1] });   // clear of the Earth, top left
       made.push(st);
       F.popIn(st, 360, "stamp");
     }
@@ -168,7 +168,7 @@
     // the team's drawn frames when they are there: it shades its eyes to watch the lander, then waves to it
     let far = null;
     if (F.hasSprites("E11_espejo_mira_lejos")) {
-      far = F.spriteSet("E11_espejo_mira_lejos", { x: mir.x + 3, y: mir.y + 7, w: 266, ay: 1, z: 21, frame: 2 });
+      far = F.mirrorFrames("E11_espejo_mira_lejos", mir, { frame: 2 });
       F.add(far); mir.op = 0;
       wait(120).then(() => { if (far) far.frame = 3; }).catch(() => {});
     }
@@ -177,14 +177,14 @@
     sfx("rumble", 0.8);
     // it comes down fast and brakes on its flame before the ground (slow in), kicking up dust as it gets close,
     // then touches down with a little squash and settles (follow-through)
-    const dust = setInterval(() => {
+    const dust = F.every(90, () => {
       if (lander.y > 380 && lander.flame > 0.1) p.emit("puff", lander.x, 470, 2, { spread: 40, vy: -20, vxr: 160, g: 10, r: 9, life: 0.9, fill: "#cfc7b8", ink: "rgba(40,40,40,0.35)" });
-    }, 90);
+    });
     try {
       lander.sx = 0.92; lander.sy = 1.1;
       tw(lander, { sx: 1, sy: 1 }, 2200, EZ.out);
       await tw(lander, { y: 470 }, 2600, EZ.out);
-    } finally { clearInterval(dust); }
+    } finally { dust(); }
     lander.flame = 0;
     lander.sx = 1.15; lander.sy = 0.85; tw(lander, { sx: 1, sy: 1 }, 450, EZ.elastic);
     p.emit("puff", lander.x, 472, 8, { spread: 120, vy: -30, vxr: 220, g: 20, r: 12, life: 1.2, fill: "#cfc7b8", ink: "rgba(40,40,40,0.4)" });
@@ -210,7 +210,7 @@
     // the team's drawn frames when they are there: hopeful, looking up at the Earth; a joyful glow; a wink to the viewer
     let fin = null;
     if (F.hasSprites("E11_espejo_mira_lejos")) {
-      fin = F.spriteSet("E11_espejo_mira_lejos", { x: mir.x + 4, y: mir.y + 8, w: 330, ay: 1, z: 21, frame: 8 });
+      fin = F.mirrorFrames("E11_espejo_mira_lejos", mir, { frame: 8 });
       F.add(fin); mir.op = 0;
     }
     const v = S.speak(33, mir);

@@ -5,6 +5,13 @@
 Writes web/assets/sprites/<name>/00.png, 01.png ... (same size, aligned on the ground line, or
 centred with --center for effects) and updates web/data/sprites.js with the frame count and size.
 Frames are read left to right, top to bottom.
+
+    python web/tools/cut_sprites.py sheet.png --grid 4x4 --body [--center]
+
+With --body (for characters), the sheet is cut by whole drawings instead of by cell edges, so a
+hand that reaches into the next cell stays whole; every frame is placed so that the character's
+body (its biggest solid part, without arms and hands) sits at the same point, and the size of that
+body is written to sprites.js ("u"), so the film can draw every sheet of a character at one size.
 """
 import io
 import json
@@ -34,6 +41,8 @@ def grid_boxes(im, cols, rows):
 def cut(path, center=False, max_side=900, grid=None):
     name = os.path.splitext(os.path.basename(path))[0]
     im = Image.open(path).convert("RGB")
+    if grid and BODY:
+        return cut_bodies(name, im, grid, center)
     if grid:
         # cut each cell on its own, then treat it as a one-drawing sheet
         cells = [im.crop(b) for b in grid_boxes(im, grid[0], grid[1])]
@@ -143,13 +152,97 @@ def cut_cells(name, cells, center, max_side):
     print(name, len(pieces), "frames (grid),", round(fw * k), "x", round(fh * k))
 
 
-def write_index(name, n, w, h, center):
+BODY = False
+
+
+def body_of(mask, cell):
+    """The character's body in a frame: its biggest solid part once thin things (arms, hands, booms,
+    speed lines) are worn away. Returns (centre x, centre y, size) in pixels of the mask."""
+    q = 4
+    m = mask[::q, ::q]
+    r = max(3, int(cell / q * 0.10))
+    core = ndimage.binary_opening(m, structure=np.ones((r, r), bool))
+    lab, n = ndimage.label(core)
+    if n == 0:
+        ys, xs = np.nonzero(mask)
+        return (xs.min() + xs.max()) / 2, (ys.min() + ys.max()) / 2, float(np.sqrt((xs.max() - xs.min()) * (ys.max() - ys.min())))
+    sizes = ndimage.sum(core, lab, range(1, n + 1))
+    sl = ndimage.find_objects(lab)[int(np.argmax(sizes))]
+    y0, y1, x0, x1 = sl[0].start * q, sl[0].stop * q, sl[1].start * q, sl[1].stop * q
+    return (x0 + x1) / 2, (y0 + y1) / 2, float(np.sqrt((x1 - x0) * (y1 - y0)))
+
+
+def cut_bodies(name, im, grid, center):
+    cols, rows = grid
+    W, H = im.size
+    cw, ch = W / cols, H / rows
+    a = np.asarray(im).astype(np.int16)
+    # the paper: white that touches the border of the whole sheet (so a closed glove stays white inside)
+    light = (a.min(axis=2) > 228) & (a.max(axis=2) - a.min(axis=2) < 28)
+    lab, _ = ndimage.label(light)
+    border = set(np.unique(np.concatenate([lab[0], lab[-1], lab[:, 0], lab[:, -1]]))) - {0}
+    bg = np.isin(lab, list(border))
+    alpha = np.where(bg, 0, 255).astype(np.uint8)
+    alpha = np.asarray(Image.fromarray(alpha).filter(ImageFilter.MinFilter(3)).filter(ImageFilter.GaussianBlur(0.8)))
+    solid = alpha > 40
+    # every separate drawing goes, whole, to the cell where most of it lies
+    parts, n = ndimage.label(solid, structure=np.ones((3, 3), int))
+    owner = np.zeros(n + 1, int) - 1
+    cell_of = np.full(solid.shape, -1, int)
+    yy, xx = np.indices(solid.shape)
+    grid_id = (np.minimum(yy // ch, rows - 1) * cols + np.minimum(xx // cw, cols - 1)).astype(int)
+    for i, sl in enumerate(ndimage.find_objects(parts), 1):
+        if sl is None:
+            continue
+        m = parts[sl] == i
+        if (sl[1].stop - sl[1].start) > cw * 1.5 or (sl[0].stop - sl[0].start) > ch * 1.5:
+            cell_of[sl][m] = grid_id[sl][m]              # two drawings touch: split them at the cell edge
+            continue
+        ids = np.bincount(grid_id[sl][m], minlength=cols * rows)
+        cell_of[sl][m] = int(np.argmax(ids))
+    frames = []
+    for k in range(cols * rows):
+        m = cell_of == k
+        if not m.any():
+            raise SystemExit("empty cell %d in %s" % (k, name))
+        ys, xs = np.nonzero(m)
+        x0, x1, y0, y1 = xs.min(), xs.max() + 1, ys.min(), ys.max() + 1
+        sub = m[y0:y1, x0:x1]
+        bx, by, u = body_of(sub, min(cw, ch))
+        soft = ndimage.binary_dilation(sub, iterations=2)
+        rgba = np.dstack([np.asarray(im)[y0:y1, x0:x1], np.where(soft, alpha[y0:y1, x0:x1], 0).astype(np.uint8)])
+        frames.append(dict(im=Image.fromarray(rgba, "RGBA"), bx=bx, by=by, u=u, w=x1 - x0, h=y1 - y0))
+    u = float(np.median([f["u"] for f in frames]))
+    # the body sits at the same point of every frame; without --center the ground line is where the
+    # drawings of this sheet usually end below the body
+    left = max(f["bx"] for f in frames) + 4
+    right = max(f["w"] - f["bx"] for f in frames) + 4
+    top = max(f["by"] for f in frames) + 4
+    below = max(f["h"] - f["by"] for f in frames) + 4
+    drop = float(np.median([f["h"] - f["by"] for f in frames]))
+    fw, fh = int(round(left + right)), int(round(top + below))
+    out = os.path.join(WEB, "assets", "sprites", name)
+    os.makedirs(out, exist_ok=True)
+    for f in os.listdir(out):
+        os.remove(os.path.join(out, f))
+    for i, f in enumerate(frames):
+        canvas = Image.new("RGBA", (fw, fh), (0, 0, 0, 0))
+        canvas.alpha_composite(f["im"], (int(round(left - f["bx"])), int(round(top - f["by"]))))
+        canvas.save(os.path.join(out, "%02d.png" % i), optimize=True)
+    extra = {"u": round(u, 1), "cx": round(left, 1), "cy": round(top, 1), "g": round(top + (0 if center else drop), 1)}
+    write_index(name, len(frames), fw, fh, center, extra)
+    print(name, len(frames), "frames (bodies),", fw, "x", fh, "| body", round(u), "| ground/body %.3f" % (drop / u))
+
+
+def write_index(name, n, w, h, center, extra=None):
     js = os.path.join(WEB, "data", "sprites.js")
     data = {}
     if os.path.exists(js):
         txt = io.open(js, encoding="utf-8").read()
         data = json.loads(txt[txt.index("=") + 1:].strip().rstrip(";"))
     data[name] = {"n": n, "w": w, "h": h, "center": center}
+    if extra:
+        data[name].update(extra)
     io.open(js, "w", encoding="utf-8", newline="\n").write(
         "// Sprite sets cut from the team's sprite sheets by web/tools/cut_sprites.py (frames, size).\n"
         "window.SPRITES = " + json.dumps(data, indent=1) + ";\n")
@@ -166,5 +259,6 @@ if __name__ == "__main__":
         g = sys.argv[sys.argv.index("--grid") + 1]
         grid = tuple(int(v) for v in g.lower().split("x"))
         args = [a for a in args if a != g]
+    BODY = "--body" in sys.argv
     for p in args:
         cut(p, center="--center" in sys.argv, max_side=mx, grid=grid)

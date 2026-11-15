@@ -21,3 +21,5 @@ __pycache__/
 /dibujos/storyboard/
 /dibujos/PROMPTS_ANTIGRAVITY.md
 /dibujos/sprites/nuevas/
+# sprite frames are published as WebP (web/tools/pack_webp.py); the PNG the tools work on stay local
+/web/assets/sprites/*/*.png
