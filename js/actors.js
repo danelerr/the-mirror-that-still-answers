@@ -593,6 +593,15 @@
       const st = F.step(t), img = IM[this.face];
       c.globalAlpha = this.op;
       c.translate(this.x, this.y);
+      // while it flies, the team's drawn flight cycle is used (8 frames, with its own speed lines)
+      const fly = this.moving && F.hasSprites("F1_foton_vuela") ? IM["spr_F1_foton_vuela_" + (st % 8)] : null;
+      if (F.ready(fly)) {
+        const back = Math.cos(this.dir) < 0, w = 190 * this.s, h = w * fly.height / fly.width;
+        c.rotate(back ? this.dir + Math.PI : this.dir);
+        c.scale((back ? -1 : 1) * (1 + this.stretch), 1 - this.stretch * 0.4);
+        c.drawImage(fly, -w * 0.62, -h / 2, w, h);
+        return;
+      }
       if (this.lines && this.moving) {
         c.lineCap = "round";
         for (let j = -1; j <= 1; j++) {

@@ -28,6 +28,24 @@
 
   // ---------- the narrator: the Mirror in a little round window, as in old cartoons ----------
   const nar = F.mirror({ x: 0, y: 0, s: 0.33, eyes: "open", mouth: "smile", shadow: false, bobAmt: 0.6, hands: false });
+  // the team's drawn frames: show them where the rover is, then give the stage back to the puppet
+  function framesAt(name, o) {
+    const a = F.spriteSet(name, Object.assign({ x: rv.x, y: rv.y + 8, w: 470, ay: 1, z: 31, frame: 0 }, o));
+    F.add(a);
+    return a;
+  }
+  async function playSeq(a, seq) {
+    for (const s of seq) {
+      a.frame = s[0];
+      if (s[2]) sfx(s[2], s[3] || 1);
+      await wait(s[1]);
+    }
+  }
+  function backToPuppet(a) {
+    P.emit("puff", rv.x, rv.y - 60, 12, { spread: 300, vy: -90, vxr: 300, g: 60, r: 18, life: 0.9, fill: "#d9a77a" });
+    F.remove(a);
+    rv.op = 1;
+  }
   // the rover waves with the glove at the end of its arm
   async function roverWave(ms, pose) {
     rv.hand = pose || "wave";
@@ -225,7 +243,10 @@
   async function landing() {
     const sky = F.plate("sc_marte_arriba", { x: -30, y: -20, w: 1340, h: 754 });
     const chute = F.sprite("obj_paracaidas", { x: 640, y: -260, w: 180, ax: 0.5, ay: 0.25, z: 20 });
-    const bags = F.sprite("obj_bolsas", { x: 640, y: -60, w: 150, ax: 0.5, ay: 0.5, z: 22 });
+    const drawn = F.hasSprites("O2_bolsas_rebotan");
+    const bags = drawn ? F.spriteSet("O2_bolsas_rebotan", { x: 640, y: -60, w: 190, ay: 0.5, z: 22, frame: 0 })
+      : F.sprite("obj_bolsas", { x: 640, y: -60, w: 150, ax: 0.5, ay: 0.5, z: 22 });
+    const fr = (k) => { if (drawn) bags.frame = k; };
     const p = F.particles({ z: 30 });
     F.scene([sky, chute, bags, p, F.credit("Painted scene: AI image generator.")], { bg: "#d9a77a", cam: { x: 640, y: 360, z: 1 } });
     await F.irisIn(640, 200, 600);
@@ -241,10 +262,11 @@
     tw(chute, { y: -400, x: 900 }, 1600, EZ.in);
     const ground = 600, hops = [[260, 520], [150, 420], [80, 320], [36, 230]];
     let x = bags.x;
-    bags.sx = 0.9; bags.sy = 1.12;
+    bags.sx = 0.9; bags.sy = 1.12; fr(0);
+    if (drawn) bags.rot = 0;
     await tw(bags, { y: ground - 75 }, 520, EZ.in);
     for (let i = 0; i <= hops.length; i++) {
-      bags.sx = 1.3; bags.sy = 0.72;
+      bags.sx = drawn ? 1.08 : 1.3; bags.sy = drawn ? 0.94 : 0.72; fr(i % 2 ? 4 : 1);
       sfx("boing", 1 - i * 0.12);
       F.shake(6 - i);
       p.emit("puff", bags.x, ground - 10, 5, { spread: 90, vy: -50, vxr: 200, r: 16, life: 0.9, fill: "#d9a77a" });
@@ -252,11 +274,14 @@
       if (i === hops.length) break;
       const [hgt, ms] = hops[i];
       x += 140 - i * 25;
-      bags.sx = 0.9; bags.sy = 1.12;
-      tw(bags, { rot: bags.rot + 1.2 }, ms, EZ.lin);
+      bags.sx = 0.9; bags.sy = 1.12; fr(2);
+      if (!drawn) tw(bags, { rot: bags.rot + 1.2 }, ms, EZ.lin);
+      wait(ms * 0.35).then(() => fr(3)).then(() => wait(ms * 0.35)).then(() => fr(0)).catch(() => {});
       await F.arc(bags, x, ground - 75, hgt, ms, EZ.lin);
     }
-    await tw(bags, { rot: bags.rot + 0.5, x: x + 50 }, 600, EZ.out);
+    fr(5); await wait(160); fr(6);
+    await tw(bags, { rot: drawn ? 0 : bags.rot + 0.5, x: x + 50 }, 600, EZ.out);
+    fr(7);
     F.popOut(when);
     await wait(400);
     await F.irisOut(F.toScreen(bags.x, bags.y).x, F.toScreen(bags.x, bags.y).y, 500);
@@ -275,6 +300,18 @@
     // the airbags sag and flatten
     sfx("slideDown", 0.6);
     await tw(bags, { sy: 0.25, sx: 1.25 }, 900, EZ.inOut);
+    if (F.hasSprites("R2_rover_despliega")) {
+      await tw(bags, { op: 0 }, 250, EZ.out);
+      F.remove(bags);
+      const un = framesAt("R2_rover_despliega", { w: 470 });
+      await playSeq(un, [[0, 500], [1, 260, "slideUp", 0.7], [2, 220], [3, 360, "pop"], [4, 260], [5, 420, "slideUp", 1.2], [6, 260, "ting"], [7, 700, "tada"]]);
+      F.cam.z = 1.15;
+      backToPuppet(un);
+      rv.mastT = 0; rv.mast = 0; rv.eyes = "open"; rv.armT = 0.1; F.faceNow(rv, "happy");
+      await wait(300);
+      F.guard(roverWave(900));
+      return;
+    }
     rv.op = 1;
     await tw(bags, { op: 0 }, 300, EZ.out);
     F.remove(bags);
@@ -389,11 +426,18 @@
     tw(wall, { x: 640 }, 2200, EZ.out);
     const gust = setInterval(() => P.emit("streak", -40, 120 + Math.random() * 480, 2, { vx: 900, vxr: 200, vy: 0, vyr: 20, g: 0, r: 14, len: 90, life: 1.6, fill: "rgba(240,200,150,0.6)" }), 120);
     tw(M, { idx: idxOfSol(1236) }, 2000, EZ.in);
-    F.face(rv, "scared");
-    rv.hand = "open";
-    tw(rv, { sy: 0.88, sx: 1.07, mastT: -0.5, armT: 2.0, glow: 0, dusty: 0.8 }, 900);
+    let storm = null;
+    if (F.hasSprites("R5_rover_tormenta")) {
+      rv.op = 0; storm = framesAt("R5_rover_tormenta");
+      playSeq(storm, [[0, 500], [1, 420], [2, 420], [3, 900], [4, 140], [3, 140], [4, 140], [3, 140], [4, 400]]).catch(() => {});
+    } else {
+      F.face(rv, "scared");
+      rv.hand = "open";
+      tw(rv, { sy: 0.88, sx: 1.07, mastT: -0.5, armT: 2.0, glow: 0, dusty: 0.8 }, 900);
+    }
     await atw(17, "waited", 0, 7.1);
     F.face(rv, "asleep");
+    if (storm) playSeq(storm, [[5, 500], [6, 600], [7, 500], [6, 500], [7, 600]]).catch(() => {});
     const zz = F.stamp(["z z z"], { x: rv.x + 120, y: rv.y - 300, size: 40, style: "ink", par: 1, z: 60 });
     F.popIn(zz, 300);
     tw(zz, { y: rv.y - 360 }, 1500, EZ.inOut);
@@ -403,6 +447,15 @@
     tw(wall, { x: 1900 }, 1500, EZ.in);
     await tw(M, { idx: idxOfSol(1420) }, 1100, EZ.out);
     // the take: eyes pop open, it springs up and shakes the dust off
+    if (storm && F.hasSprites("R6_rover_sacude")) {
+      // the drawn shake, like a wet dog, then back to the puppet in a cloud of dust
+      F.remove(storm);
+      const sh = framesAt("R6_rover_sacude");
+      await playSeq(sh, [[0, 260, "boing", 1.2], [1, 110, "swish"], [2, 110], [3, 110, "swish"], [4, 110], [5, 160], [6, 220], [7, 500, "tada"]]);
+      rv.dusty = 0; rv.mastT = 0; rv.mast = 0; rv.armT = 0.1; rv.sx = rv.sy = 1; rv.tilt = 0; F.faceNow(rv, "happy");
+      backToPuppet(sh);
+      storm = null;
+    }
     rv.eyes = "open"; F.faceNow(rv, "surprised");
     sfx("boing", 1.2);
     await tw(rv, { sy: 1.12, sx: 0.94, mastT: 0.05 }, 160, EZ.out);
@@ -420,6 +473,8 @@
   async function drive18() {
     const v = say(18);
     rv.drive = 1; plain.v = 420; F.face(rv, "determined");
+    let cyc = null;
+    if (F.hasSprites("R1_rover_avanza")) { rv.op = 0; cyc = framesAt("R1_rover_avanza", { frame: null, loop: true, fps: 12 }); }
     const odo = F.stamp(["0.0 km"], { x: 1010, y: 130, size: 52, style: "card", kicker: "distance driven" });
     F.popIn(odo, 360);
     const year = F.stamp(["2007"], { x: 300, y: 130, size: 52, style: "gold" });
@@ -437,6 +492,7 @@
     F.face(rv, "proud"); F.guard(roverWave(700, "thumb"));
     await atw(18, "june", 0, 5.0);
     rv.drive = 0; plain.v = 0; F.face(rv, "worried");
+    if (cyc) { F.remove(cyc); rv.op = 1; }
     F.popOut(odo); F.remove(year);
     // the whole planet disappears under dust (drawn: Mars from space)
     await globe(18);
