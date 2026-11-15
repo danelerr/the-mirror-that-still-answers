@@ -84,6 +84,12 @@
     const d = 1 - Math.exp(-tauNow() / 3);
     c.fillStyle = "rgba(40,20,10," + (d * 0.42).toFixed(3) + ")"; c.fillRect(-400, -200, W + 800, H + 400);
   }, { z: 45 });
+  // in a big dust storm (sunlight down to a few percent) the land and sky go nearly dark; this layer sits under
+  // the rover, so the rover can still be seen
+  const marsDeep = F.custom(function (c) {
+    const a = 0.34 * F.clamp((tauNow() - 1.5) / 3, 0, 1);
+    if (a > 0.005) { c.fillStyle = "rgba(25,12,6," + a.toFixed(3) + ")"; c.fillRect(-400, -200, W + 800, H + 400); }
+  }, { z: 20 });
   const sun = F.sprite("cielo_sol", { x: 1090, y: 140, w: 170, z: -80, op: 1 });
   sun.update = function () { this.op = Math.max(0.04, Math.exp(-tauNow() / 2.2)) * this.vis; };
   sun.vis = 1;
@@ -160,7 +166,7 @@
       const sol = OPP_ALL[i][0], tau = OPP_ALL[i][1], direct = Math.exp(-tau) * 100;
       const pct = direct >= 1 ? Math.round(direct) + "%" : "less than 1%";
       read.innerHTML = "<b>" + monthYear(sol) + "</b> · dust (tau) <b>" + tau.toFixed(2) + "</b>" + (i === OPP_ALL.length - 1 ? " (NASA estimate)" : "") +
-        " · sunlight <b>" + pct + "</b>" + (M.odo ? " · driven <b>45.16&nbsp;km</b>" : "");
+        " · direct sunbeam <b>" + pct + "</b>" + (M.odo ? " · driven <b>45.16&nbsp;km</b>" : "");
       if (!held) slider.value = String(i);
     }
     const c = occ, w = 540, h = 120, L = 34, R = 8, T = 8, B = 18;
@@ -220,7 +226,7 @@
     P = F.particles({ z: 50 });
     rv = rv || F.rover({});
     rv.puffs = P;
-    F.scene([plain, marsSky, sun, clouds, breeze, rv, P, marsDark, inset, F.credit("Painted scene: AI image generator. Sky colour, Sun and dust follow Opportunity's real measurements (NASA PDS).")].concat(extra || []), { bg: "#7a5636" });
+    F.scene([plain, marsSky, sun, clouds, breeze, marsDeep, rv, P, marsDark, inset, F.credit("Painted scene: AI image generator. Sky colour, Sun and dust follow Opportunity's real measurements (NASA PDS).")].concat(extra || []), { bg: "#7a5636" });
   }
   function resetRover() {
     rv = F.rover({ x: 760, y: 640, s: 0.46 });
@@ -524,13 +530,14 @@
     if (F.hasSprites("R1_rover_avanza")) { rv.op = 0; cyc = framesAt("R1_rover_avanza", { frame: null, loop: true, fps: 12, frames: F.R1_CYCLE.map((i) => "spr_R1_rover_avanza_" + i) }); }
     const odo = F.stamp(["0.0 km"], { x: 1010, y: 130, size: 52, style: "card", kicker: "distance driven" });
     F.popIn(odo, 360);
-    const year = F.stamp(["2007"], { x: 300, y: 130, size: 52, style: "gold" });
+    // the whole mission, 2004 to 2018: its two ends are exact; there is no year during the count, because the
+    // rover did not drive the same distance every year
+    const year = F.stamp(["2004 → 2018"], { x: 300, y: 130, size: 46, style: "gold" });
     F.add(year);
-    const yS = idxOfSol(1420), yE = idxOfSol(5050);
+    const yS = 0, yE = idxOfSol(5050);
     await F.tw({ u: 0 }, { u: 1 }, 2800, EZ.inOut, (e) => {
       odo.lines = [(45.16 * e).toFixed(1) + " km"];
       M.idx = F.lerp(yS, yE, e);
-      year.lines = [String(new Date(LAND_MS + (OPP_ALL[Math.round(M.idx)][0] - 1) * SOL_MS).getUTCFullYear())];
       if (Math.random() < 0.2) sfx("tick");
     });
     M.odo = true; lastI = -1;
@@ -655,7 +662,7 @@
       c.globalAlpha = 1;
       if (this.k > 0.98) {
         c.font = "bold 24px " + F.FONT; c.textAlign = "center"; c.textBaseline = "middle";
-        const txt = OPP.length.toLocaleString("en-US") + " real measurements of dust in the sky · NASA Planetary Data System";
+        const txt = "Dust in the sky, measured on " + OPP.length.toLocaleString("en-US") + " days · NASA Planetary Data System";
         const tw2 = c.measureText(txt).width + 36;            // on a dark plate, so it reads over the crater's rim
         c.fillStyle = "rgba(20,14,10,0.78)"; F.roundRect(c, W / 2 - tw2 / 2, 282, tw2, 40, 10); c.fill();
         c.fillStyle = F.PAPER; c.fillText(txt, W / 2, 303);

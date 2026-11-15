@@ -412,6 +412,11 @@
 
   // ---------- music: one looping track under the voice, lowered while someone speaks ----------
   let music = null, musicTarget = 0.5, musicNow = 0, musicSrc = "";
+  // One audio element for the voice and one for the music, reused all film long. Safari only lets an element play
+  // after it has been started inside a click, so both are "unlocked" by the Start click (F.unlockAudio) and every
+  // later line just changes the source of the same element.
+  const voiceEl = new Audio(), musicEl = new Audio();
+  voiceEl.preload = "auto"; musicEl.loop = true;
   F.renderLog.music = [];
   F.music = function (src, vol) {
     if (F.RENDER) {
@@ -420,10 +425,15 @@
       F.renderLog.music.push([musicSrc, musicTarget, performance.now()]);
       return;
     }
-    if (music && music._src === src) { if (vol !== undefined) musicTarget = vol; return; }
+    if (music && music._src === src) {
+      if (vol !== undefined) musicTarget = vol;
+      if (music.paused) music.play().catch(() => { });     // (a first try outside a click may have been refused)
+      return;
+    }
     if (music) { music.pause(); music = null; }
     if (!src) return;
-    music = new Audio(src + "?v=" + window.BUILD);
+    music = musicEl;
+    music.src = src + "?v=" + window.BUILD;
     music._src = src;
     music.loop = true;
     music.volume = 0;
@@ -466,7 +476,9 @@
     return F.quiet(new Promise((resolve, reject) => {
       const v = VOICE[n];
       if (!v) { resolve(); return; }
-      const a = new Audio(F.voiceUrl[n] || voicePath(n));
+      const a = voiceEl;
+      a.onended = null; a.onerror = null;
+      a.src = F.voiceUrl[n] || voicePath(n);
       a.muted = F.muted || F.RENDER;
       const me = {
         n, a, t0: performance.now(), silent: false, done: false, onLevel,
@@ -483,10 +495,10 @@
         me.silent = true;
         F.renderLog.voice.push([n, performance.now()]);
       } else {
-        a.addEventListener("ended", () => me.finish());
-        a.addEventListener("error", () => { me.silent = true; });
-        // if the browser refuses to play, the story keeps the timing of the line anyway
-        a.play().catch(() => { me.silent = true; });
+        a.onended = () => { if (cur === me) me.finish(); };
+        a.onerror = () => { me.silent = true; };
+        // if the browser refuses to play, the story keeps the timing of the line anyway, and the captions come on
+        a.play().catch(() => { me.silent = true; if (F.captionsOn) F.captionsOn(); });
       }
       F.caption(n);
     }));
@@ -499,6 +511,13 @@
     return cur.silent ? wall : Math.max(cur.a.currentTime, wall - 1);
   };
   F.speaking = () => !!cur;
+  F.unlockAudio = function () {                    // call inside a click
+    if (!voiceEl.src) voiceEl.src = F.voiceUrl[1] || voicePath(1);
+    voiceEl.muted = true;
+    const p = voiceEl.play();
+    if (p) p.then(() => { if (!cur) voiceEl.pause(); voiceEl.muted = F.muted; }).catch(() => { voiceEl.muted = F.muted; });
+    if (music && music.paused) music.play().catch(() => { });
+  };
   F.stopVoice = function () {
     if (!cur) return;
     const me = cur;
@@ -577,6 +596,12 @@
       ccWords[i][0].classList.toggle("now", ccWords[i][1] <= t && t < next);
     }
   });
+  F.captionsOn = function () {
+    if (ccOn || !ccBtn) return;
+    ccOn = true;
+    ccBtn.textContent = "Captions: on"; ccBtn.setAttribute("aria-pressed", "true");
+    if (cur) F.caption(cur.n);
+  };
   if (ccBtn) {
     ccBtn.addEventListener("click", (e) => {
       e.stopPropagation();
