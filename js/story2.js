@@ -201,12 +201,13 @@
   // =================== the wordless start: launch, landing, waking up ===================
   async function launch() {
     const pad = F.plate("sc_plataforma", { x: -30, y: -20, w: 1340, h: 754 });
-    const rocket = F.sprite("obj_cohete", { x: 650, y: 552, w: 120, ax: 0.5, ay: 1, z: 20 });
+    const rocket = F.sprite("obj_cohete", { x: 650, y: 552, w: 140, ax: 0.5, ay: 1, z: 20 });
     const p = F.particles({ z: 25 });
     F.scene([pad, rocket, p, F.credit("Painted scene: AI image generator.")], { bg: "#e8c9a0", cam: { x: 640, y: 380, z: 1.05 } });
     await F.irisIn(650, 420, 700);
     const when = F.stamp(["July 2003"], { x: 1030, y: 110, size: 46, rot: -0.05, kicker: "A rover leaves Earth for Mars" });
     F.popIn(when, 420, "stamp");
+    tw(F.cam, { x: 655, y: 440, z: 1.5 }, 1500, EZ.inOut);     // staging: move in close for the countdown and the squat
     for (const n of ["3", "2", "1"]) {
       const s = F.stamp([n], { x: 300, y: 260, size: 120, style: "gold" });
       F.popIn(s, 260, "beep");
@@ -214,7 +215,7 @@
       F.remove(s);
     }
     // ignition, anticipation, lift-off that speeds up, smoke left behind
-    await F.rocketLaunch(rocket, p, { cam: { y: 150, z: 1 }, camMs: 2600 });
+    await F.rocketLaunch(rocket, p, { cam: { x: 640, y: 150, z: 1 }, camMs: 2600 });
     F.popOut(when);
     await wait(300);
     await F.irisOut(640, 300, 500);

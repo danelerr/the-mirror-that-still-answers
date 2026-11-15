@@ -176,7 +176,7 @@
   // ======================== CHAPTER 3 ========================
   async function launch72() {
     const pad = F.plate("sc_plataforma", { x: -30, y: -20, w: 1340, h: 754, tint: "#0b1030", tintA: 0.55 });
-    const rocket = F.sprite("obj_cohete", { x: 650, y: 552, w: 110, ax: 0.5, ay: 1, z: 20 });
+    const rocket = F.sprite("obj_cohete", { x: 650, y: 552, w: 135, ax: 0.5, ay: 1, z: 20 });
     const p = F.particles({ z: 25 });
     F.scene([F.stars({ n: 120, par: 0.2, h: 300 }), pad, rocket, p, inset], { bg: "#0b1030", cam: { x: 640, y: 380, z: 1.05 } });
     await F.irisIn(650, 420, 600);
@@ -184,8 +184,9 @@
     await atw(21, "1972", 0, 3.5);
     const when = F.stamp(["March 1972"], { x: 1030, y: 110, size: 46, rot: -0.05, kicker: "Pioneer 10 leaves Earth" });
     F.popIn(when, 400, "stamp");
+    await tw(F.cam, { x: 655, y: 440, z: 1.45 }, 700, EZ.inOut);   // staging: close on the rocket before it goes
     // the same clear beats as the 2003 launch, a little quicker to keep up with the voice
-    await F.rocketLaunch(rocket, p, { smoke: "#e9e3d6", ink: "rgba(30,30,50,0.5)", build: 600, hold: 150, creep: 500, ms: 1400, cam: { y: 150 }, camMs: 2000 });
+    await F.rocketLaunch(rocket, p, { smoke: "#e9e3d6", ink: "rgba(30,30,50,0.5)", build: 600, hold: 150, creep: 500, ms: 1400, cam: { x: 640, y: 150, z: 1 }, camMs: 2000 });
     F.popOut(when);
     // in space, the probe unfolds its arms (follow-through makes them bounce)
     const pr = F.probe({ x: 640, y: 380, s: 0.62, unfold: 0, ba: 1.3, bb: -1.3, bl: -1.6, eyes: "closed" });
