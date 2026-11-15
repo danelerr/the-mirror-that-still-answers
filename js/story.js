@@ -88,14 +88,23 @@
     .concat(PROPS.map((n) => [n, "assets/scenes/" + n + ".webp"]))
     .concat([["earth", "assets/earth.webp"], ["moon", "assets/moon.webp"], ["as11", "assets/tranquility_as11-40-5948.jpg"]]);
   // everything is downloaded before Start is enabled; the start screen shows how far along it is
-  const picsTotal = PICS.length + F.spriteList().length + F.voiceCount();
+  // Start waits only for what the opening and chapter 1 need (the Mirror, the photon, the observatory, the Earth and
+  // the Moon, and the first 13 lines of the voice); Opportunity's and Pioneer 10's pictures and lines keep loading
+  // while the film plays, and chapters 2 and 3 wait on their title card if they are not there yet.
+  const isCore = (n) => /^(E\d+|F\d|X1|O1|O4|O5)_/.test(n);
+  const coreVoices = [], restVoices = [];
+  for (let n = 1; n <= 33; n++) (n <= 13 ? coreVoices : restVoices).push(n);
+  const picsTotal = PICS.length + F.spriteList(isCore).length + F.voiceCount(coreVoices);
   let picsDone = 0;
   const onePic = () => {
     picsDone++;
     const el = F.$("loadHint");
     if (el && picsDone < picsTotal) el.textContent = "Loading the pictures and the voice… " + Math.round(100 * picsDone / picsTotal) + "%";
   };
-  const loading = Promise.all([F.load(PICS, onePic).then(() => F.loadSprites(onePic)), F.preloadVoices(onePic)]);
+  const loading = Promise.all([F.load(PICS, onePic).then(() => F.loadSprites(onePic, isCore)), F.preloadVoices(onePic, coreVoices)]);
+  F.restDone = false;
+  F.restLoaded = loading.then(() => Promise.all([F.loadSprites(null, (n) => !isCore(n)), F.preloadVoices(null, restVoices)]))
+    .then(() => { F.restDone = true; });
 
   // ---------- the cast ----------
   const mir = F.mirror({ x: 640, y: 560, s: 0.62 });
@@ -158,6 +167,12 @@
     await F.irisIn(W / 2, H / 2, 500);
     F.popIn(t, 520, "slideUp");
     await wait(2100);
+    if (title !== "The Mirror" && !F.restDone) {          // the next pictures are still on their way: wait for them here
+      const note = F.stamp(["loading the next pictures…"], { x: W / 2, y: H / 2 + 130, size: 22, style: "gold", par: 0 });
+      F.add(note);
+      await F.until(() => F.restDone);
+      F.remove(note);
+    }
     await F.irisOut(W / 2, H / 2, 500);
   }
 

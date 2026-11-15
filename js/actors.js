@@ -109,14 +109,14 @@
   // play once from the first frame (or loop again with loop: true)
   F.playOnce = (a) => { a.loop = false; a.frame = null; a.t0 = F.t; return F.wait(a.frames.length / a.fps * 1000); };
   // (the frames are packed as WebP by web/tools/pack_webp.py: five times lighter than PNG)
-  F.spriteList = () => {
+  F.spriteList = (only) => {                  // (only: a test on the set's name, to load a part of them)
     const list = [];
-    Object.keys(window.SPRITES || {}).forEach((n) => {
+    Object.keys(window.SPRITES || {}).filter((n) => !only || only(n)).forEach((n) => {
       for (let i = 0; i < window.SPRITES[n].n; i++) list.push(["spr_" + n + "_" + i, "assets/sprites/" + n + "/" + (i < 10 ? "0" : "") + i + ".webp"]);
     });
     return list;
   };
-  F.loadSprites = (onOne) => F.load(F.spriteList(), onOne);
+  F.loadSprites = (onOne, only) => F.load(F.spriteList(only), onOne);
 
   // ---------- anything drawn by a function ----------
   F.custom = (draw, o) => Object.assign({ z: 0, par: 1, op: 1, draw }, o);

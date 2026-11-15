@@ -460,10 +460,11 @@
   // line let the story run ahead of it, and the next line then cut it short). Opened from a file, they are local anyway.
   F.voiceUrl = {};
   const voicePath = (n) => "assets/voice/" + (n < 10 ? "0" : "") + n + ".mp3?v=" + window.BUILD;
-  F.voiceCount = () => (location.protocol === "file:" ? 0 : Object.keys(VOICE).length);
-  F.preloadVoices = (onOne) => {
+  // (ns: which lines; all of them when left out)
+  F.voiceCount = (ns) => (location.protocol === "file:" ? 0 : (ns || Object.keys(VOICE)).length);
+  F.preloadVoices = (onOne, ns) => {
     if (location.protocol === "file:") return Promise.resolve();
-    return Promise.all(Object.keys(VOICE).map((n) => {
+    return Promise.all((ns || Object.keys(VOICE)).map(String).filter((n) => VOICE[n]).map((n) => {
       const get = (tries) => fetch(voicePath(+n)).then((r) => (r.ok ? r.blob() : Promise.reject(r.status)))
         .then((b) => { F.voiceUrl[n] = URL.createObjectURL(b); })
         .catch(() => (tries > 1 ? new Promise((ok) => setTimeout(ok, 500)).then(() => get(tries - 1)) : null));
