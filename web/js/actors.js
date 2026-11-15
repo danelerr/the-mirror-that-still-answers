@@ -121,6 +121,57 @@
     c.strokeStyle = INK; c.lineWidth = Math.max(2, R * 0.08); c.lineJoin = "round"; c.stroke();
   };
 
+  // ---------- a rocket launch, told in clear beats ----------
+  // ignition (the flame flickers on, smoke rolls out along the ground), anticipation (the rocket squats
+  // and trembles while the engines build up), lift-off (it creeps off the pad, then goes faster and
+  // faster, stretching, leaving a column of smoke), and the smoke stays behind after it is gone.
+  F.rocketLaunch = async function (rocket, p, o) {
+    o = o || {};
+    const x0 = rocket.x, y0 = rocket.y, k0 = rocket.w / 120;
+    const flame = F.custom(function (c, t) {
+      if (this.k <= 0.01) return;
+      const st = F.step(t), L = (64 + (st % 3) * 16) * this.k * (1 + this.boost) * k0, W2 = 22 * k0;
+      c.translate(rocket.x, rocket.y + 2); c.scale(rocket.sx, 1);
+      c.fillStyle = "#ffb347"; c.strokeStyle = INK; c.lineWidth = 4; c.lineJoin = "round";
+      c.beginPath(); c.moveTo(-W2, 0); c.quadraticCurveTo(-W2 * 0.8, L * 0.6, 0, L); c.quadraticCurveTo(W2 * 0.8, L * 0.6, W2, 0); c.closePath(); c.fill(); c.stroke();
+      c.fillStyle = "#fff3b0"; c.beginPath(); c.moveTo(-W2 * 0.5, 0); c.quadraticCurveTo(-W2 * 0.35, L * 0.4, 0, L * 0.62); c.quadraticCurveTo(W2 * 0.35, L * 0.4, W2 * 0.5, 0); c.closePath(); c.fill();
+    }, { z: rocket.z - 1, k: 0, boost: 0 });
+    F.add(flame);
+    const smokeFill = o.smoke || "#f6efe2", smokeInk = o.ink || "rgba(60,40,30,0.5)";
+    // smoke rolling out to both sides along the ground while the rocket is still low
+    const ground = setInterval(() => {
+      if (flame.k < 0.2 || rocket.y < y0 - 260) return;
+      for (const s of [-1, 1]) {
+        p.emit("smoke", x0 + s * 26 * k0, y0 + 6, 1, { spread: 10, vx: s * (150 + 120 * flame.k), vxr: 80, vy: -12, vyr: 20, g: -6, r: 20 * k0, grow: 2.6, life: 1.8, fill: smokeFill, ink: smokeInk });
+      }
+    }, 60);
+    // a column of smoke left behind as it climbs
+    const trail = setInterval(() => {
+      if (rocket.y > y0 - 12 || rocket.y < -200) return;
+      p.emit("smoke", rocket.x, rocket.y + 40 * k0, 2, { spread: 14, vx: 0, vxr: 50, vy: 30, vyr: 20, g: -4, r: 16 * k0, grow: 2.4, life: 2.6, fill: smokeFill, ink: smokeInk });
+    }, 45);
+    // 1. ignition: a cough of smoke, then the flame flickers on
+    F.sfx("rumble", 1.4);
+    p.emit("smoke", x0, y0 + 6, 6, { spread: 40, vy: -40, vxr: 200, g: -8, r: 22 * k0, grow: 2, life: 1.2, fill: smokeFill, ink: smokeInk });
+    await F.tw(flame, { k: 0.45 }, 220, F.EZ.out);
+    // 2. anticipation: the engines build up, the rocket squats and trembles
+    const shake = F.onFrame((t) => { rocket.x = x0 + Math.sin(t / 16) * 2.4 * flame.k; });
+    F.tw(flame, { k: 1 }, o.build || 800, F.EZ.inOut);
+    await F.tw(rocket, { sx: 1.08, sy: 0.9 }, o.build || 800, F.EZ.inOut);
+    F.shake(5);
+    await F.wait(o.hold === undefined ? 220 : o.hold);
+    // 3. lift-off: it creeps off the pad, then faster and faster, stretching as it goes
+    F.sfx("whoosh", 2); F.shake(9);
+    F.tw(rocket, { sx: 0.9, sy: 1.16 }, 280, F.EZ.out);
+    F.tw(flame, { boost: 0.9 }, 1100, F.EZ.in);
+    if (o.cam) F.tw(F.cam, o.cam, o.camMs || 2400, F.EZ.inOut);
+    await F.tw(rocket, { y: y0 - 26 * k0 }, o.creep || 650, F.EZ.inOut);
+    await F.tw(rocket, { y: -700 }, o.ms || 1900, F.EZ.in);
+    shake(); clearInterval(ground); clearInterval(trail);
+    F.remove(flame);
+    rocket.x = x0;
+  };
+
   // ---------- particles: dust, smoke, sparkles, wind, data dots ----------
   F.particles = (o) => {
     const a = Object.assign({ z: 50, par: 1, op: 1, list: [] }, o);
@@ -329,28 +380,37 @@
     a.draw = function (c) {
       c.globalAlpha = this.op;
       c.translate(this.x, this.y); c.rotate(this.rot); c.scale(this.s * this.sx, this.s * this.sy);
+      // drawn like the team's sheets: chunky ink lines, a painted gold case, a few fat tick marks
       c.lineJoin = "round"; c.lineCap = "round";
       c.strokeStyle = INK;
-      c.fillStyle = "#c9c2b3"; c.lineWidth = 7;
-      roundRect(c, -18, -150, 36, 30, 6); c.fill(); c.stroke();               // crown
-      c.beginPath(); c.arc(0, -158, 16, 0, 6.2832); c.fill(); c.stroke();
-      c.fillStyle = "#d8a440"; c.beginPath(); c.arc(0, 0, 128, 0, 6.2832); c.fill(); c.stroke();
-      c.fillStyle = PAPER; c.lineWidth = 4; c.beginPath(); c.arc(0, 0, 108, 0, 6.2832); c.fill(); c.stroke();
+      c.fillStyle = "rgba(0,0,0,0.3)"; c.beginPath(); c.ellipse(8, 12, 130, 130, 0, 0, 6.2832); c.fill();   // soft drop shadow
+      c.fillStyle = "#e3b04a"; c.lineWidth = 9;
+      c.beginPath(); c.arc(0, -160, 20, 0, 6.2832); c.stroke();                                            // the ring on top
+      roundRect(c, -20, -150, 40, 34, 9); c.fill(); c.stroke();                                           // crown
+      c.beginPath(); c.arc(0, 0, 128, 0, 6.2832); c.fill(); c.stroke();                                   // gold case
+      c.strokeStyle = "rgba(255,240,190,0.85)"; c.lineWidth = 9;                                          // painted highlight
+      c.beginPath(); c.arc(0, 0, 114, -2.6, -1.3); c.stroke();
+      c.strokeStyle = "rgba(120,70,20,0.45)"; c.beginPath(); c.arc(0, 0, 114, 0.4, 1.9); c.stroke();      // and shade
+      c.strokeStyle = INK; c.fillStyle = "#f6ead0"; c.lineWidth = 7;
+      c.beginPath(); c.arc(0, 0, 100, 0, 6.2832); c.fill(); c.stroke();                                   // cream face
       if (this.split > 0) {                      // the two halves of the trip
         c.fillStyle = "rgba(232,181,63,0.55)";
-        c.beginPath(); c.moveTo(0, 0); c.arc(0, 0, 104, -Math.PI / 2, -Math.PI / 2 + Math.PI * this.split); c.closePath(); c.fill();
+        c.beginPath(); c.moveTo(0, 0); c.arc(0, 0, 96, -Math.PI / 2, -Math.PI / 2 + Math.PI * this.split); c.closePath(); c.fill();
         c.fillStyle = "rgba(143,211,255,0.55)";
-        c.beginPath(); c.moveTo(0, 0); c.arc(0, 0, 104, Math.PI / 2, Math.PI / 2 + Math.PI * this.split); c.closePath(); c.fill();
+        c.beginPath(); c.moveTo(0, 0); c.arc(0, 0, 96, Math.PI / 2, Math.PI / 2 + Math.PI * this.split); c.closePath(); c.fill();
       }
-      c.lineWidth = 3;
-      for (let i = 0; i < 60; i++) {
-        const an = i / 60 * 6.2832, r0 = i % 5 ? 96 : 86;
-        c.beginPath(); c.moveTo(Math.sin(an) * r0, -Math.cos(an) * r0); c.lineTo(Math.sin(an) * 104, -Math.cos(an) * 104); c.stroke();
+      c.lineWidth = 8;
+      for (let i = 0; i < 12; i++) {             // twelve fat ticks, the four main ones longer
+        const an = i / 12 * 6.2832, r0 = i % 3 ? 78 : 66;
+        c.beginPath(); c.moveTo(Math.sin(an) * r0, -Math.cos(an) * r0); c.lineTo(Math.sin(an) * 88, -Math.cos(an) * 88); c.stroke();
       }
       const an = (this.sec % 1) * 6.2832;       // the hand goes round once every second
-      c.lineWidth = 6; c.strokeStyle = RED;
-      c.beginPath(); c.moveTo(-Math.sin(an) * 18, Math.cos(an) * 18); c.lineTo(Math.sin(an) * 92, -Math.cos(an) * 92); c.stroke();
-      c.fillStyle = INK; c.beginPath(); c.arc(0, 0, 9, 0, 6.2832); c.fill();
+      c.save(); c.rotate(an);                    // a fat cartoon hand: ink outline, red body, round tail
+      c.fillStyle = RED; c.lineWidth = 6;
+      c.beginPath(); c.moveTo(-9, 20); c.lineTo(-6, -50); c.lineTo(0, -80); c.lineTo(6, -50); c.lineTo(9, 20); c.closePath(); c.fill(); c.stroke();
+      c.restore();
+      c.fillStyle = INK; c.beginPath(); c.arc(0, 0, 13, 0, 6.2832); c.fill();
+      c.fillStyle = "#e3b04a"; c.beginPath(); c.arc(0, 0, 5, 0, 6.2832); c.fill();
       c.font = "bold 52px " + FONT; c.textAlign = "center"; c.textBaseline = "middle";
       const txt = this.sec.toFixed(this.digits) + " s";
       const tw = c.measureText(txt).width + 40;
@@ -514,6 +574,43 @@
     if (level < 0.84) return "open";
     return "oh";
   }
+  // ---------- the Mirror drawn from the team's sheets: one design (with arms) in every scene ----------
+  // gesture -> [sheet, first drawing of a two-step pair, flip]; a list of drawings is played as a loop
+  const MP = {
+    wave: ["E3_espejo_saluda", [6, 7, 8, 9, 10, 11, 10, 9, 8, 7]],
+    self: ["E11_espejo_mira_lejos", 12], cheer: ["E11_espejo_mira_lejos", 12],
+    right: ["E9_espejo_secreto", 14], present: ["E9_espejo_secreto", 14], left: ["E9_espejo_secreto", 14, -1],
+    pointUp: ["E6_espejo_cuenta", 10], one: ["E6_espejo_cuenta", 0], two: ["E6_espejo_cuenta", 2], three: ["E6_espejo_cuenta", 4],
+    shrug: ["E6_espejo_cuenta", 6], droop: ["E6_espejo_cuenta", 8], whisper: ["E9_espejo_secreto", 6],
+    thumb: ["E11_espejo_mira_lejos", 14], hips: ["E9_espejo_secreto", 0], shade: ["E11_espejo_mira_lejos", 2],
+    tap: ["E5_espejo_anios", 6], up: ["E3_espejo_saluda", 0]
+  };
+  // resting poses, chosen by the face it is making
+  const MF = {
+    neutral: ["E11_espejo_mira_lejos", 6], happy: ["E11_espejo_mira_lejos", 6], proud: ["E11_espejo_mira_lejos", 6],
+    surprised: ["E3_espejo_saluda", 0], scared: ["E3_espejo_saluda", 0], worried: ["E11_espejo_mira_lejos", 4],
+    sad: ["E11_espejo_mira_lejos", 4], tired: ["E5_espejo_anios", 10], asleep: ["E5_espejo_anios", 10],
+    curious: ["E3_espejo_saluda", 13], determined: ["E9_espejo_secreto", 2]
+  };
+  F.MIRROR_POSES = MP; F.MIRROR_MOODS = MF;
+  function mirrorDrawing(m, t) {
+    let e;
+    if (m.eyes === "closed") e = MF.asleep;
+    else if (MP[m.pose] && m.pose !== "rest" && m.pose !== "ground") e = MP[m.pose];
+    else e = MF[m.faceName] || (m.eyes === "half" ? MF.tired : MF.neutral);
+    if (!F.hasSprites(e[0])) return null;
+    const key = e[0] + e[1];
+    if (key !== m.drawnKey) { m.drawnKey = key; m.drawnT = t; }
+    const since = t - m.drawnT, st = Math.floor(t / 1000 * 12);
+    let k;
+    if (Array.isArray(e[1])) k = e[1][st % e[1].length];
+    else {
+      k = e[1] + (since > 110 ? 1 : 0);                         // the pose lands in two small steps
+      if (since > 400 && m.level > 0.15 && Math.floor(st / 3) % 2) k = e[1];   // talking: a gentle alternation
+    }
+    return { im: IM["spr_" + e[0] + "_" + k], flip: e[2] || 1, since };
+  }
+
   F.mirror = (o) => {
     const a = Object.assign({ x: 380, y: 600, s: 1, sx: 1, sy: 1, rot: 0, op: 1, z: 20, par: 1, eyes: "closed", mouth: "closed", brows: false,
       glow: 0, lx: 0, ly: 0, level: 0, bobAmt: 1, shadow: true, dust: 0, hands: true, seed: Math.random() * 3000,
@@ -532,6 +629,24 @@
       if (this.shadow) {
         c.fillStyle = "rgba(0,0,0,0.35)";
         c.beginPath(); c.ellipse(0, 0, 200 * this.s * this.sx, 26 * this.s, 0, 0, 6.2832); c.fill();
+      }
+      const dr = this.drawn === false ? null : mirrorDrawing(this, t);
+      if (dr && F.ready(dr.im)) {
+        // the drawn Mirror: a little squash as each new pose lands, then it settles (and breathes)
+        const u = Math.min(1, dr.since / 240), sq = 0.06 * (1 - u) * (1 - u);
+        c.rotate(this.rot);
+        c.scale(this.s * this.sx * (1 + sq) * dr.flip, this.s * this.sy * (1 - sq) * (1 + breathe * 0.004));
+        const w = dr.im.width * 1.086, h = dr.im.height * 1.086;
+        c.drawImage(dr.im, -w / 2 + 6, -h + 13 - breathe * 0.6, w, h);
+        if (this.glow > 0.01) {
+          c.globalCompositeOperation = "lighter";
+          const g = c.createRadialGradient(0, -h * 0.55, 10, 0, -h * 0.55, 230);
+          g.addColorStop(0, "rgba(255,240,180," + (this.glow * 0.8) + ")");
+          g.addColorStop(1, "rgba(255,224,122,0)");
+          c.fillStyle = g; c.fillRect(-260, -h * 0.55 - 260, 520, 520);
+          c.globalCompositeOperation = "source-over";
+        }
+        return;
       }
       c.rotate(this.rot);
       c.scale(this.s * this.sx, this.s * this.sy * (1 + breathe * 0.004));

@@ -19,3 +19,5 @@
 __pycache__/
 *.pyc
 /dibujos/storyboard/
+/dibujos/PROMPTS_ANTIGRAVITY.md
+/dibujos/sprites/nuevas/

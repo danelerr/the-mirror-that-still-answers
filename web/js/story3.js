@@ -159,14 +159,8 @@
     await atw(21, "1972", 0, 3.5);
     const when = F.stamp(["March 1972"], { x: 1030, y: 110, size: 46, rot: -0.05, kicker: "Pioneer 10 leaves Earth" });
     F.popIn(when, 400, "stamp");
-    sfx("rumble", 1);
-    const smoke = setInterval(() => p.emit("smoke", rocket.x, Math.min(552, rocket.y) + 10, 3, { spread: 60, vxr: 260, vy: -30, g: -10, r: 24, grow: 2.2, life: 1.4, fill: "#e9e3d6", ink: "rgba(30,30,50,0.5)" }), 90);
-    await tw(rocket, { sx: 1.06, sy: 0.93 }, 300);
-    sfx("whoosh", 1.6); F.shake(7);
-    tw(rocket, { sx: 0.9, sy: 1.16 }, 260, EZ.out);
-    tw(F.cam, { y: 150 }, 1600, EZ.inOut);
-    await tw(rocket, { y: -700 }, 1700, EZ.in);
-    clearInterval(smoke);
+    // the same clear beats as the 2003 launch, a little quicker to keep up with the voice
+    await F.rocketLaunch(rocket, p, { smoke: "#e9e3d6", ink: "rgba(30,30,50,0.5)", build: 600, hold: 150, creep: 500, ms: 1400, cam: { y: 150 }, camMs: 2000 });
     F.popOut(when);
     // in space, the probe unfolds its arms (follow-through makes them bounce)
     const pr = F.probe({ x: 640, y: 380, s: 0.62, unfold: 0, ba: 1.3, bb: -1.3, bl: -1.6, eyes: "closed" });

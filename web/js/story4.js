@@ -132,11 +132,13 @@
     F.faceNow(mir, "neutral"); F.gesture(mir, "present", 1);
     await atw(31, "told", 0, 4.6);
     F.face(mir, "worried"); F.gesture(mir, "shrug");
-    show("E6_espejo_cuenta", 6);                              // drawn: a doubtful shrug
+    const shrug = show("E6_espejo_cuenta", 6);                // drawn: a doubtful shrug
     const rumor = F.icon("voice", { x: 330, y: 220, s: 0.7 });
-    F.popIn(rumor, 300, "squeak");
-    await wait(450);
-    sfx("rip"); tw(rumor, { xp: 1 }, 380, EZ.out);
+    if (!shrug) {                                             // (the crossed-out icon only goes with the old puppet)
+      F.popIn(rumor, 300, "squeak");
+      await wait(450);
+      sfx("rip"); tw(rumor, { xp: 1 }, 380, EZ.out);
+    } else sfx("squeak", 0.8);
     await atw(31, "check", 0, 6.7);
     F.face(mir, "happy"); F.gesture(mir, "thumb", 200);
     show("E11_espejo_mira_lejos", 14);                        // drawn: a wink and a thumbs up
