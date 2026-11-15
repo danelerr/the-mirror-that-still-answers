@@ -1241,7 +1241,7 @@
     F.stopVoice();
     F.$("stage").classList.add("instant");
     requestAnimationFrame(() => requestAnimationFrame(() => F.$("stage").classList.remove("instant")));
-    ["send", "greet", "again", "oppPanel"].forEach((id) => F.hide(F.$(id)));
+    ["send", "greet", "again", "checkEnd", "oppPanel"].forEach((id) => F.hide(F.$(id)));
     if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
     F.ov.iris = 2000; F.ov.fade = 0; F.ov.flash = 0; F.ov.snapA = 0;
     scopeIdle = true;

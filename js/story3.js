@@ -66,8 +66,10 @@
       let set = null, k = 0;
       if (this.radio && has("P4_sonda_llama")) { set = "P4_sonda_llama"; k = Math.floor(st / 2) % 12; }
       else if (this.unfold < 0.5 && has("P1_sonda_despliega")) { set = "P1_sonda_despliega"; k = 0; }
-      else if (this.eyes === "closed" && has("P5_sonda_se_apaga")) { set = "P5_sonda_se_apaga"; k = 15; }
-      else if ((this.eyes === "half" || this.sleepy > 0.5) && has("P5_sonda_se_apaga")) { set = "P5_sonda_se_apaga"; k = 6; }
+      // asleep and sleepy: drawings of the unfolding sheet (booms out, eyes closed / one eye open), so the probe keeps
+      // the same design to the end (the drawings of P5 turn its booms into a wire and its body into an egg)
+      else if (this.eyes === "closed" && has("P1_sonda_despliega")) { set = "P1_sonda_despliega"; k = 6; }
+      else if ((this.eyes === "half" || this.sleepy > 0.5) && has("P1_sonda_despliega")) { set = "P1_sonda_despliega"; k = 8; }
       else if (has("P3_sonda_jupiter")) {
         set = "P3_sonda_jupiter";
         k = { surprised: 4, scared: 6, curious: 0, happy: 8, proud: 9 }[mood];
@@ -509,18 +511,21 @@
   async function moves27(pr) {
     pr.x = 640; pr.y = 330; pr.s = 0.5; pr.rot = 0; pr.eyes = "open";
     F.scene([F.stars({ n: 260, par: 0.1 }), pr, inset], { bg: "#05060a" });
-    // the team's drawn frames: it smiles, yawns, its booms droop and it falls asleep
+    // the team's drawn frames (the same probe as the rest of the chapter): its eyes close one after the other as
+    // its power runs out, and it sinks a little and tilts as it drifts off to sleep
     let p5 = null;
-    if (F.hasSprites("P5_sonda_se_apaga")) {
-      p5 = F.probeFrames("P5_sonda_se_apaga", pr, { x: 640, y: 350 });
+    if (F.hasSprites("P1_sonda_despliega")) {
+      p5 = F.probeFrames("P1_sonda_despliega", pr, { x: 640, y: 350, frame: 11 });
       F.add(p5); pr.op = 0;
-      p5.update = function (dt, tt) { this.y = 350 + Math.sin(tt / 1300) * 6; };      // it drifts
+      p5.sink = 0;
+      p5.update = function (dt, tt) { this.y = 350 + this.sink * 26 + Math.sin(tt / 1300) * 6; this.rot = this.sink * 0.12; };   // it drifts
     }
     const v = say(27);
     await atw(27, "powers", 0, 3.0);
     sfx("sad");
     if (p5) {
-      for (let i = 1; i < 16; i++) { p5.frame = i; await wait(165); }
+      for (const [i, ms] of [[10, 260], [9, 300], [8, 420], [8, 300], [7, 360], [6, 200]]) { p5.frame = i; await wait(ms); }
+      tw(p5, { sink: 1 }, 1400, EZ.inOut);
     } else {
       pr.eyes = "open"; F.face(pr, "tired", 500);
       tw(pr, { sleepy: 1 }, 1200, EZ.inOut);

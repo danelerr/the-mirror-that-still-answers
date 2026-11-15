@@ -258,20 +258,21 @@
     ["", "Distance between the Earth and the Moon, and Pioneer 10's distance since 1972: NASA/JPL Horizons (Pioneer 10: for general historical purposes)"],
     ["", "Dust in the sky over Opportunity, 2004-2018: NASA Planetary Data System, MER1-M-PANCAM-5-ATMOS-OPACITY-V1.0 (M. Lemmon)"],
     ["", "Opportunity's last reading (tau about 10.8): NASA/JPL-Caltech/Cornell/ASU, PIA22930 · Mission facts: science.nasa.gov, NSSDCA 1969-059C-04, ILRS"],
-    ["Real photos", "NASA AS11-40-5948 · AS17-148-22727 · art002e009057 · NASA/JPL-Caltech/Cornell Univ./Arizona State Univ. PIA17759 · NASA Ames ARC-1972-AC72-2135 and ARC-1972-AC72-1354 (artwork)"],
+    ["Real photos", "NASA AS11-40-5948 · AS17-148-22727 · art002e009057 · NASA Ames ARC-1972-AC72-2135 and ARC-1972-AC72-1354 (artwork)"],
+    ["", "NASA/JPL-Caltech/Cornell Univ./Arizona State Univ. PIA17759"],
     ["Voice", "Recorded by a member of the team (not synthetic)"],
     ["Made with AI tools", "Painted scenes and character drawings: AI image generators. Music: AI music generator. Sound effects: made by code."],
     ["", "Code and animation: AI coding assistant, directed and checked by the team."]
   ];
   const credits = F.custom(function (c) {
     c.textAlign = "center"; c.textBaseline = "middle";
-    let y = 120;
+    let y = 78;                                   // (it ends above the two buttons at the bottom)
     CREDITS.forEach((r, i) => {
       c.globalAlpha = F.clamp(this.k * CREDITS.length - i, 0, 1);
-      if (i === 0) { c.font = "bold 44px " + F.FONT; c.fillStyle = "#ffe07a"; c.fillText(r[0], W / 2, y); y += 46; return; }
-      if (i === 1) { c.font = "20px " + F.FONT; c.fillStyle = F.PAPER; c.fillText(r[0], W / 2, y); y += 52; return; }
-      if (r[0]) { c.font = "bold 18px " + F.FONT; c.fillStyle = "#ffe07a"; c.fillText(r[0], W / 2, y); y += 24; }
-      c.font = "15px Arial, sans-serif"; c.fillStyle = F.PAPER; c.fillText(r[1], W / 2, y); y += 30;
+      if (i === 0) { c.font = "bold 42px " + F.FONT; c.fillStyle = "#ffe07a"; c.fillText(r[0], W / 2, y); y += 42; return; }
+      if (i === 1) { c.font = "20px " + F.FONT; c.fillStyle = F.PAPER; c.fillText(r[0], W / 2, y); y += 44; return; }
+      if (r[0]) { c.font = "bold 18px " + F.FONT; c.fillStyle = "#ffe07a"; c.fillText(r[0], W / 2, y); y += 23; }
+      c.font = "15px Arial, sans-serif"; c.fillStyle = F.PAPER; c.fillText(r[1], W / 2, y); y += 25;
     });
   }, { par: 0, z: 10, k: 0 });
 
@@ -286,7 +287,28 @@
     F.scene([credits], { bg: "#0b0b0b" });
     await F.irisIn(W / 2, H / 2, 700);
     await tw(credits, { k: 1 }, 3500, EZ.lin);
+    F.$("again").classList.add("pair"); F.$("checkEnd").classList.add("pair");     // side by side at the bottom
     F.show(F.$("again"));
+    F.show(F.$("checkEnd"));
   }
   F.CHAPTERS[4] = closing;
+
+  // ---------- Check it yourself: the sources and the sums (Pioneer 10's distance is worked out for today) ----------
+  const checkPanel = F.$("checkPanel");
+  function openCheck(e) {
+    if (e) e.stopPropagation();
+    const p = F.p10 && F.p10.today ? F.p10.today() : null;
+    if (p) F.$("checkP10").innerHTML = "Today it is about <b>" + p.au.toFixed(1) + "</b> times the Earth-Sun distance away; light takes <b>" + F.p10.hm(p.lt) + "</b> to get there.";
+    checkPanel.classList.remove("hidden");
+    F.$("checkClose").focus();
+  }
+  function closeCheck(e) {
+    if (e) e.stopPropagation();
+    checkPanel.classList.add("hidden");
+  }
+  F.$("checkBtn").addEventListener("click", (e) => { openCheck(e); F.$("checkBtn").blur(); });
+  F.$("checkEnd").addEventListener("click", openCheck);
+  F.$("checkClose").addEventListener("click", closeCheck);
+  checkPanel.addEventListener("click", (e) => { if (e.target === checkPanel) closeCheck(e); else e.stopPropagation(); });
+  window.addEventListener("keydown", (e) => { if (e.key === "Escape" && !checkPanel.classList.contains("hidden")) closeCheck(e); });
 })();
