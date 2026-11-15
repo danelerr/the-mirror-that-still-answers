@@ -71,5 +71,47 @@ window.SPRITES = {
   "w": 490,
   "h": 455,
   "center": false
+ },
+ "O1_observatorio_dispara": {
+  "n": 16,
+  "w": 375,
+  "h": 480,
+  "center": false
+ },
+ "E6_espejo_cuenta": {
+  "n": 16,
+  "w": 490,
+  "h": 379,
+  "center": false
+ },
+ "F2_foton_cronometro": {
+  "n": 16,
+  "w": 350,
+  "h": 490,
+  "center": false
+ },
+ "E9_espejo_secreto": {
+  "n": 16,
+  "w": 490,
+  "h": 455,
+  "center": false
+ },
+ "E5_espejo_anios": {
+  "n": 16,
+  "w": 487,
+  "h": 418,
+  "center": false
+ },
+ "E3_espejo_saluda": {
+  "n": 16,
+  "w": 446,
+  "h": 379,
+  "center": false
+ },
+ "E11_espejo_mira_lejos": {
+  "n": 16,
+  "w": 490,
+  "h": 379,
+  "center": false
  }
 };

@@ -253,15 +253,27 @@
 
   // =================== CHAPTER 1: THE MIRROR ===================
   // the cartoon observatory on Earth, aimed at the Moon
-  const scope = F.sprite("observatorio", { x: 293, y: 722, w: 380, ax: 0.5, ay: 1, z: 20 });
+  // the team's drawn observatory (16 frames, with a face) when it is there; the single drawing otherwise
+  const DRAWN_SCOPE = F.hasSprites("O1_observatorio_dispara");
+  const scope = DRAWN_SCOPE
+    ? F.spriteSet("O1_observatorio_dispara", { x: 293, y: 722, w: 410, ay: 1, z: 20, frame: 0 })
+    : F.sprite("observatorio", { x: 293, y: 722, w: 380, ax: 0.5, ay: 1, z: 20 });
   const TIP = { x: 740 / 797, y: 60 / 824 };    // the end of the telescope tube, as a share of the picture
+  // the end of the tube in each drawn frame (pixels of the 375 x 480 frame); frames 6 and 7 are the burst of light
+  const O1_TIP = [[329, 118], [329, 118], [329, 166], [331, 160], [326, 156], [326, 157], [345, 45], [345, 30],
+    [325, 95], [311, 92], [317, 107], [313, 107], [330, 132], [328, 134], [340, 145], [342, 145]];
   // the mouth of the telescope tube, wherever the squash, stretch and lean have put it,
   // plus a little way out along the tube so the light starts in front of it, not on top of it
   function tipPos(out) {
-    const w = scope.w * scope.s, h = w * 824 / 797;
-    const lx = (TIP.x - 0.5) * w * scope.sx, ly = -(1 - TIP.y) * h * scope.sy;
+    let tx = TIP.x, ty = TIP.y, aspect = 824 / 797;
+    if (DRAWN_SCOPE) {
+      const f = O1_TIP[Math.round(scope.frame || 0)] || O1_TIP[0];
+      tx = f[0] / 375; ty = f[1] / 480; aspect = 480 / 375;
+    }
+    const w = scope.w * scope.s, h = w * aspect;
+    const lx = (tx - 0.5) * w * scope.sx, ly = -(1 - ty) * h * scope.sy;
     const r = scope.rot || 0, cs = Math.cos(r), sn = Math.sin(r);
-    const tube = -0.63 + r, d = out === undefined ? 34 : out;          // the tube points up and to the right
+    const tube = -0.63 + r, d = out === undefined ? (DRAWN_SCOPE ? 10 : 34) : out;   // the tube points up and to the right
     return { x: scope.x + lx * cs - ly * sn + Math.cos(tube) * d, y: scope.y + lx * sn + ly * cs + Math.sin(tube) * d };
   }
   let scopeIdle = true;
@@ -290,6 +302,7 @@
   async function observatoryShot() {
     const sky = F.plate("sc_observatorio", { x: -40, y: -24, w: 1360, h: 765 });
     scope.x = 293; scope.y = 722; scope.s = 1; scope.op = 1;
+    if (DRAWN_SCOPE) scope.frame = 0;
     F.scene([sky, scope, F.credit("Painted scene: AI image generator. The telescope fires real timing data.")], { bg: "#0b1020" });
     clock.sec = 0; clock.note = "";
   }
@@ -374,7 +387,16 @@
     F.remove(ph);
     scopeIdle = false;
     sfx("thud");
-    await F.keys(scope, [[{ sx: 1.16, sy: 0.82 }, 90, EZ.out], [{ sx: 0.94, sy: 1.08 }, 160, EZ.out], [{ sx: 1, sy: 1 }, 260, EZ.back]]);
+    if (DRAWN_SCOPE) {
+      // the drawn catch: eyes squeezed by the impact, a wobble, then the proud smile
+      scope.frame = 3;
+      await F.keys(scope, [[{ sx: 1.08, sy: 0.92 }, 90, EZ.out], [{ sx: 0.97, sy: 1.04 }, 160, EZ.out]]);
+      scope.frame = 10;
+      await F.keys(scope, [[{ sx: 1, sy: 1 }, 200, EZ.back]]);
+      scope.frame = 15;
+    } else {
+      await F.keys(scope, [[{ sx: 1.16, sy: 0.82 }, 90, EZ.out], [{ sx: 0.94, sy: 1.08 }, 160, EZ.out], [{ sx: 1, sy: 1 }, 260, EZ.back]]);
+    }
     scopeIdle = true;
     // the photons that came home: one cartoon for each one the telescope counted
     const n = Math.min(m.photons, 60);
@@ -442,15 +464,36 @@
     // anticipation: the telescope crouches and leans back, holds, then fires and recoils
     scopeIdle = false;
     sfx("slideDown", 0.7);
-    await F.keys(scope, [[{ sx: 1.14, sy: 0.8, rot: -0.06 }, 480, EZ.inOut]]);
-    await wait(140);
+    if (DRAWN_SCOPE) {
+      // the drawn take: a breath in, the crouch with eyes squeezed shut, trembling, then it springs up as the light leaves
+      scope.frame = 1; await wait(200);
+      scope.frame = 2; tw(scope, { sx: 1.06, sy: 0.94 }, 300, EZ.inOut); await wait(240);
+      scope.frame = 3; await wait(200);
+      for (let k = 0; k < 6; k++) { scope.frame = 4 + (k % 2); scope.x = 293 + (k % 2 ? 2.5 : -2.5); await wait(65); }
+      scope.x = 293;
+      scope.frame = 6; scope.sx = 0.93; scope.sy = 1.1;
+    } else {
+      await F.keys(scope, [[{ sx: 1.14, sy: 0.8, rot: -0.06 }, 480, EZ.inOut]]);
+      await wait(140);
+    }
     sfx("zap");
     F.shake(6);
     const tip = tipPos();
     const p0 = fx(); F.add(p0);
     p0.emit("smoke", tip.x, tip.y, 6, { spread: 20, vx: -60, vy: -20, r: 16, life: 0.8, fill: "#f3e6c8", g: -20 });
-    F.keys(scope, [[{ sx: 0.86, sy: 1.22, rot: 0.05 }, 110, EZ.out], [{ sx: 1.08, sy: 0.9, rot: -0.03 }, 200, EZ.out],
-      [{ sx: 1, sy: 1, rot: 0 }, 380, EZ.back]]).then(() => { scopeIdle = true; }).catch(() => {});
+    if (DRAWN_SCOPE) {
+      // recoil, bounce, wobble, settle into a proud smile (frames 7 to 15)
+      (async () => {
+        await wait(90); scope.frame = 7;
+        await wait(110); scope.frame = 8; tw(scope, { sx: 1, sy: 1 }, 300, EZ.back);
+        for (const [f, ms] of [[9, 110], [10, 100], [11, 100], [10, 100], [11, 100], [12, 120], [13, 120], [14, 160], [15, 0]]) {
+          scope.frame = f; await wait(ms);
+        }
+      })().then(() => { scopeIdle = true; }).catch(() => {});
+    } else {
+      F.keys(scope, [[{ sx: 0.86, sy: 1.22, rot: 0.05 }, 110, EZ.out], [{ sx: 1.08, sy: 0.9, rot: -0.03 }, 200, EZ.out],
+        [{ sx: 1, sy: 1, rot: 0 }, 380, EZ.back]]).then(() => { scopeIdle = true; }).catch(() => {});
+    }
     return flight(shot);
   }
 
@@ -501,12 +544,32 @@
         [{ sx: 1, sy: 1 }, 380, EZ.elastic]]);
     }
     const v4 = speak(4, mir);
-    await atw(4, "hello", 0, 1.2);
-    mir.brows = false; F.face(mir, "happy"); gesture(mir, "wave", 300);
-    await atw(4, "you", 0, 3.4);
-    F.face(mir, "curious"); gesture(mir, "right", 260);
-    tw(F.cam, { z: 1.45, y: 380 }, 500, EZ.back);
-    mir.lx = 0; await v4;
+    if (F.hasSprites("E3_espejo_saluda")) {
+      // the team's drawn frames: "Oh!" surprised, a shy smile, a friendly wave, then a curious "was that you?"
+      const hi = F.spriteSet("E3_espejo_saluda", { x: mir.x + 4, y: mir.y + 8, w: 330, ay: 1, z: 21, frame: 0 });
+      F.add(hi); mir.op = 0;
+      const seq = async (s) => { for (const [f, ms] of s) { hi.frame = f; await wait(ms); } };
+      await seq([[0, 120], [1, 120], [2, 0]]);
+      await atw(4, "hello", 0, 1.2);
+      await seq([[3, 110], [4, 110], [5, 160]]);
+      sfx("swish", 0.8);
+      let waving = true;
+      (async () => { while (waving) { for (const f of [6, 7, 8, 9, 10, 11, 10, 9, 8, 7]) { if (!waving) break; hi.frame = f; await wait(75); } } })().catch(() => {});
+      await atw(4, "you", 0, 3.4);
+      waving = false;
+      tw(F.cam, { z: 1.45, y: 400 }, 500, EZ.back);
+      await seq([[13, 110], [14, 110], [15, 0]]);
+      await v4;
+      await wait(200);
+      F.remove(hi); mir.op = 1; mir.brows = false; mir.lx = 0;
+    } else {
+      await atw(4, "hello", 0, 1.2);
+      mir.brows = false; F.face(mir, "happy"); gesture(mir, "wave", 300);
+      await atw(4, "you", 0, 3.4);
+      F.face(mir, "curious"); gesture(mir, "right", 260);
+      tw(F.cam, { z: 1.45, y: 380 }, 500, EZ.back);
+      mir.lx = 0; await v4;
+    }
     mir.mouth = "smile"; F.face(mir, "neutral"); gesture(mir, "rest");
     await wait(250);
 
@@ -534,34 +597,71 @@
     }, { par: 0, z: 120, year: 1969, y0: 1 });
     F.add(years);
     tw(years, { year: 2026 }, 1700, EZ.inOut, () => { if (F.step(F.t) % 2) sfx("tick"); });
-    tw(mir, { dust: 0.7 }, 1700, EZ.lin);
-    mir.eyes = "half"; F.face(mir, "tired"); gesture(mir, "tap");
-    await v5;
-    // a shrug shakes the dust off
-    mir.eyes = "open"; F.face(mir, "happy"); gesture(mir, "shrug", 180);
-    sfx("boing", 0.8);
-    p.emit("puff", mir.x, mir.y - 300, 8, { spread: 260, vy: -80, g: 160, r: 11, life: 0.9, fill: "#cfc7b8", ink: "rgba(40,40,40,0.4)" });
-    mir.dust = 0;
-    await F.keys(mir, [[{ sy: 1.08, sx: 0.95 }, 150, EZ.out], [{ sy: 1, sx: 1 }, 350, EZ.elastic]]);
+    if (F.hasSprites("E5_espejo_anios")) {
+      // the team's drawn frames: bored, a yawn, the dust piles up, it nods off... then a hard shrug blows the dust away
+      const yrs = F.spriteSet("E5_espejo_anios", { x: mir.x + 4, y: mir.y + 8, w: 330, ay: 1, z: 21, frame: 15 });
+      F.add(yrs); mir.op = 0;
+      for (const f of [2, 3, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]) { yrs.frame = f; await wait(140); }
+      await v5;
+      yrs.frame = 12; await wait(140);
+      yrs.frame = 13; sfx("boing", 0.8);
+      p.emit("puff", mir.x, mir.y - 260, 10, { spread: 280, vy: -90, g: 160, r: 12, life: 0.9, fill: "#cfc7b8", ink: "rgba(40,40,40,0.4)" });
+      yrs.sx = 1.06; yrs.sy = 0.94; tw(yrs, { sx: 1, sy: 1 }, 380, EZ.elastic);
+      await wait(170); yrs.frame = 14; await wait(220); yrs.frame = 15; await wait(260);
+      F.remove(yrs); mir.op = 1; mir.dust = 0; mir.eyes = "open"; F.faceNow(mir, "happy");
+    } else {
+      tw(mir, { dust: 0.7 }, 1700, EZ.lin);
+      mir.eyes = "half"; F.face(mir, "tired"); gesture(mir, "tap");
+      await v5;
+      // a shrug shakes the dust off
+      mir.eyes = "open"; F.face(mir, "happy"); gesture(mir, "shrug", 180);
+      sfx("boing", 0.8);
+      p.emit("puff", mir.x, mir.y - 300, 8, { spread: 260, vy: -80, g: 160, r: 11, life: 0.9, fill: "#cfc7b8", ink: "rgba(40,40,40,0.4)" });
+      mir.dust = 0;
+      await F.keys(mir, [[{ sy: 1.08, sx: 0.95 }, 150, EZ.out], [{ sy: 1, sx: 1 }, 350, EZ.elastic]]);
+    }
     F.remove(years);
 
     // --- 6. "No battery. No motor. I cannot call you. But when your light reaches me, I send it straight back."
     const v6 = speak(6, mir);
-    mir.eyes = "open"; F.face(mir, "sad");
-    tw(mir, { sy: 0.95 }, 600, EZ.inOut);
     const ic = [F.icon("battery", { x: 420, y: 170, s: 0.6 }), F.icon("gear", { x: 640, y: 150, s: 0.6 }), F.icon("voice", { x: 860, y: 170, s: 0.6 })];
     const w6 = [["battery", 0.4], ["motor", 1.5], ["call", 2.9]];
+    // the team's drawn frames when they are there: it counts on its fingers, shrugs, droops, then gets an idea
+    let tk = null;
+    const pose6 = (k) => {           // one drawn pose in two small steps, with a little squash as it lands
+      if (!tk) return;
+      tk.frame = k; tk.sx = 1.04; tk.sy = 0.96;
+      tw(tk, { sx: 1, sy: 1 }, 220, EZ.back);
+      wait(90).then(() => { if (tk) tk.frame = k + 1; }).catch(() => {});
+    };
+    if (F.hasSprites("E6_espejo_cuenta")) {
+      tk = F.spriteSet("E6_espejo_cuenta", { x: mir.x + 4, y: mir.y + 8, w: 330, ay: 1, z: 21, frame: 9 });
+      F.add(tk); mir.op = 0;
+    } else {
+      mir.eyes = "open"; F.face(mir, "sad");
+      tw(mir, { sy: 0.95 }, 600, EZ.inOut);
+    }
     for (let i = 0; i < 3; i++) {
       await atw(6, w6[i][0], 0, w6[i][1]);
       ic[i].xp = 1; ic[i].s = 0.6;
-      gesture(mir, ["one", "two", "three"][i], 200);
+      if (tk) pose6(i * 2); else gesture(mir, ["one", "two", "three"][i], 200);
       F.popIn(ic[i], 300, "pop");
+    }
+    if (tk) {
+      await wait(550); pose6(6);          // "I cannot call you": a sad shrug
+      await wait(500); pose6(8);          // ...and it droops
     }
     await atw(6, "but", 0, 4.4);
     ic.forEach((x) => F.popOut(x));
-    mir.eyes = "open"; mir.brows = true; F.face(mir, "curious"); gesture(mir, "pointUp", 220);
-    tw(mir, { sy: 1.05 }, 250, EZ.out).then(() => tw(mir, { sy: 1 }, 400, EZ.back)).catch(() => {});
+    if (tk) {
+      pose6(10); sfx("ting", 1.5);        // "But…": an idea, finger up
+      wait(380).then(() => pose6(12)).then(() => wait(330)).then(() => pose6(14)).catch(() => {});
+    } else {
+      mir.eyes = "open"; mir.brows = true; F.face(mir, "curious"); gesture(mir, "pointUp", 220);
+      tw(mir, { sy: 1.05 }, 250, EZ.out).then(() => tw(mir, { sy: 1 }, 400, EZ.back)).catch(() => {});
+    }
     await atw(6, "reaches", 0, 5.4);
+    if (tk) { F.remove(tk); tk = null; mir.op = 1; mir.sy = 1; F.faceNow(mir, "happy"); }
     if (F.hasSprites("E7_espejo_atrapa")) {
       // the team's drawn frames: it catches the photon like a ball and throws it straight back
       const pitch = F.spriteSet("E7_espejo_atrapa", { x: mir.x + 4, y: mir.y + 8, w: 330, ay: 1, z: 21, frame: 0 });
@@ -667,6 +767,22 @@
     const p = fx();
     F.scene([luna, mir, p], { bg: "#05060a", cam: { x: 640, y: 360, z: 1 } });
     const v7 = speak(7, mir);
+    if (F.hasSprites("F2_foton_cronometro")) {
+      // the little photon runs across with the stopwatch over its head: it brings the time home
+      const run = F.spriteSet("F2_foton_cronometro", { x: -120, y: 702, w: 150, ay: 1, z: 25, fps: 14,
+        frames: [0, 1, 2, 3, 4, 6, 7].map((i) => "spr_F2_foton_cronometro_" + i) });
+      F.add(run);
+      sfx("whoosh", 0.9);
+      let last = 0;
+      const off = F.onFrame((t) => {
+        if (t - last > 150 && run.x > 0 && run.x < W) {
+          last = t;
+          p.emit("puff", run.x - 35, 698, 2, { spread: 10, vy: -30, vyr: 30, vxr: 60, g: 40, r: 8, life: 0.5, fill: "#cfc7b8" });
+        }
+      });
+      tw(run, { x: W + 140 }, 2400, EZ.lin).catch(() => {}).then(() => { off(); F.remove(run); });
+      await wait(1450);
+    }
     F.popIn(sw, 500, "pop");
     mir.lx = 6;
     await atw(7, "same", 0, 8.4);
@@ -738,7 +854,22 @@
     mir.x = 640; mir.y = 610; mir.s = 0.6; mir.eyes = "open"; mir.mouth = "smile";
     F.scene([luna, mir], { bg: "#05060a", cam: { x: 640, y: 380, z: 1.1 } });
     const v9 = speak(9, mir);
-    tw(F.cam, { z: 1.7, y: 330 }, 2600, EZ.inOut);   // it leans in to tell you a secret
+    const drawn9 = F.hasSprites("E9_espejo_secreto");
+    // the camera leans in to hear a secret (the drawn Mirror sits lower in its frame, so aim lower)
+    tw(F.cam, drawn9 ? { z: 1.5, y: 450 } : { z: 1.7, y: 330 }, 2600, EZ.inOut);
+    if (drawn9) {
+      // the team's drawn frames: it looks around, whispers, then pulls a rope to open the show
+      const se = F.spriteSet("E9_espejo_secreto", { x: mir.x + 4, y: mir.y + 8, w: 320, ay: 1, z: 21, frame: 0 });
+      F.add(se); mir.op = 0;
+      const seq = async (s) => { for (const [f, ms, snd] of s) { se.frame = f; if (snd) sfx(snd); await wait(ms); } };
+      await seq([[0, 260], [1, 200], [2, 200, "tick"], [3, 260, "tock"], [4, 160], [5, 260, "sparkle"], [6, 160], [7, 0]]);
+      await atw(9, "look", 0, 3.6);
+      await seq([[8, 120], [9, 160], [12, 140, "click"], [13, 220, "boing"], [14, 160], [15, 0]]);
+      await v9;
+      await wait(450);
+      F.remove(se); mir.op = 1;
+      return;
+    }
     mir.lx = 7; mir.ly = 2; F.face(mir, "curious"); gesture(mir, "whisper", 300);
     await atw(9, "look", 0, 3.6);
     mir.lx = 0; mir.ly = 0; F.face(mir, "surprised"); gesture(mir, "right", 180);
@@ -886,17 +1017,27 @@
     F.scene([luna, F.stars({ n: 120, par: 0.2, w: W * 1.4, h: 260, y: -40 }), mars, mir], { bg: "#05060a", cam: { x: 640, y: 380, z: 1.1 } });
     await F.irisIn(W / 2, H / 2, 600);
     const v13 = speak(13, mir);
+    // the team's drawn frames when they are there: it shades its eyes, grows sad, smiles bravely, looks up hopeful
+    let far = null;
+    if (F.hasSprites("E11_espejo_mira_lejos")) {
+      far = F.spriteSet("E11_espejo_mira_lejos", { x: mir.x + 4, y: mir.y + 8, w: 320, ay: 1, z: 21, frame: 0 });
+      F.add(far); mir.op = 0;
+    }
+    const pose = (k) => { if (!far) return; far.frame = k; wait(100).then(() => { if (far) far.frame = k + 1; }).catch(() => {}); };
     await atw(13, "neighbors", 0, 1.0);
-    mir.lx = 9; mir.ly = -3; F.face(mir, "sad"); gesture(mir, "shade");
+    mir.lx = 9; mir.ly = -3; F.face(mir, "sad"); gesture(mir, "shade"); pose(2);
+    await atw(13, "cannot", 0, 3.84);
+    pose(4);
     await atw(13, "measurement", 0, 7.0);
-    F.face(mir, "happy");
+    F.face(mir, "happy"); pose(6);
     await atw(13, "introduce", 0, 8.4);
-    F.face(mir, "curious"); gesture(mir, "pointUp", 200);
+    F.face(mir, "curious"); gesture(mir, "pointUp", 200); pose(8);
     sfx("whoosh");
     gesture(mir, "rest", 300);
     tw(F.cam, { x: mars.x, y: mars.y + 40, z: 2.2 }, 1500, EZ.inOut);
     await v13;
     await F.irisOut(F.toScreen(mars.x, mars.y).x, F.toScreen(mars.x, mars.y).y, 700);
+    if (far) { F.remove(far); far = null; mir.op = 1; }
     mir.lx = 0; mir.ly = 0;
   }
 

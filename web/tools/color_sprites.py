@@ -143,7 +143,7 @@ def probe(r, regs):
 
 RULES = {"R1_rover_avanza": rover, "R2_rover_despliega": rover, "R5_rover_tormenta": rover, "R6_rover_sacude": rover,
          "E2_espejo_despierta": mirror, "F1_foton_vuela": photon, "O2_bolsas_rebotan": bags,
-         "O1_observatorio_dispara": observatory, "E7_espejo_atrapa": mirror, "R4_rover_excava": rover,
+         "E7_espejo_atrapa": mirror, "E6_espejo_cuenta": mirror, "E9_espejo_secreto": mirror, "E5_espejo_anios": mirror, "E3_espejo_saluda": mirror, "E11_espejo_mira_lejos": mirror, "R4_rover_excava": rover,
          "R7_rover_ultimos_dias": rover, "P2_sonda_esquiva": probe, "P5_sonda_se_apaga": probe}
 
 ONLY = None   # set from the command line to colour just some sets
