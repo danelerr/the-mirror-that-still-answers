@@ -41,5 +41,35 @@ window.SPRITES = {
   "w": 500,
   "h": 351,
   "center": true
+ },
+ "P5_sonda_se_apaga": {
+  "n": 16,
+  "w": 479,
+  "h": 438,
+  "center": false
+ },
+ "R4_rover_excava": {
+  "n": 16,
+  "w": 486,
+  "h": 450,
+  "center": false
+ },
+ "R7_rover_ultimos_dias": {
+  "n": 16,
+  "w": 488,
+  "h": 444,
+  "center": false
+ },
+ "E7_espejo_atrapa": {
+  "n": 16,
+  "w": 490,
+  "h": 445,
+  "center": false
+ },
+ "P2_sonda_esquiva": {
+  "n": 16,
+  "w": 490,
+  "h": 455,
+  "center": false
  }
 };
