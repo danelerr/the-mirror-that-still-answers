@@ -576,14 +576,16 @@
   }
   // ---------- the Mirror drawn from the team's sheets: one design (with arms) in every scene ----------
   // gesture -> [sheet, first drawing of a two-step pair, flip]; a list of drawings is played as a loop
+  const G = F.hasSprites("E13_espejo_gestos") ? "E13_espejo_gestos" : null;   // the teacher's gestures sheet
   const MP = {
     wave: ["E3_espejo_saluda", [6, 7, 8, 9, 10, 11, 10, 9, 8, 7]],
-    self: ["E11_espejo_mira_lejos", 12], cheer: ["E11_espejo_mira_lejos", 12],
-    right: ["E9_espejo_secreto", 14], present: ["E9_espejo_secreto", 14], left: ["E9_espejo_secreto", 14, -1],
-    pointUp: ["E6_espejo_cuenta", 10], one: ["E6_espejo_cuenta", 0], two: ["E6_espejo_cuenta", 2], three: ["E6_espejo_cuenta", 4],
+    self: G ? [G, 10] : ["E11_espejo_mira_lejos", 12], cheer: G ? [G, 10] : ["E11_espejo_mira_lejos", 12],
+    right: G ? [G, 0] : ["E9_espejo_secreto", 14], present: G ? [G, 14] : ["E9_espejo_secreto", 14],
+    left: G ? [G, 0, -1] : ["E9_espejo_secreto", 14, -1],
+    pointUp: G ? [G, 2] : ["E6_espejo_cuenta", 10], one: ["E6_espejo_cuenta", 0], two: ["E6_espejo_cuenta", 2], three: ["E6_espejo_cuenta", 4],
     shrug: ["E6_espejo_cuenta", 6], droop: ["E6_espejo_cuenta", 8], whisper: ["E9_espejo_secreto", 6],
-    thumb: ["E11_espejo_mira_lejos", 14], hips: ["E9_espejo_secreto", 0], shade: ["E11_espejo_mira_lejos", 2],
-    tap: ["E5_espejo_anios", 6], up: ["E3_espejo_saluda", 0]
+    thumb: G ? [G, 8] : ["E11_espejo_mira_lejos", 14], hips: ["E9_espejo_secreto", 0], shade: ["E11_espejo_mira_lejos", 2],
+    tap: ["E5_espejo_anios", 6], up: ["E3_espejo_saluda", 0], big: G ? [G, 4] : ["E6_espejo_cuenta", 14]
   };
   // resting poses, chosen by the face it is making
   const MF = {
@@ -593,8 +595,27 @@
     curious: ["E3_espejo_saluda", 13], determined: ["E9_espejo_secreto", 2]
   };
   F.MIRROR_POSES = MP; F.MIRROR_MOODS = MF;
+  // the talking sheet: 4 rows (neutral, happy, explaining with a raised glove, gentle/sad) x 4 mouths
+  // (closed, half open, wide open, round "oo")
+  const TALK = "E12_espejo_habla";
+  const TALK_ROW = { neutral: 0, curious: 0, surprised: 0, scared: 0, happy: 1, proud: 1, determined: 2, worried: 3, sad: 3, tired: 3 };
+  const mouthIdx = (lv) => (lv < 0.12 ? 0 : lv < 0.28 ? 1 : lv < 0.5 ? 3 : 2);
   function mirrorDrawing(m, t) {
     let e;
+    const mood = m.faceName || "neutral", resting = !MP[m.pose] || m.pose === "rest" || m.pose === "ground";
+    if (m.eyes !== "closed" && F.hasSprites(TALK)) {
+      let k = -1, key = "";
+      if (resting && !(m.level <= 0.12 && (mood === "surprised" || mood === "scared"))) {
+        const row = TALK_ROW[mood] === undefined ? 0 : TALK_ROW[mood];
+        k = row * 4 + mouthIdx(m.level || 0); key = TALK + row;
+      } else if ((m.pose === "present" || m.pose === "right") && m.level > 0.12) {
+        k = [8, 9, 9, 11][mouthIdx(m.level)]; key = TALK + "hand";      // talking with a raised, open glove
+      }
+      if (k >= 0) {
+        if (key !== m.drawnKey) { m.drawnKey = key; m.drawnT = t; }
+        return { im: IM["spr_" + TALK + "_" + k], flip: 1, since: t - m.drawnT };
+      }
+    }
     if (m.eyes === "closed") e = MF.asleep;
     else if (MP[m.pose] && m.pose !== "rest" && m.pose !== "ground") e = MP[m.pose];
     else e = MF[m.faceName] || (m.eyes === "half" ? MF.tired : MF.neutral);
@@ -762,7 +783,29 @@
       const acc = (target - o[k]) * stiff - o[vk] * damp;
       o[vk] += acc * dt; o[k] += o[vk] * dt;
     }
+    // the drawn rover (the team's sheets): one design in every scene, chosen by what it is doing
+    a.drawing = function (t) {
+      if (this.drawn === false) return null;
+      const st = Math.floor(t / 1000 * 12), has = F.hasSprites, mood = this.faceName || "neutral";
+      let set = null, k = 0;
+      if (this.drive > 0.3 && has("R1_rover_avanza")) { set = "R1_rover_avanza"; k = st % 8; }
+      else if ((this.eyes === "closed" || mood === "asleep") && has("R7_rover_ultimos_dias")) { set = "R7_rover_ultimos_dias"; k = 15; }
+      else if (this.dusty > 0.5 && has("R5_rover_tormenta")) { set = "R5_rover_tormenta"; k = 6 + (Math.floor(st / 8) % 2); }
+      else if (this.armT > 1.5 && has("R8_rover_celebra")) { set = "R8_rover_celebra"; k = 5; }
+      else if ((mood === "tired" || this.eyes === "half") && has("R7_rover_ultimos_dias")) { set = "R7_rover_ultimos_dias"; k = 3; }
+      else if ((mood === "worried" || mood === "scared" || mood === "sad") && has("R5_rover_tormenta")) { set = "R5_rover_tormenta"; k = 0; }
+      else if (mood === "surprised" && has("R6_rover_sacude")) { set = "R6_rover_sacude"; k = 0; }
+      else if ((mood === "happy" || mood === "proud") && has("R3_rover_mira_sol")) { set = "R3_rover_mira_sol"; k = 14 + (Math.floor(st / 6) % 2); }
+      else if (has("R3_rover_mira_sol")) { set = "R3_rover_mira_sol"; k = Math.floor(st / 6) % 2; }
+      const im = set ? IM["spr_" + set + "_" + k] : null;
+      return F.ready(im) ? im : null;
+    };
     a.head = function () {
+      const im = this.drawing(F.t || 0);
+      if (im) {                                   // the camera head on the drawings: about 68% across, 25% down
+        const w = 470 * this.s / 0.46, h = w * im.height / im.width;
+        return { x: this.x + 0.18 * w * this.flip, y: this.y + 8 * this.s / 0.46 - h * 0.75 };
+      }
       const bx = this.x + (300 - 466) * this.s * this.sx * this.flip, by = this.y + (330 - 789) * this.s * this.sy, L = 565 * 0.62 * this.s * this.mastLen;
       return { x: bx + Math.sin(this.mast * this.flip) * L * this.flip, y: by - Math.cos(this.mast) * L };
     };
@@ -776,6 +819,23 @@
       c.globalAlpha = this.op;
       c.fillStyle = "rgba(40,20,10,0.35)";
       c.beginPath(); c.ellipse(this.x, this.y + 4, 230 * this.s * this.sx, 22 * this.s, 0, 0, 6.2832); c.fill();
+      const dimg = this.drawing(t);
+      if (dimg) {
+        const w = 470 * this.s / 0.46, h = w * dimg.height / dimg.width;
+        c.translate(this.x, this.y + bob);
+        c.rotate(this.tilt + rock);
+        c.scale(this.sx * (1 + sq) * this.flip, this.sy * (1 - sq));
+        if (this.dim > 0) c.filter = "brightness(" + (1 - this.dim * 0.55).toFixed(2) + ") saturate(" + (1 - this.dim * 0.5).toFixed(2) + ")";
+        c.drawImage(dimg, -w / 2, -h + 8 * this.s / 0.46, w, h);
+        if (this.glow > 0.01) {                  // sunlight on the solar panels
+          c.globalCompositeOperation = "lighter";
+          c.globalAlpha = this.op * this.glow * 0.25;
+          c.drawImage(dimg, -w / 2, -h + 8 * this.s / 0.46, w, h);
+          c.globalCompositeOperation = "source-over";
+        }
+        c.filter = "none";
+        return;
+      }
       c.translate(this.x, this.y + bob);
       c.rotate(this.tilt + rock);
       c.scale(this.s * this.sx * (1 + sq) * this.flip, this.s * this.sy * (1 - sq));

@@ -113,5 +113,59 @@ window.SPRITES = {
   "w": 490,
   "h": 379,
   "center": false
+ },
+ "E12_espejo_habla": {
+  "n": 16,
+  "w": 440,
+  "h": 379,
+  "center": false
+ },
+ "E13_espejo_gestos": {
+  "n": 16,
+  "w": 490,
+  "h": 379,
+  "center": false
+ },
+ "E2_espejo_despierta_brazos": {
+  "n": 16,
+  "w": 490,
+  "h": 483,
+  "center": false
+ },
+ "R3_rover_mira_sol": {
+  "n": 16,
+  "w": 462,
+  "h": 407,
+  "center": false
+ },
+ "R8_rover_celebra": {
+  "n": 16,
+  "w": 475,
+  "h": 442,
+  "center": false
+ },
+ "P1_sonda_despliega": {
+  "n": 16,
+  "w": 490,
+  "h": 389,
+  "center": false
+ },
+ "P3_sonda_jupiter": {
+  "n": 16,
+  "w": 477,
+  "h": 399,
+  "center": false
+ },
+ "P4_sonda_llama": {
+  "n": 16,
+  "w": 479,
+  "h": 450,
+  "center": false
+ },
+ "F4_foton_llega": {
+  "n": 16,
+  "w": 457,
+  "h": 407,
+  "center": false
  }
 };

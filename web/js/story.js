@@ -81,7 +81,7 @@
     "marco_cartel", "sonda_cuerpo", "sonda_brazo_a", "sonda_brazo_b", "sonda_brazo_largo", "sonda_ojos_abiertos", "sonda_ojos_medio",
     "sonda_ojos_cerrados"];
   const SCENES = ["luna", "espacio", "observatorio", "teatro", "marte_llanura", "marte_arriba", "plataforma", "marte_agua",
-    "crater_atardecer", "espacio_profundo", "antena", "libro_tapa", "libro_abre"];
+    "crater_atardecer", "espacio_profundo", "antena"];
   const PROPS = ["obj_cohete", "obj_paracaidas", "obj_bolsas"];
   const loading = F.load(
     ART.map((n) => [n, "assets/art/" + n + ".png"])
@@ -158,30 +158,38 @@
   // =================== OPENING ===================
   async function opening() {
     setChapter(0);
-    // --- 0. A storybook on a desk under a lamp: the camera moves in, the cover opens and light spills out
-    const cover = F.plate("sc_libro_tapa", { x: -40, y: -24, w: 1360, h: 765 });
-    const motes = F.particles({ z: 20 });
-    const lamp = F.custom(function (c, t) {
-      const f = 0.08 + 0.04 * Math.sin(t / 130) * Math.sin(t / 47);
-      const g = c.createRadialGradient(150, 60, 10, 150, 60, 520);
-      g.addColorStop(0, "rgba(255,214,140," + f.toFixed(3) + ")"); g.addColorStop(1, "rgba(255,214,140,0)");
-      c.fillStyle = g; c.fillRect(-200, -200, 1100, 900);
-    }, { z: 10 });
-    F.scene([cover, lamp, motes, F.credit("Storybook painting: AI image generator (made by the team).")], { bg: "#1a0f08", cam: { x: 600, y: 380, z: 1 } });
-    F.black();
-    F.irisIn(560, 330, 700);
-    const dust = setInterval(() => motes.emit("dot", 120 + Math.random() * 500, 120 + Math.random() * 400, 1, { spread: 10, vx: 6, vxr: 20, vy: -6, vyr: 14, g: 0, r: 2.2, life: 2.4, fill: "rgba(255,236,190,0.8)" }), 90);
-    sfx("pluck", 0.6);
-    await tw(F.cam, { x: 640, y: 330, z: 1.22 }, 2200, EZ.inOut);
-    clearInterval(dust);
-    const open = F.plate("sc_libro_abre", { x: -40, y: -24, w: 1360, h: 765 });
-    await F.dissolve(() => {
-      F.scene([open, F.credit("Storybook painting: AI image generator (made by the team).")], { bg: "#1a0f08", cam: { x: 700, y: 400, z: 1.05 } });
-      tw(F.cam, { x: 760, y: 470, z: 1.6 }, 1700, EZ.in);
-    }, 450);
-    sfx("whoosh", 1.2); sfx("sparkle");
-    await wait(1100);
-    await F.fadeTo(1, 380, "#fff3d6");
+    // --- 0. An old television: grey snow and its hiss, then the dial clicks and the picture rolls in
+    const snow = F.custom(function (c, t) {
+      if (this.op <= 0.01) return;
+      if (!this.cv) {
+        this.cv = document.createElement("canvas"); this.cv.width = 256; this.cv.height = 144;
+        this.cx = this.cv.getContext("2d"); this.img = this.cx.createImageData(256, 144);
+      }
+      const st = Math.floor(t / 1000 * 24);          // fresh snow 24 times a second
+      if (st !== this.last) {
+        this.last = st;
+        const d = this.img.data;
+        for (let i = 0; i < d.length; i += 4) { const v = (Math.random() * 235) | 0; d[i] = d[i + 1] = d[i + 2] = v; d[i + 3] = 255; }
+        this.cx.putImageData(this.img, 0, 0);
+      }
+      c.globalAlpha = this.op;
+      c.imageSmoothingEnabled = false;
+      c.drawImage(this.cv, 0, 0, W, H);
+      c.imageSmoothingEnabled = true;
+      const band = ((t / 850) % 1.4 - 0.2) * H;      // a darker band rolling down the screen
+      const g = c.createLinearGradient(0, band - 90, 0, band + 90);
+      g.addColorStop(0, "rgba(0,0,0,0)"); g.addColorStop(0.5, "rgba(0,0,0,0.4)"); g.addColorStop(1, "rgba(0,0,0,0)");
+      c.fillStyle = g; c.fillRect(0, band - 90, W, 180);
+      c.fillStyle = "rgba(0,0,0,0.2)";
+      for (let y = 0; y < H; y += 4) c.fillRect(0, y, W, 2);   // scan lines
+      const v = c.createRadialGradient(W / 2, H / 2, H * 0.35, W / 2, H / 2, H * 0.95);   // the rounded glass of an old set
+      v.addColorStop(0, "rgba(0,0,0,0)"); v.addColorStop(1, "rgba(0,0,0,0.75)");
+      c.fillStyle = v; c.fillRect(0, 0, W, H);
+    }, { par: 0, z: 200, op: 1 });
+    F.scene([snow], { bg: "#000" });
+    F.fadeTo(0, 1);
+    sfx("static", 1.6);
+    await wait(1350);
     // --- 1. A real photo from July 1969. The mirror is the small tray in the middle.
     const LR = { x: 507, y: 307 };                 // the retroreflector in the photo (AS11-40-5948)
     const photo = F.plate("as11", { x: 0, y: -330, w: 1280, h: 1280 });
@@ -195,9 +203,15 @@
       c.strokeStyle = "#ffe07a"; c.lineWidth = 4 / F.cam.z; c.setLineDash([12 / F.cam.z, 8 / F.cam.z]); c.lineDashOffset = -t / 40;
       c.beginPath(); c.ellipse(LR.x, LR.y, 58 * this.k, 34 * this.k, 0, 0, 6.2832); c.stroke();
     }, { z: 6, k: 0 });
-    F.scene([photo, sepia, ring, F.credit("Real photo: NASA AS11-40-5948, Tranquility Base, July 1969.")], { bg: "#000" });
+    F.scene([photo, sepia, ring, snow, F.credit("Real photo: NASA AS11-40-5948, Tranquility Base, July 1969.")], { bg: "#000" });
+    // the dial clicks onto the station: the picture flickers through the snow, rolls once and settles
+    sfx("tune");
+    F.flash(0.25);
+    photo.y = -330 + 260;
+    tw(photo, { y: -330 }, 320, EZ.out);
+    F.keys(snow, [[{ op: 0.3 }, 50], [{ op: 0.9 }, 60], [{ op: 0.15 }, 60], [{ op: 0.6 }, 50], [{ op: 0 }, 260, EZ.out]])
+      .then(() => F.remove(snow)).catch(() => {});
     const v1 = speak(1);
-    F.fadeTo(0, 700);
     tw(F.cam, { z: 1.5, x: LR.x + 40, y: LR.y + 30 }, 5800, EZ.inOut);
     await atw(1, "1969", 0, 0.5);
     const july = F.stamp(["July 1969"], { x: 1010, y: 120, size: 46, rot: -0.06, kicker: "Tranquility Base, the Moon" });
@@ -220,18 +234,16 @@
     }, 1100);
 
     // --- 2. "It has no battery. No motor. No voice."
+    // three slow pushes in on the sleeping Mirror, one for each "No…" (no crossed-out icons: they broke the style)
     const v2 = speak(2);
-    const icons = [F.icon("battery", { x: 400, y: 190 }), F.icon("gear", { x: 640, y: 160 }), F.icon("voice", { x: 880, y: 190 })];
     const words2 = [["battery", 1.4], ["motor", 2.8], ["no", 3.9]];
     for (let i = 0; i < 3; i++) {
       await atw(2, words2[i][0], i === 2 ? 2 : 0, words2[i][1]);
-      F.popIn(icons[i], 360);
-      tw(F.cam, { z: 1.12 + (i + 1) * 0.07 }, 500, EZ.out);
-      wait(330).then(() => { sfx("rip"); return tw(icons[i], { xp: 1 }, 380, EZ.out); }).catch(() => {});
+      tw(F.cam, { z: 1.12 + (i + 1) * 0.1, y: 420 - (i + 1) * 18 }, 600, EZ.out);
+      sfx("tock", 0.8);
     }
     await v2;
     await wait(300);
-    icons.forEach((ic, i) => wait(i * 70).then(() => F.popOut(ic)).catch(() => {}));
 
     // --- 3. "But send it light… and it answers."
     const v3 = speak(3);
@@ -430,7 +442,17 @@
     tally.sx = 1.2; tally.sy = 0.85; tw(tally, { sx: 1, sy: 1 }, 400, EZ.elastic);
     const count = F.stamp([m.photons + " photons came home"], { x: 1020, y: 330, size: 32, rot: 0.05, kicker: STATIONS[m.station] });
     F.popIn(count, 420, "tada");
-    await wait(2600);
+    if (F.hasSprites("F4_foton_llega")) {
+      // the team's drawn frames: one photon lands at home, squashes, bounces, waves and cheers
+      // (drawings 8-9 carry a written word, so they are never used)
+      const hero = F.spriteSet("F4_foton_llega", { x: 640, y: 714, w: 150, ay: 1, z: 45, frame: 0 });
+      F.add(hero);
+      for (const [f, ms, snd] of [[0, 140], [2, 110, "thud"], [3, 120], [4, 120, "boing"], [5, 140], [6, 170], [7, 170], [6, 170], [7, 170],
+        [12, 190, "tada"], [13, 210], [12, 190], [13, 260], [10, 220], [11, 260]]) {
+        hero.frame = f; if (snd) sfx(snd, 1.2); await wait(ms);
+      }
+      F.remove(hero);
+    } else await wait(2600);
     return home;
   }
 
@@ -520,17 +542,23 @@
       const fw = (window.SPRITES[WAKE].w || 490) * 330 / 490;
       const take = F.spriteSet(WAKE, { x: mir.x + 4, y: mir.y + 8, w: fw, ay: 1, z: 21, frame: 0 });
       F.add(take); mir.op = 0;
-      const seq = [[0, 450], [1, 300], [2, 260, "ting"], [3, 160], [4, 120, "pop"], [5, 100], [6, 90, "boing"], [7, 90], [8, 160], [9, 120],
-        [10, 90, "thud"], [11, 120], [12, 110], [13, 110], [14, 220], [15, 380]];
+      // (drawings 6-8 of the sheet gave the Mirror legs, which it does not have: the jump is done by moving
+      // the startled drawing instead, with stretch going up and squash on landing)
+      const y0 = mir.y + 8;
+      const seq = [[0, 450], [1, 300], [2, 280, "ting"], [3, 240], [4, 110, "pop"], [5, 90, "boing", "up"], [5, 220, null, "air"],
+        [9, 110, null, "down"], [10, 100, "thud", "land"], [11, 120], [12, 120], [13, 120], [14, 220], [15, 380]];
       for (const s of seq) {
         take.frame = s[0];
         if (s[2]) sfx(s[2], s[2] === "boing" ? 1.1 : 1);
-        if (s[0] === 6) {
+        if (s[3] === "up") {
           p.emit("puff", mir.x, mir.y - 260, 10, { spread: 260, vy: -120, vyr: 80, vxr: 240, g: 160, r: 12, life: 1, fill: "#cfc7b8", ink: "rgba(40,40,40,0.4)" });
           mir.dust = 0;
-          tw(take, { y: mir.y - 50 }, 180, EZ.out);
+          take.sx = 0.9; take.sy = 1.14;
+          tw(take, { y: y0 - 70 }, 200, EZ.out);
         }
-        if (s[0] === 10) { tw(take, { y: mir.y + 8 }, 90, EZ.in); F.shake(5); }
+        if (s[3] === "air") tw(take, { sx: 1, sy: 1 }, 200, EZ.out);
+        if (s[3] === "down") { take.sx = 0.94; take.sy = 1.08; tw(take, { y: y0 }, 110, EZ.in); }
+        if (s[3] === "land") { take.sx = 1.12; take.sy = 0.88; tw(take, { sx: 1, sy: 1 }, 380, EZ.elastic); F.shake(5); }
         await wait(s[1]);
       }
       mir.eyes = "open"; mir.mouth = "smile"; mir.brows = false; F.faceNow(mir, "happy"); gesture(mir, "rest", 1);
