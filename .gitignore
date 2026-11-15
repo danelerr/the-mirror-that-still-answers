@@ -15,5 +15,6 @@
 /dibujos/variantes/
 /dibujos/PROMPTS.md
 /dibujos/PROMPTS_ESCENAS.md
+/dibujos/PROMPTS_ANIMACION.md
 __pycache__/
 *.pyc

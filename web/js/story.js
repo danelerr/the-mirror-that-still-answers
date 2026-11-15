@@ -95,6 +95,37 @@
   const mir = F.mirror({ x: 640, y: 560, s: 0.62 });
   const speak = (n, who) => F.speak(n, who ? who.talk : null);
   const fx = () => F.particles({ z: 55 });
+  // Glove gestures for the Mirror (positions are around its body; up is negative)
+  const GP = {
+    rest: [["open", -255, -170, 0.25], ["open", 255, -170, -0.25]],
+    ground: [["open", -250, -25, 1.5], ["open", 250, -25, -1.5]],
+    up: [["open", -300, -400, -0.5], ["open", 300, -400, 0.5]],
+    wave: [["open", -255, -170, 0.25], ["wave", 270, -340, -0.25]],
+    self: [["open", -255, -170, 0.25], ["point", 150, -250, -1.55]],
+    right: [["open", -255, -170, 0.25], ["point", 300, -260, 1.5]],
+    left: [["point", -300, -260, -1.5], ["open", 255, -170, -0.25]],
+    pointUp: [["open", -255, -170, 0.25], ["point", 270, -390, 0.15]],
+    one: [["open", -255, -170, 0.25], ["one", 270, -330, -0.1]],
+    two: [["open", -255, -170, 0.25], ["two", 270, -330, -0.1]],
+    three: [["open", -255, -170, 0.25], ["three", 270, -330, -0.1]],
+    shrug: [["open", -300, -270, -0.75], ["open", 300, -270, 0.75]],
+    present: [["open", -310, -230, -1.0], ["open", 310, -230, 1.0]],
+    whisper: [["open", -255, -170, 0.25], ["open", 95, -215, -0.55]],
+    thumb: [["open", -255, -170, 0.25], ["thumb", 270, -300, 0]],
+    hips: [["fist", -235, -110, 2.5], ["fist", 235, -110, -2.5]],
+    cheer: [["fist", -290, -420, -0.3], ["fist", 290, -420, 0.3]],
+    shade: [["open", -255, -170, 0.25], ["open", 60, -345, -1.65]],
+    droop: [["open", -230, -60, 1.9], ["open", 230, -60, -1.9]],
+    tap: [["fist", -250, -120, 0.4], ["open", 255, -170, -0.25]]
+  };
+  function gesture(p, name, ms) {
+    const g = GP[name] || GP.rest;
+    [p.gL, p.gR].forEach((h, i) => {
+      h.pose = g[i][0];
+      F.tw(h, { x: g[i][1], y: g[i][2], rot: g[i][3] }, ms || 260, EZ.back);
+    });
+  }
+  F.gesture = gesture;
 
   // ---------- where things are in the painted scenes ----------
   const LUNA = { earth: { x: 305, y: 173 }, mirror: { x: 640, y: 600 } };
@@ -157,6 +188,7 @@
     const luna = F.plate("sc_luna", { x: -40, y: -24, w: 1360, h: 765 });
     mir.x = LUNA.mirror.x; mir.y = LUNA.mirror.y; mir.s = 0.62; mir.eyes = "closed"; mir.mouth = "closed"; mir.brows = false; mir.op = 1;
     mir.sx = mir.sy = 1; mir.rot = 0; mir.glow = 0; mir.dust = 0;
+    F.faceNow(mir, "neutral"); gesture(mir, "ground", 1);
     const p = fx();
     await F.dissolve(() => {
       F.scene([luna, F.stars({ n: 120, par: 0.2, w: W * 1.4, h: 260, y: -40 }), mir, p], { bg: "#05060a", cam: { z: 1.7, x: mir.x, y: mir.y - 120 } });
@@ -186,7 +218,8 @@
     await atw(3, "answ", 0, 2.4);
     tw(F.cam, { x: mir.x, y: mir.y - 170, z: 2.2 }, 380, EZ.out);
     mir.glow = 1; tw(mir, { glow: 0 }, 700, EZ.out);
-    mir.eyes = "half";
+    mir.eyes = "half"; F.face(mir, "curious");
+    gesture(mir, "up", 180);
     sfx("ting", 1.2);
     p.emit("spark", mir.x - 30, mir.y - 230, 8, { spread: 90, vy: -40, g: 0, r: 14, life: 0.8, fill: "#fff6c8" });
     await v3;
@@ -323,17 +356,27 @@
       home.push(f);
     }
     const tip3 = tipPos();
+    // they fly in from the Moon along curves and drop into the telescope, one by one, and get counted
+    const tally = F.stamp(["0"], { x: tip3.x + 170, y: tip3.y - 70, size: 44, style: "gold", par: 1, z: 60, kicker: "photons home" });
+    F.add(tally);
+    let got = 0;
     home.forEach((f, i) => {
-      wait(i * 28).then(() => {
+      wait(i * 42).then(() => {
         F.add(f);
-        const a = Math.random() * 6.2832, r = Math.sqrt(Math.random());
-        const tx = tip3.x + 120 + Math.cos(a) * r * 190, ty = tip3.y + 40 + Math.sin(a) * r * 70;
-        tw(f, { s: 1 }, 500, EZ.out);
-        return F.arc(f, tx, ty, 60 + Math.random() * 60, 620, EZ.inOut);
-      }).then(() => { f.sx = 1.3; f.sy = 0.75; return tw(f, { sx: 1, sy: 1 }, 300, EZ.elastic); })
-        .then(() => { if (i % 6 === 0) sfx("pop", 1 + Math.random()); }).catch(() => {});
+        f.x = OBS.moon.x + (Math.random() - 0.5) * 90; f.y = OBS.moon.y + (Math.random() - 0.5) * 50;
+        tw(f, { s: 0.9 }, 300, EZ.out);
+        return F.arc(f, tip3.x + (Math.random() - 0.5) * 10, tip3.y + (Math.random() - 0.5) * 10, 40 + Math.random() * 90, 680, EZ.in);
+      }).then(() => tw(f, { s: 0.05 }, 110, EZ.in))
+        .then(() => {
+          F.remove(f);
+          got++;
+          tally.lines = [String(got)];
+          if (got % 4 === 0) sfx("pop", 1 + got / 50);
+        }).catch(() => {});
     });
-    await wait(n * 28 + 900);
+    await wait(n * 42 + 1000);
+    tally.lines = [String(m.photons)];
+    tally.sx = 1.2; tally.sy = 0.85; tw(tally, { sx: 1, sy: 1 }, 400, EZ.elastic);
     const count = F.stamp([m.photons + " photons came home"], { x: 1020, y: 330, size: 32, rot: 0.05, kicker: STATIONS[m.station] });
     F.popIn(count, 420, "tada");
     await wait(2600);
@@ -395,6 +438,7 @@
     const p = fx();
     mir.x = LUNA.mirror.x; mir.y = LUNA.mirror.y; mir.s = 0.62; mir.eyes = "half"; mir.mouth = "closed"; mir.brows = false; mir.lx = 0; mir.ly = 0;
     mir.dust = 0.5;
+    F.faceNow(mir, "tired"); gesture(mir, "ground", 1);
     F.scene([luna, F.stars({ n: 120, par: 0.2, w: W * 1.4, h: 260, y: -40 }), mir, p], { bg: "#05060a", cam: { x: 640, y: 400, z: 1.25 } });
     await F.irisIn(mir.x, mir.y - 200, 700);
     await wait(300);
@@ -402,6 +446,7 @@
     await tw(mir, { sx: 1.08, sy: 0.88 }, 300, EZ.inOut);
     // ...then the take: eyes pop, it springs up, dust flies off, it overshoots and settles
     mir.eyes = "open"; mir.mouth = "oh"; mir.brows = true;
+    F.faceNow(mir, "surprised"); gesture(mir, "up", 160);
     sfx("boing", 1.1);
     p.emit("puff", mir.x, mir.y - 300, 10, { spread: 260, vy: -120, vyr: 80, vxr: 240, g: 160, r: 12, life: 1, fill: "#cfc7b8", ink: "rgba(40,40,40,0.4)" });
     mir.dust = 0;
@@ -409,21 +454,24 @@
       [{ sx: 1, sy: 1 }, 380, EZ.elastic]]);
     const v4 = speak(4, mir);
     await atw(4, "hello", 0, 1.2);
-    mir.brows = false;
+    mir.brows = false; F.face(mir, "happy"); gesture(mir, "wave", 300);
     await atw(4, "you", 0, 3.4);
+    F.face(mir, "curious"); gesture(mir, "right", 260);
     tw(F.cam, { z: 1.45, y: 380 }, 500, EZ.back);
     mir.lx = 0; await v4;
-    mir.mouth = "smile";
+    mir.mouth = "smile"; F.face(mir, "neutral"); gesture(mir, "rest");
     await wait(250);
 
     // --- 5. "I am a mirror. Two astronauts set me down here in July 1969, and I have not moved since."
     tw(F.cam, { z: 1.15, y: 400 }, 900, EZ.inOut);
     const v5 = speak(5, mir);
     await atw(5, "mirror", 0, 0.8);
+    F.face(mir, "proud"); gesture(mir, "self");
     sfx("sparkle");
     p.emit("spark", mir.x, mir.y - 220, 8, { spread: 240, vy: -30, g: 0, r: 12, life: 0.9, fill: "#fff6c8" });
     tw(mir, { sy: 1.06 }, 250, EZ.out).then(() => tw(mir, { sy: 1 }, 400, EZ.back)).catch(() => {});
     await atw(5, "july", 0, 2.6);
+    F.face(mir, "happy"); gesture(mir, "right");
     const proof = F.proof("as11", "Tranquility Base, July 20, 1969. NASA photo AS11-40-5948.", { x: 1000, y: 300, w: 380, rot: 0.05 });
     F.popIn(proof, 450, "shutter");
     await atw(5, "moved", 0, 5.4);
@@ -439,10 +487,10 @@
     F.add(years);
     tw(years, { year: 2026 }, 1700, EZ.inOut, () => { if (F.step(F.t) % 2) sfx("tick"); });
     tw(mir, { dust: 0.7 }, 1700, EZ.lin);
-    mir.eyes = "half";
+    mir.eyes = "half"; F.face(mir, "tired"); gesture(mir, "tap");
     await v5;
     // a shrug shakes the dust off
-    mir.eyes = "open";
+    mir.eyes = "open"; F.face(mir, "happy"); gesture(mir, "shrug", 180);
     sfx("boing", 0.8);
     p.emit("puff", mir.x, mir.y - 300, 8, { spread: 260, vy: -80, g: 160, r: 11, life: 0.9, fill: "#cfc7b8", ink: "rgba(40,40,40,0.4)" });
     mir.dust = 0;
@@ -451,18 +499,19 @@
 
     // --- 6. "No battery. No motor. I cannot call you. But when your light reaches me, I send it straight back."
     const v6 = speak(6, mir);
-    mir.eyes = "half";
+    mir.eyes = "open"; F.face(mir, "sad");
     tw(mir, { sy: 0.95 }, 600, EZ.inOut);
     const ic = [F.icon("battery", { x: 420, y: 170, s: 0.6 }), F.icon("gear", { x: 640, y: 150, s: 0.6 }), F.icon("voice", { x: 860, y: 170, s: 0.6 })];
     const w6 = [["battery", 0.4], ["motor", 1.5], ["call", 2.9]];
     for (let i = 0; i < 3; i++) {
       await atw(6, w6[i][0], 0, w6[i][1]);
       ic[i].xp = 1; ic[i].s = 0.6;
+      gesture(mir, ["one", "two", "three"][i], 200);
       F.popIn(ic[i], 300, "pop");
     }
     await atw(6, "but", 0, 4.4);
     ic.forEach((x) => F.popOut(x));
-    mir.eyes = "open"; mir.brows = true;
+    mir.eyes = "open"; mir.brows = true; F.face(mir, "curious"); gesture(mir, "pointUp", 220);
     tw(mir, { sy: 1.05 }, 250, EZ.out).then(() => tw(mir, { sy: 1 }, 400, EZ.back)).catch(() => {});
     await atw(6, "reaches", 0, 5.4);
     await cornerCube(6);
@@ -499,6 +548,10 @@
         c.fillStyle = f[1]; c.fill();
         c.strokeStyle = F.INK; c.lineWidth = 7; c.stroke();
       }
+      // it is a corner seen from inside: deeper (darker) toward the middle
+      const deep = c.createRadialGradient(cx, cy, 4, cx, cy, R * 1.05);
+      deep.addColorStop(0, "rgba(10,30,55,0.55)"); deep.addColorStop(0.6, "rgba(10,30,55,0.15)"); deep.addColorStop(1, "rgba(10,30,55,0)");
+      c.fillStyle = deep; c.beginPath(); c.arc(cx, cy, R * 1.1, 0, 6.2832); c.fill();
       // shine
       c.globalAlpha = 0.5 + 0.2 * Math.sin(t / 300);
       c.strokeStyle = "#fff"; c.lineWidth = 5; c.lineCap = "round";
@@ -520,7 +573,7 @@
     cube.pts = [[120, 60], [cx - 80, cy - 40], [cx + 60, cy - 10], [cx + 10, cy + 90], [cx - 150 + 330, 60 + 330 - 400]];
     cube.pts[4] = [cube.pts[3][0] - (cube.pts[1][0] - 120), cube.pts[3][1] - (cube.pts[1][1] - 60)];
     const ph = F.photon({ s: 0.9, z: 20, par: 0 });
-    const lab = F.stamp(["One of the mirror's 100 glass corners"], { x: W / 2, y: 660, size: 26, style: "ink" });
+    const lab = F.stamp(["Inside one of the mirror's 100 glass corners"], { x: W / 2, y: 660, size: 26, style: "ink" });
     const p = F.particles({ z: 30, par: 0 });
     F.scene([F.stars({ n: 200, par: 0 }), cube, ph, p], { bg: "#0b0f1c" });
     F.popIn(lab, 300);
@@ -550,6 +603,7 @@
     const luna = F.plate("sc_luna", { x: -40, y: -24, w: 1360, h: 765 });
     const sw = F.stopwatch({ x: 930, y: 300, s: 0.95, sec: shot.tof, digits: 6, label: "your light's round trip" });
     mir.x = 330; mir.y = 640; mir.s = 0.5; mir.eyes = "open"; mir.mouth = "smile"; mir.brows = false;
+    F.faceNow(mir, "curious"); gesture(mir, "right", 1);
     const p = fx();
     F.scene([luna, mir, p], { bg: "#05060a", cam: { x: 640, y: 360, z: 1 } });
     const v7 = speak(7, mir);
@@ -568,6 +622,7 @@
     // half the trip there, half back
     F.scene([luna, mir, p, sw], { bg: "#05060a", cam: { x: 640, y: 360, z: 1 } });
     sw.label = "half there, half back";
+    F.face(mir, "happy"); gesture(mir, "present");
     sfx("slideUp");
     await tw(sw, { split: 1 }, 700, EZ.inOut);
     const halfS = F.stamp([(shot.tof / 2).toFixed(6) + " s each way"], { x: 930, y: 560, size: 30, style: "card" });
@@ -598,17 +653,18 @@
     mir.x = 640; mir.y = 610; mir.s = 0.6; mir.eyes = "open"; mir.mouth = "smile";
     const p = fx();
     F.scene([luna, mir, p], { bg: "#05060a", cam: { x: 640, y: 380, z: 1.1 } });
+    F.faceNow(mir, "neutral"); gesture(mir, "present", 1);
     const v8 = speak(8, mir);
     await atw(8, "guessed", 0, 3.9);
     const guess = F.stamp(["100 km?", "1 million km?"], { x: 330, y: 220, size: 34, style: "card", rot: -0.08, kicker: "a guess" });
     F.popIn(guess, 380, "squeak");
-    mir.eyes = "half"; mir.lx = -8;
+    mir.eyes = "open"; mir.lx = -8; F.face(mir, "worried"); gesture(mir, "shrug");
     await wait(700);
     sfx("pop", 0.5);
     p.emit("spark", 330, 220, 10, { spread: 120, vy: 0, vyr: 200, vxr: 200, g: 200, r: 10, life: 0.6, fill: "#fff" });
     F.remove(guess);
     await atw(8, "timed", 0, 5.6);
-    mir.eyes = "open"; mir.lx = 0;
+    mir.eyes = "open"; mir.lx = 0; F.face(mir, "proud"); gesture(mir, "thumb", 200);
     const sw = F.stopwatch({ x: 960, y: 290, s: 0.8, sec: shot.tof, digits: 6, label: "timed!" });
     await F.stampDown(sw);
     sfx("click");
@@ -623,9 +679,9 @@
     F.scene([luna, mir], { bg: "#05060a", cam: { x: 640, y: 380, z: 1.1 } });
     const v9 = speak(9, mir);
     tw(F.cam, { z: 1.7, y: 330 }, 2600, EZ.inOut);   // it leans in to tell you a secret
-    mir.lx = 7; mir.ly = 2;
+    mir.lx = 7; mir.ly = 2; F.face(mir, "curious"); gesture(mir, "whisper", 300);
     await atw(9, "look", 0, 3.6);
-    mir.lx = 0; mir.ly = 0;
+    mir.lx = 0; mir.ly = 0; F.face(mir, "surprised"); gesture(mir, "right", 180);
     await v9;
   }
 
@@ -652,7 +708,8 @@
       c.globalAlpha = this.op; c.fillStyle = g;
       c.beginPath(); c.moveTo(620, 760); c.lineTo(SCREEN.x0, SCREEN.y0); c.lineTo(SCREEN.x1, SCREEN.y0); c.lineTo(SCREEN.x1, SCREEN.y1); c.lineTo(SCREEN.x0, SCREEN.y1); c.lineTo(660, 760); c.closePath(); c.fill();
     }, { z: 11, op: 0 });
-    const presenter = F.mirror({ x: 1100, y: 700, s: 0.42, eyes: "open", mouth: "smile", z: 30 });
+    const presenter = F.mirror({ x: 1135, y: 650, s: 0.4, eyes: "open", mouth: "smile", z: 30, par: 0 });
+    gesture(presenter, "left", 1);
     const p = fx();
     F.scene([hall, chart, beam, curtains, presenter, p, F.credit("Dots: NASA CDDIS / ILRS laser ranging normal points, 2025-2026. Line: NASA/JPL Horizons.")], { bg: "#1a0e0a", cam: { x: 640, y: 360, z: 1.05 } });
     sfx("whoosh");
@@ -665,18 +722,21 @@
     const v10 = speak(10, presenter);
     tw(chart, { prog: 1 }, 7000, EZ.inOut, (e) => { if (Math.random() < 0.15) sfx("tick"); });
     await atw(10, "someone", 0, 7.6);
+    F.face(presenter, "curious");
     const tally = F.stamp([countBy("GRSM") + " from Grasse, France", countBy("APOL") + " from Apache Point, USA"], { x: 1080, y: 150, size: 24, style: "card", rot: 0.04, kicker: LLR.length + " real measurements" });
     F.popIn(tally, 420);
     await atw(10, "answer", 0, 14.2);
     sfx("sparkle"); sfx("tada");
     tw(chart, { glowAll: 1 }, 200, EZ.out).then(() => tw(chart, { glowAll: 0 }, 800, EZ.inOut)).catch(() => {});
     presenter.sy = 1.1; tw(presenter, { sy: 1 }, 500, EZ.elastic);
+    F.face(presenter, "happy"); gesture(presenter, "cheer", 200);
     await v10;
     F.popOut(tally);
 
     // 11. the wave: the Moon swings closer and farther
     const v11 = speak(11, presenter);
     await atw(11, "wave", 0, 0.6);
+    F.face(presenter, "curious"); gesture(presenter, "left");
     sfx("slideUp", 0.8);
     tw(chart, { line: 1 }, 2200, EZ.inOut);
     await atw(11, "closer", 0, 2.8);
@@ -690,6 +750,7 @@
     await surfacesShot(12);
     F.scene([hall, chart, beam, presenter, p], { bg: "#1a0e0a", cam: { x: (SCREEN.x0 + SCREEN.x1) / 2 + 40, y: (SCREEN.y0 + SCREEN.y1) / 2 + 40, z: 1.25 } });
     await atw(12, "agree", 0, 10);
+    F.face(presenter, "proud"); gesture(presenter, "thumb", 200);
     const ok = F.stamp(["The numbers agree"], { x: W / 2, y: H / 2, size: 56, style: "gold", rot: -0.05 });
     await F.stampDown(ok);
     sfx("tada");
@@ -754,6 +815,7 @@
   async function neighborsShot() {
     const luna = F.plate("sc_luna", { x: -40, y: -24, w: 1360, h: 765 });
     mir.x = 640; mir.y = 610; mir.s = 0.6; mir.eyes = "open"; mir.mouth = "smile";
+    F.faceNow(mir, "neutral"); gesture(mir, "rest", 1);
     const mars = F.custom(function (c, t) {
       const r = 5 + Math.sin(t / 200) * 1.5;
       const g = c.createRadialGradient(this.x, this.y, 0, this.x, this.y, r * 5);
@@ -765,11 +827,11 @@
     await F.irisIn(W / 2, H / 2, 600);
     const v13 = speak(13, mir);
     await atw(13, "neighbors", 0, 1.0);
-    mir.lx = 9; mir.ly = -3;
+    mir.lx = 9; mir.ly = -3; F.face(mir, "sad"); gesture(mir, "shade");
     await atw(13, "measurement", 0, 7.0);
-    mir.eyes = "happy";
+    F.face(mir, "happy");
     await atw(13, "introduce", 0, 8.4);
-    mir.eyes = "open";
+    F.face(mir, "curious"); gesture(mir, "pointUp", 200);
     sfx("whoosh");
     tw(F.cam, { x: mars.x, y: mars.y + 40, z: 2.2 }, 1500, EZ.inOut);
     await v13;

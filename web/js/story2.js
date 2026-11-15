@@ -27,7 +27,15 @@
   });
 
   // ---------- the narrator: the Mirror in a little round window, as in old cartoons ----------
-  const nar = F.mirror({ x: 0, y: 0, s: 0.33, eyes: "open", mouth: "smile", shadow: false, bobAmt: 0.6 });
+  const nar = F.mirror({ x: 0, y: 0, s: 0.33, eyes: "open", mouth: "smile", shadow: false, bobAmt: 0.6, hands: false });
+  // the rover waves with the glove at the end of its arm
+  async function roverWave(ms, pose) {
+    rv.hand = pose || "wave";
+    await tw(rv, { armT: 2.2 }, 260, EZ.back);
+    await wait(ms || 1100);
+    rv.hand = "open";
+    tw(rv, { armT: 0.1 }, 320, EZ.inOut);
+  }
   const inset = F.custom(function (c, t) {
     const R = 78, cx = 104, cy = 100;
     c.globalAlpha = this.op;
@@ -274,12 +282,16 @@
     sfx("slideUp", 0.9);
     rv.mastT = 0;
     await wait(500);
+    F.faceNow(rv, "tired");
     rv.eyes = "half"; await wait(250); rv.eyes = "closed"; await wait(120); rv.eyes = "open";
+    F.faceNow(rv, "surprised");
     sfx("ting");
     rv.lookX = -10; await wait(350); rv.lookX = 10; await wait(350); rv.lookX = 0;
     rv.armT = 0.1;
-    await tw(rv, { sy: 1.08, sx: 0.95 }, 160, EZ.out);
+    await tw(rv, { sy: 1.14, sx: 0.92 }, 160, EZ.out);
+    F.face(rv, "happy");
     await tw(rv, { sy: 1, sx: 1 }, 360, EZ.elastic);
+    F.guard(roverWave(900));
   }
 
   // =================== the story of its days ===================
@@ -290,6 +302,9 @@
     await atw(14, "opportunity", 0, 1.0);
     const name = F.stamp(["Opportunity"], { x: 1000, y: 150, size: 52, style: "card", rot: -0.04, kicker: "Mars rover, 2004 - 2018" });
     F.popIn(name, 420, "tada");
+    F.face(rv, "happy"); F.guard(roverWave(1000));
+    await wait(1100);
+    F.face(rv, "determined");
     // anticipation, then it drives forward a little, kicking up dust
     await tw(rv, { sx: 1.05, sy: 0.94 }, 200);
     rv.drive = 1;
@@ -299,16 +314,16 @@
     await atw(14, "water", 0, 7.8);
     F.popOut(name);
     // it digs into a rock and dreams of ancient water
-    rv.armT = 0.9; sfx("click");
+    rv.armT = 0.8; rv.hand = "point"; sfx("click"); F.face(rv, "curious"); rv.look = 6; rv.lookX = -6;
     const dream = F.thought("sc_marte_agua", { x: 820, y: 230, w: 440, h: 280, fromX: rv.x + 40, fromY: rv.y - 330, z: 70 });
     F.add(dream);
     await tw(dream, { open: 1 }, 600, EZ.bigBack);
-    sfx("sparkle");
+    sfx("sparkle"); F.face(rv, "happy"); rv.look = -6; rv.lookX = 8;
     await v;
     await wait(500);
     await tw(dream, { open: 0 }, 300, EZ.inBack);
     F.remove(dream);
-    rv.armT = 0.1;
+    rv.armT = 0.1; rv.hand = "open"; rv.look = 0; rv.lookX = 0; F.face(rv, "neutral");
   }
 
   async function sunlight15() {
@@ -318,7 +333,7 @@
     sun.y = 260; tw(sun, { y: 140 }, 700, EZ.bigBack);
     sfx("slideUp");
     tw(rv, { glow: 1 }, 700, EZ.inOut);
-    rv.eyes = "open";
+    rv.eyes = "open"; F.face(rv, "happy");
     tw(rv, { sy: 1.06 }, 250, EZ.out).then(() => tw(rv, { sy: 1 }, 400, EZ.back)).catch(() => {});
     const beam = F.custom(function (c, t) {
       if (this.k <= 0.01) return;
@@ -330,6 +345,7 @@
     F.add(beam);
     await atw(15, "sun", 0, 5.4);
     // it looks straight up at the Sun: a small dip first, then up
+    F.face(rv, "proud");
     await tw(rv, { mastT: -0.1 }, 220);
     tw(rv, { mastT: 0.25, look: -10, lookX: 8 }, 600, EZ.back);
     await tw(beam, { k: 1 }, 500, EZ.out);
@@ -339,6 +355,7 @@
     await v;
     tw(beam, { k: 0 }, 500, EZ.in);
     tw(rv, { mastT: 0, look: 0, lookX: 0, glow: 0.5 }, 700);
+    F.face(rv, "neutral");
   }
   function showPanel() {
     if (!panel.classList.contains("hidden")) return;
@@ -354,7 +371,8 @@
     const follow = F.onFrame(() => {
       const d = 1 - Math.exp(-tauNow() / 3);
       rv.glow = Math.exp(-tauNow()) * 1.1;
-      rv.eyes = d > 0.6 ? "half" : "open";
+      const want = d < 0.3 ? "happy" : d < 0.5 ? "neutral" : d < 0.7 ? "worried" : "tired";
+      if (rv.faceName !== want) F.face(rv, want, 200);
     });
     await waitSlide();
     follow();
@@ -371,10 +389,11 @@
     tw(wall, { x: 640 }, 2200, EZ.out);
     const gust = setInterval(() => P.emit("streak", -40, 120 + Math.random() * 480, 2, { vx: 900, vxr: 200, vy: 0, vyr: 20, g: 0, r: 14, len: 90, life: 1.6, fill: "rgba(240,200,150,0.6)" }), 120);
     tw(M, { idx: idxOfSol(1236) }, 2000, EZ.in);
-    rv.eyes = "half";
-    tw(rv, { sy: 0.9, sx: 1.05, mastT: -0.5, armT: 0.3, glow: 0, dusty: 0.8 }, 900);
+    F.face(rv, "scared");
+    rv.hand = "open";
+    tw(rv, { sy: 0.88, sx: 1.07, mastT: -0.5, armT: 2.0, glow: 0, dusty: 0.8 }, 900);
     await atw(17, "waited", 0, 7.1);
-    rv.eyes = "closed";
+    F.face(rv, "asleep");
     const zz = F.stamp(["z z z"], { x: rv.x + 120, y: rv.y - 300, size: 40, style: "ink", par: 1, z: 60 });
     F.popIn(zz, 300);
     tw(zz, { y: rv.y - 360 }, 1500, EZ.inOut);
@@ -384,13 +403,14 @@
     tw(wall, { x: 1900 }, 1500, EZ.in);
     await tw(M, { idx: idxOfSol(1420) }, 1100, EZ.out);
     // the take: eyes pop open, it springs up and shakes the dust off
-    rv.eyes = "open";
+    rv.eyes = "open"; F.faceNow(rv, "surprised");
     sfx("boing", 1.2);
     await tw(rv, { sy: 1.12, sx: 0.94, mastT: 0.05 }, 160, EZ.out);
     for (let k = 0; k < 3; k++) { await tw(rv, { tilt: 0.05, sx: 1.03 }, 70); await tw(rv, { tilt: -0.05, sx: 0.98 }, 70); }
     P.emit("puff", rv.x, rv.y - 220, 10, { spread: 300, vy: -120, vxr: 260, g: 140, r: 14, life: 1, fill: "#c79466" });
     rv.dusty = 0;
     tw(rv, { sy: 1, sx: 1, tilt: 0, mastT: 0, armT: 0.1, glow: 0.8 }, 320, EZ.back);
+    F.face(rv, "happy");
     await atw(17, "work", 0, 11.2);
     rv.drive = 0.8; plain.v = 60;
     await v;
@@ -399,7 +419,7 @@
 
   async function drive18() {
     const v = say(18);
-    rv.drive = 1; plain.v = 420;
+    rv.drive = 1; plain.v = 420; F.face(rv, "determined");
     const odo = F.stamp(["0.0 km"], { x: 1010, y: 130, size: 52, style: "card", kicker: "distance driven" });
     F.popIn(odo, 360);
     const year = F.stamp(["2007"], { x: 300, y: 130, size: 52, style: "gold" });
@@ -414,8 +434,9 @@
     M.odo = true; lastI = -1;
     odo.lines = ["45.16 km"]; sfx("ding");
     odo.sx = 1.15; odo.sy = 0.88; tw(odo, { sx: 1, sy: 1 }, 400, EZ.elastic);
+    F.face(rv, "proud"); F.guard(roverWave(700, "thumb"));
     await atw(18, "june", 0, 5.0);
-    rv.drive = 0; plain.v = 0;
+    rv.drive = 0; plain.v = 0; F.face(rv, "worried");
     F.popOut(odo); F.remove(year);
     // the whole planet disappears under dust (drawn: Mars from space)
     await globe(18);
@@ -451,7 +472,8 @@
 
   async function last19() {
     marsScene();
-    rv.x = 400; rv.drive = 0; rv.eyes = "half"; rv.dusty = 0.4; rv.glow = 0.2;
+    rv.x = 400; rv.drive = 0; rv.eyes = "open"; rv.dusty = 0.4; rv.glow = 0.2; rv.armT = 0.1; rv.hand = "open";
+    F.faceNow(rv, "worried");
     M.idx = idxOfSol(5102); M.shown = 0.76; plain.v = 0;
     F.show(panel); lastI = -1;
     M.view = { s0: 5084, s1: 5114, tMax: 11 };
@@ -468,10 +490,11 @@
       M.reveal = calm + k + 1;
       M.idx = idxOfSol(s[0]);
       if (k === 2) M.finalShown = true;
-      const st = F.stamp([s[1].toFixed(k === 2 ? 1 : 2)], { x: 260 + k * 170, y: 470 - k * 120, size: 46 + k * 10, style: k === 2 ? "gold" : "card", rot: -0.04 + k * 0.03, kicker: k === 2 ? "last day" : "" });
+      const st = F.stamp([s[1].toFixed(k === 2 ? 1 : 2)], { x: 640 + k * 190, y: 350 - k * 95, size: 46 + k * 10, style: k === 2 ? "gold" : "card", rot: -0.04 + k * 0.03, kicker: k === 2 ? "last day" : "" });
       stair.push(st);
       F.popIn(st, 360, k === 2 ? "stamp" : "pop");
       tw(rv, { glow: 0, dim: Math.min(1, (k + 1) * 0.33) }, 700);
+      F.face(rv, ["worried", "tired", "asleep"][k], 400);
       if (k === 2) {
         rv.eyes = "closed";
         tw(rv, { mastT: -0.42, armT: 0.35, sy: 0.92, sx: 1.04 }, 1900);
@@ -486,6 +509,7 @@
   async function quiet20() {
     const crater = F.plate("sc_crater_atardecer", { x: -30, y: -20, w: 1340, h: 754 });
     const little = F.rover({ x: 1040, y: 655, s: 0.2, eyes: "closed", mastT: -0.42, mast: -0.42, armT: 0.35, arm: 0.35, dim: 0.4, flip: -1, z: 30 });
+    F.faceNow(little, "asleep");
     // fourteen years of measurements rise like stars and draw their curve across the sky
     const pts = OPP.filter((r, i) => i % 6 === 0).concat([OPP[OPP.length - 1]]);
     const sky = F.custom(function (c, t) {
