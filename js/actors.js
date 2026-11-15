@@ -30,7 +30,14 @@
   F.sprite = (im, o) => Object.assign({
     im, x: 0, y: 0, s: 1, sx: 1, sy: 1, rot: 0, op: 1, ax: 0.5, ay: 0.5, flip: 1, z: 0, par: 1, w: 0, frames: null, fps: 12,
     draw(c, t) {
-      const img = this.frames ? IM[this.frames[Math.floor(t / 1000 * this.fps) % this.frames.length]] : IM[this.im];
+      let img = IM[this.im];
+      if (this.frames) {
+        const n = this.frames.length;
+        const i = this.frame !== undefined && this.frame !== null ? Math.round(this.frame)
+          : this.loop === false ? Math.min(n - 1, Math.floor((t - (this.t0 || 0)) / 1000 * this.fps))
+          : Math.floor(t / 1000 * this.fps) % n;
+        img = IM[this.frames[F.clamp(i, 0, n - 1)]];
+      }
       if (!F.ready(img)) return;
       const w = this.w || img.width, h = w * img.height / img.width;
       c.globalAlpha = this.op;
@@ -40,6 +47,24 @@
       c.drawImage(img, -this.ax * w, -this.ay * h, w, h);
     }
   }, o);
+
+  // ---------- frames cut from the team's sprite sheets (web/tools/cut_sprites.py) ----------
+  F.hasSprites = (name) => !!(window.SPRITES && window.SPRITES[name]);
+  F.spriteSet = (name, o) => {
+    const meta = (window.SPRITES || {})[name] || { n: 0, w: 0, center: true };
+    const frames = [];
+    for (let i = 0; i < meta.n; i++) frames.push("spr_" + name + "_" + i);
+    return F.sprite(frames[0], Object.assign({ frames, fps: 12, w: meta.w, ax: 0.5, ay: meta.center ? 0.5 : 1, loop: true }, o));
+  };
+  // play once from the first frame (or loop again with loop: true)
+  F.playOnce = (a) => { a.loop = false; a.frame = null; a.t0 = F.t; return F.wait(a.frames.length / a.fps * 1000); };
+  F.loadSprites = () => {
+    const list = [];
+    Object.keys(window.SPRITES || {}).forEach((n) => {
+      for (let i = 0; i < window.SPRITES[n].n; i++) list.push(["spr_" + n + "_" + i, "assets/sprites/" + n + "/" + (i < 10 ? "0" : "") + i + ".png"]);
+    });
+    return F.load(list);
+  };
 
   // ---------- anything drawn by a function ----------
   F.custom = (draw, o) => Object.assign({ z: 0, par: 1, op: 1, draw }, o);
@@ -443,26 +468,26 @@
       }
     }
   };
-  // A white four-finger cartoon glove. pose: open, point, fist, thumb, one, two, three, wave
+  // A white cartoon glove of the 1930s: three fingers and a thumb. pose: open, point, fist, thumb, one, two, three, wave
   const GLOVE = {
-    open: [1, 1, 1, 1, 0.9], wave: [1, 1, 1, 1, 0.9], point: [1.15, 0.2, 0.2, 0.2, 0.35], fist: [0.2, 0.2, 0.2, 0.2, 0.3],
-    thumb: [0.2, 0.2, 0.2, 0.2, 1.2], one: [1.1, 0.2, 0.2, 0.2, 0.3], two: [1.1, 1.05, 0.2, 0.2, 0.3], three: [1.1, 1.05, 1, 0.2, 0.3]
+    open: [1, 1, 1, 0.9], wave: [1, 1, 1, 0.9], point: [1.15, 0.2, 0.2, 0.35], fist: [0.2, 0.2, 0.2, 0.3],
+    thumb: [0.2, 0.2, 0.2, 1.2], one: [1.1, 0.2, 0.2, 0.3], two: [1.1, 1.05, 0.2, 0.3], three: [1.1, 1.05, 1, 0.3]
   };
   F.glove = function (c, x, y, s, rot, pose, flip) {
     const f = GLOVE[pose] || GLOVE.open;
     c.save(); c.translate(x, y); c.rotate(rot || 0); c.scale(s * (flip || 1), s);
-    const fingers = [[-15, -0.28], [-5, -0.09], [5, 0.09], [14, 0.27]];
+    const fingers = [[-12, -0.24], [0, 0], [12, 0.24]];
     const parts = (inkPad) => {
       // fingers
       fingers.forEach((fg, i) => {
         const L = 30 * f[i];
         c.save(); c.translate(fg[0], -12); c.rotate(fg[1] * (pose === "open" || pose === "wave" ? 1 : 0.4));
-        c.beginPath(); c.moveTo(-5.5 - inkPad, 0); c.lineTo(-5.5 - inkPad, -L); c.arc(0, -L, 5.5 + inkPad, Math.PI, 0); c.lineTo(5.5 + inkPad, 0); c.closePath(); c.fill();
+        c.beginPath(); c.moveTo(-6.8 - inkPad, 0); c.lineTo(-6.8 - inkPad, -L); c.arc(0, -L, 6.8 + inkPad, Math.PI, 0); c.lineTo(6.8 + inkPad, 0); c.closePath(); c.fill();
         c.restore();
       });
       // thumb
       c.save(); c.translate(-20, 2); c.rotate(pose === "thumb" ? -1.4 : -0.9);
-      const T = 22 * f[4];
+      const T = 22 * f[3];
       c.beginPath(); c.moveTo(-6 - inkPad, 0); c.lineTo(-6 - inkPad, -T); c.arc(0, -T, 6 + inkPad, Math.PI, 0); c.lineTo(6 + inkPad, 0); c.closePath(); c.fill();
       c.restore();
       // palm and cuff
@@ -472,7 +497,7 @@
     c.fillStyle = INK; parts(3.2);
     c.fillStyle = "#fbf8f0"; parts(0);
     c.strokeStyle = INK; c.lineWidth = 2.4; c.lineCap = "round";
-    for (let k = -1; k <= 1; k++) { c.beginPath(); c.moveTo(k * 8, -6); c.lineTo(k * 8, 6); c.stroke(); }
+    for (let k = -1; k <= 1; k++) { c.beginPath(); c.moveTo(k * 7, -6); c.lineTo(k * 7, 5); c.stroke(); }
     c.beginPath(); c.moveTo(-18, 25); c.lineTo(18, 25); c.stroke();
     c.restore();
   };
