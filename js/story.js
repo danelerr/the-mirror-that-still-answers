@@ -1,0 +1,854 @@
+/* The Mirror That Still Answers — the story, shot by shot.
+   Team Unsigned Int, NASA Space Apps Challenge 2026.
+   Code written with an AI coding assistant, directed and reviewed by the team.
+   Data: real lunar laser ranging (NASA CDDIS / ILRS), the Moon's orbit (NASA/JPL Horizons),
+   Opportunity's dust measurements (NASA PDS), Pioneer 10's distance (NASA/JPL Horizons). */
+(function () {
+  "use strict";
+  const F = window.F, W = F.W, H = F.H, EZ = F.EZ, IM = F.IM;
+  const tw = F.tw, wait = F.wait, sfx = F.sfx;
+
+  // ---------- data ----------
+  F.LLR = window.LLR.map((r) => ({ t: Date.parse(r[0]), utc: r[0], station: r[1], tof: r[2], km: r[3], photons: r[4] }));
+  const LLR = F.LLR;
+  const STATIONS = { GRSM: "Grasse, France", APOL: "Apache Point, New Mexico" };
+  let shot = LLR[LLR.length - 1];          // the most recent measurement goes first
+  let shotsFired = 0;
+  const fmtDate = (ms) => new Date(ms).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" });
+  const fmtKm = (km) => Math.round(km).toLocaleString("en-US") + " km";
+  const countBy = (k) => LLR.filter((d) => d.station === k).length;
+
+  // ---------- what each line says (for captions) ----------
+  F.LINES = {
+    1: "In 1969, two astronauts left a mirror on the Moon.",
+    2: "It has no battery. No motor. No voice.",
+    3: "But send it light… and it answers.",
+    4: "Oh! …Hello. Was that you?",
+    5: "I am a mirror. Two astronauts set me down here in July 1969, and I have not moved since.",
+    6: "No battery. No motor. I cannot call you. But when your light reaches me, I send it straight back to where it came from.",
+    7: "Look at the number on the screen. That is how long your light took to come home. Light always travels at the same speed, so half of that time tells you how far away I am.",
+    8: "That is how people know the distance to the Moon. Nobody guessed it. They timed it.",
+    9: "And you don't have to take my word for it. Look.",
+    10: "Every dot is a real measurement from 2025 and 2026. Two hundred seventy-five times, someone on Earth sent me light. Two hundred seventy-five times, I answered.",
+    11: "See the wave? The Moon swings closer, and farther, every month. The line is the distance between the centers of the Earth and the Moon.",
+    12: "My dots sit a little below the line, because the telescope and I both stand on the surface, facing each other. The numbers agree.",
+    13: "I have neighbors, you know. They cannot answer anymore… but they left their measurements behind. Let me introduce one.",
+    14: "This is Opportunity. It landed on Mars in January 2004, to look for signs of ancient water.",
+    15: "It ran on sunlight. And every day, it looked straight at the Sun and measured how much dust was in the sky.",
+    16: "Slide through its days. When the sky gets dusty, less sunlight reaches its solar panels.",
+    17: "In 2007, a huge dust storm darkened the sky. Opportunity waited… and when the dust cleared, it went back to work.",
+    18: "It drove more than forty-five kilometers. Then, in June 2018, the biggest storm of all covered the whole planet.",
+    19: "Look at its last measurements. The numbers climb… and climb… and then they stop.",
+    20: "Opportunity went quiet. But its numbers are still here, and anyone can check them.",
+    21: "My farthest neighbor left Earth in 1972. Pioneer 10.",
+    22: "It was the first spacecraft to fly through the asteroid belt and past Jupiter.",
+    23: "It was built to last twenty-one months. It kept talking for more than thirty years.",
+    24: "Its last signal reached us in January 2003, from more than twelve billion kilometers away. That signal took eleven hours and twenty minutes to arrive.",
+    25: "Send it a greeting.",
+    26: "Today, Pioneer 10 is more than a hundred and forty times farther from us than the Sun. Your message would take more than nineteen and a half hours to get there.",
+    27: "It cannot answer anymore. Its power ran out. But we still know where it is. Not because it calls us… because we know how it moves.",
+    28: "It carries a small metal plaque, a message for anyone who finds it. It is heading toward the star Aldebaran. It will pass it in about two million years.",
+    29: "So… were we abandoned?",
+    30: "No. Some of us still answer. Some of us went quiet. But every one of us left something you can check: a time, a number, a measurement.",
+    31: "That is how you know what is true. Not because someone told you. Because you can check.",
+    32: "And when people come back to the Moon, I will still be here, waiting for their light.",
+    33: "Somewhere on Earth, someone will send me light again. And I will answer."
+  };
+
+  // ---------- when each word is spoken (measured on the recordings) ----------
+  const WORDS = window.WORDS || {};
+  const norm = (s) => String(s).toLowerCase().replace(/[^a-z0-9]/g, "");
+  function wt(n, word, k) {
+    const list = WORDS[n] || [], w0 = norm(word);
+    let seen = 0;
+    for (const w of list) {
+      if (norm(w[0]) === w0 || (w0.length > 3 && norm(w[0]).indexOf(w0) === 0)) {
+        if (seen === (k || 0)) return w[1];
+        seen++;
+      }
+    }
+    return null;
+  }
+  // wait until line n says `word` (the k-th time); `fb` is the fallback time in seconds
+  const atw = (n, word, k, fb) => { const t = wt(n, word, k); return F.at(n, t !== null ? t : (fb || 0)); };
+  const at = F.at;
+
+  // ---------- pictures ----------
+  const ART = ["espejo_cuerpo", "espejo_cejas", "espejo_ojos_abiertos", "espejo_ojos_medio", "espejo_ojos_cerrados", "espejo_boca_cerrada",
+    "espejo_boca_poco", "espejo_boca_abierta", "espejo_boca_oh", "espejo_boca_sonrisa", "foton_rapido", "foton_feliz", "foton_cansado",
+    "foton_decidido", "foton_dormido", "observatorio", "rover_cuerpo", "rover_mastil", "rover_brazo", "rover_ojos_abiertos",
+    "rover_ojos_medio", "rover_ojos_cerrados", "cielo_sol", "cielo_nube_a", "cielo_nube_b", "cielo_nube_c", "cielo_tormenta", "carta",
+    "marco_cartel", "sonda_cuerpo", "sonda_brazo_a", "sonda_brazo_b", "sonda_brazo_largo", "sonda_ojos_abiertos", "sonda_ojos_medio",
+    "sonda_ojos_cerrados"];
+  const SCENES = ["luna", "espacio", "observatorio", "teatro", "marte_llanura", "marte_arriba", "plataforma", "marte_agua",
+    "crater_atardecer", "espacio_profundo", "antena"];
+  const PROPS = ["obj_cohete", "obj_paracaidas", "obj_bolsas"];
+  const loading = F.load(
+    ART.map((n) => [n, "assets/art/" + n + ".png"])
+      .concat(SCENES.map((n) => ["sc_" + n, "assets/scenes/" + n + ".jpg"]))
+      .concat(PROPS.map((n) => [n, "assets/scenes/" + n + ".png"]))
+      .concat([["earth", "assets/earth.png"], ["moon", "assets/moon.png"], ["as11", "assets/tranquility_as11-40-5948.jpg"],
+        ["mars_ground", "assets/mars_ground.png"]])
+  );
+
+  // ---------- the cast ----------
+  const mir = F.mirror({ x: 640, y: 560, s: 0.62 });
+  const speak = (n, who) => F.speak(n, who ? who.talk : null);
+  const fx = () => F.particles({ z: 55 });
+
+  // ---------- where things are in the painted scenes ----------
+  const LUNA = { earth: { x: 305, y: 173 }, mirror: { x: 640, y: 600 } };
+  const OBS = { moon: { x: 815, y: 95 } };
+
+  // the painted space scene has a stray mark in its lower left corner: a soft dark patch hides it
+  function spacePatch(pl) {
+    return F.custom(function (c) {
+      const g = c.createRadialGradient(pl.x + 50, 660, 10, pl.x + 50, 660, 240);
+      g.addColorStop(0, "rgba(17,15,13,1)"); g.addColorStop(0.62, "rgba(17,15,13,0.96)"); g.addColorStop(1, "rgba(17,15,13,0)");
+      c.fillStyle = g; c.fillRect(pl.x - 200, 400, 520, 400);
+    }, { z: -99 });
+  }
+
+  // =================== CHAPTER CARD ===================
+  async function chapterCard(kicker, title) {
+    const frame = F.custom(function (c) {
+      const img = IM.marco_cartel;
+      if (F.ready(img)) c.drawImage(img, 110, 64, 1060, 592);
+    }, { par: 0, z: 0 });
+    const t = F.stamp([title], { x: W / 2, y: H / 2 + 14, size: 70, style: "gold", kicker, par: 0 });
+    F.scene([frame], { bg: "#0b0b0b" });
+    await F.irisIn(W / 2, H / 2, 500);
+    F.popIn(t, 520, "slideUp");
+    await wait(2100);
+    await F.irisOut(W / 2, H / 2, 500);
+  }
+
+  // =================== OPENING ===================
+  async function opening() {
+    setChapter(0);
+    // --- 1. A real photo from July 1969. The mirror is the small tray in the middle.
+    const LR = { x: 507, y: 307 };                 // the retroreflector in the photo (AS11-40-5948)
+    const photo = F.plate("as11", { x: 0, y: -330, w: 1280, h: 1280 });
+    const sepia = F.custom(function (c) {
+      c.globalCompositeOperation = "multiply";
+      c.fillStyle = "rgb(214, 186, 140)";
+      c.fillRect(-200, -400, W + 400, H + 800);
+    }, { z: 5 });
+    const ring = F.custom(function (c, t) {
+      if (this.k <= 0.01) return;
+      c.strokeStyle = "#ffe07a"; c.lineWidth = 4 / F.cam.z; c.setLineDash([12 / F.cam.z, 8 / F.cam.z]); c.lineDashOffset = -t / 40;
+      c.beginPath(); c.ellipse(LR.x, LR.y, 58 * this.k, 34 * this.k, 0, 0, 6.2832); c.stroke();
+    }, { z: 6, k: 0 });
+    F.scene([photo, sepia, ring, F.credit("Real photo: NASA AS11-40-5948, Tranquility Base, July 1969.")], { bg: "#000" });
+    F.black();
+    const v1 = speak(1);
+    F.irisIn(W / 2, H / 2, 900);
+    tw(F.cam, { z: 1.5, x: LR.x + 40, y: LR.y + 30 }, 5800, EZ.inOut);
+    await atw(1, "1969", 0, 0.5);
+    const july = F.stamp(["July 1969"], { x: 1010, y: 120, size: 46, rot: -0.06, kicker: "Tranquility Base, the Moon" });
+    F.popIn(july, 420, "stamp");
+    await atw(1, "mirror", 0, 3.3);
+    tw(ring, { k: 1 }, 450, EZ.bigBack);
+    sfx("ting");
+    await v1;
+    await wait(250);
+
+    // --- the photo dissolves into our cartoon world: the same mirror, asleep
+    const luna = F.plate("sc_luna", { x: -40, y: -24, w: 1360, h: 765 });
+    mir.x = LUNA.mirror.x; mir.y = LUNA.mirror.y; mir.s = 0.62; mir.eyes = "closed"; mir.mouth = "closed"; mir.brows = false; mir.op = 1;
+    mir.sx = mir.sy = 1; mir.rot = 0; mir.glow = 0; mir.dust = 0;
+    const p = fx();
+    await F.dissolve(() => {
+      F.scene([luna, F.stars({ n: 120, par: 0.2, w: W * 1.4, h: 260, y: -40 }), mir, p], { bg: "#05060a", cam: { z: 1.7, x: mir.x, y: mir.y - 120 } });
+      tw(F.cam, { z: 1.12, y: 420 }, 2400, EZ.inOut);
+    }, 1100);
+
+    // --- 2. "It has no battery. No motor. No voice."
+    const v2 = speak(2);
+    const icons = [F.icon("battery", { x: 400, y: 190 }), F.icon("gear", { x: 640, y: 160 }), F.icon("voice", { x: 880, y: 190 })];
+    const words2 = [["battery", 1.4], ["motor", 2.8], ["no", 3.9]];
+    for (let i = 0; i < 3; i++) {
+      await atw(2, words2[i][0], i === 2 ? 2 : 0, words2[i][1]);
+      F.popIn(icons[i], 360);
+      tw(F.cam, { z: 1.12 + (i + 1) * 0.07 }, 500, EZ.out);
+      wait(330).then(() => { sfx("rip"); return tw(icons[i], { xp: 1 }, 380, EZ.out); }).catch(() => {});
+    }
+    await v2;
+    await wait(300);
+    icons.forEach((ic, i) => wait(i * 70).then(() => F.popOut(ic)).catch(() => {}));
+
+    // --- 3. "But send it light… and it answers."
+    const v3 = speak(3);
+    tw(F.cam, { x: LUNA.earth.x + 120, y: LUNA.earth.y + 80, z: 1.25 }, 1200, EZ.inOut);
+    await atw(3, "light", 0, 1.0);
+    p.emit("spark", LUNA.earth.x, LUNA.earth.y, 6, { spread: 60, vy: 0, vyr: 60, vxr: 60, g: 0, r: 12, life: 0.7, fill: "#ffe07a" });
+    sfx("sparkle");
+    await atw(3, "answ", 0, 2.4);
+    tw(F.cam, { x: mir.x, y: mir.y - 170, z: 2.2 }, 380, EZ.out);
+    mir.glow = 1; tw(mir, { glow: 0 }, 700, EZ.out);
+    mir.eyes = "half";
+    sfx("ting", 1.2);
+    p.emit("spark", mir.x - 30, mir.y - 230, 8, { spread: 90, vy: -40, g: 0, r: 14, life: 0.8, fill: "#fff6c8" });
+    await v3;
+    await wait(500);
+    mir.eyes = "closed";
+    await F.irisOut(F.W / 2, F.H / 2 - 40, 600);
+  }
+
+  // =================== CHAPTER 1: THE MIRROR ===================
+  // the cartoon observatory on Earth, aimed at the Moon
+  const scope = F.sprite("observatorio", { x: 293, y: 722, w: 380, ax: 0.5, ay: 1, z: 20 });
+  const TIP = { x: 740 / 797, y: 60 / 824 };    // the end of the telescope tube, as a share of the picture
+  function tipPos() {
+    const w = scope.w * scope.s, h = w * 824 / 797;
+    return { x: scope.x + (TIP.x - 0.5) * w * scope.sx, y: scope.y - (1 - TIP.y) * h * scope.sy };
+  }
+  let scopeIdle = true;
+  F.onFrame((t) => {
+    if (!scopeIdle) return;
+    const k = Math.sin(t / 520) * 0.5 + 0.5;     // breathing: squash and stretch at rest
+    scope.sx = 1 + 0.02 * k; scope.sy = 1 - 0.02 * k;
+  });
+
+  // big digital clock in screen space while the light travels
+  const clock = F.custom(function (c) {
+    const txt = this.sec.toFixed(this.digits) + " s";
+    c.font = "bold 64px " + F.FONT; c.textAlign = "center"; c.textBaseline = "middle";
+    const w = c.measureText(txt).width + 50;
+    c.translate(W / 2, 70); c.scale(this.s, this.s);
+    c.fillStyle = "rgba(0,0,0,0.4)"; F.roundRect(c, -w / 2 + 6, -40 + 8, w, 80, 16); c.fill();
+    c.fillStyle = F.INK; F.roundRect(c, -w / 2, -40, w, 80, 16); c.fill();
+    c.strokeStyle = F.PAPER; c.lineWidth = 3; c.stroke();
+    c.fillStyle = "#ffe07a"; c.fillText(txt, 0, 3);
+    if (this.note) {
+      c.font = "bold 22px " + F.FONT; c.fillStyle = F.PAPER; c.lineWidth = 5; c.strokeStyle = F.INK;
+      c.strokeText(this.note, 0, 64); c.fillText(this.note, 0, 64);
+    }
+  }, { par: 0, z: 150, sec: 0, digits: 3, s: 1, note: "" });
+
+  async function observatoryShot() {
+    const sky = F.plate("sc_observatorio", { x: -40, y: -24, w: 1360, h: 765 });
+    scope.x = 293; scope.y = 722; scope.s = 1; scope.op = 1;
+    F.scene([sky, scope, F.credit("Painted scene: AI image generator. The telescope fires real timing data.")], { bg: "#0b1020" });
+    clock.sec = 0; clock.note = "";
+  }
+
+  // the photon's round trip, shown in real time: the same number of seconds as a real measurement
+  async function flight(m) {
+    const T = m.tof, half = T / 2;
+    const ph = F.photon({ s: 1.1 });
+    const p = fx();
+    const t0 = performance.now();
+    const el = () => (performance.now() - t0) / 1000;
+    let phase = -1;
+    const off = F.onFrame(() => { clock.sec = Math.min(el(), T); });
+    clock.digits = 3;
+    // A. leaving the telescope
+    const tip = tipPos();
+    ph.x = tip.x; ph.y = tip.y; ph.dir = Math.atan2(OBS.moon.y - tip.y, OBS.moon.x - tip.x); ph.stretch = 0.6;
+    F.add(ph); F.add(p); F.add(clock);
+    const exitA = { x: OBS.moon.x, y: OBS.moon.y };
+    tw(ph, { stretch: 0 }, 200, EZ.out);
+    await F.tw({ u: 0 }, { u: 1 }, half * 0.22 * 1000, EZ.in, (e) => {
+      ph.x = F.lerp(tip.x, exitA.x, e); ph.y = F.lerp(tip.y, exitA.y, e);
+    });
+    // B. across space (the camera keeps up with it)
+    const space = F.plate("sc_espacio", { x: 0, y: 0, w: 1680, h: 720 });
+    const EARTH_P = { x: 171, y: 216 }, MOON_P = { x: 1358, y: 216 };
+    ph.x = EARTH_P.x + 60; ph.y = EARTH_P.y; ph.dir = 0;
+    F.scene([space, spacePatch(space), F.stars({ n: 160, par: 0.3, w: 2000, h: 900, x: -200, y: -100 }), ph, p, clock], { bg: "#000", cam: { x: 640, y: 360, z: 1 } });
+    const camFollow = F.onFrame(() => { F.cam.x = F.clamp(ph.x, 640, 1680 - 640); });
+    sfx("whoosh", 1.4);
+    await F.tw({ u: 0 }, { u: 1 }, half * 0.6 * 1000, EZ.lin, (e) => { ph.x = F.lerp(EARTH_P.x + 60, MOON_P.x - 70, e); });
+    camFollow();
+    // C. on the Moon: the light hits the sleeping Mirror
+    const luna = F.plate("sc_luna", { x: -40, y: -24, w: 1360, h: 765 });
+    mir.x = LUNA.mirror.x; mir.y = LUNA.mirror.y; mir.eyes = "closed"; mir.mouth = "closed"; mir.brows = false; mir.op = 1; mir.s = 0.62;
+    const hitX = mir.x - 25, hitY = mir.y - 240;
+    ph.x = -40; ph.y = 120; ph.dir = Math.atan2(hitY - 120, hitX + 40);
+    F.scene([luna, mir, ph, p, clock], { bg: "#05060a", cam: { x: 640, y: 380, z: 1.1 } });
+    await F.until(() => {
+      const u = F.clamp((el() - half * 0.82) / (half * 0.18), 0, 1);
+      ph.x = F.lerp(-40, hitX, u); ph.y = F.lerp(120, hitY, u);
+      return el() >= half;
+    });
+    // the hit: flash, starburst, the Mirror jolts
+    clock.note = "It reached the mirror!";
+    mir.glow = 1; tw(mir, { glow: 0 }, 600, EZ.out);
+    F.flash(0.5); F.shake(10); sfx("zap"); sfx("ting", 1.3);
+    p.emit("spark", hitX, hitY, 12, { spread: 30, vy: 0, vyr: 260, vxr: 260, g: 0, r: 14, life: 0.6, fill: "#ffe07a" });
+    mir.sx = 1.12; mir.sy = 0.86; tw(mir, { sx: 1, sy: 1 }, 500, EZ.elastic);
+    mir.eyes = "half";
+    ph.dir = Math.atan2(120 - hitY, -40 - hitX);
+    await F.until(() => {
+      const u = F.clamp((el() - half) / (half * 0.2), 0, 1);
+      ph.x = F.lerp(hitX, -40, u); ph.y = F.lerp(hitY, 120, u);
+      return u >= 1;
+    });
+    // D. back across space
+    ph.x = MOON_P.x - 70; ph.y = MOON_P.y; ph.dir = Math.PI;
+    F.scene([space, spacePatch(space), F.stars({ n: 160, par: 0.3, w: 2000, h: 900, x: -200, y: -100 }), ph, p, clock], { bg: "#000", cam: { x: 1040, y: 360, z: 1 } });
+    clock.note = "…and now it is coming home";
+    const camBack = F.onFrame(() => { F.cam.x = F.clamp(ph.x, 640, 1680 - 640); });
+    sfx("whoosh", 1.4);
+    await F.until(() => {
+      const u = F.clamp((el() - half * 1.2) / (half * 0.62), 0, 1);
+      ph.x = F.lerp(MOON_P.x - 70, EARTH_P.x + 60, u);
+      return u >= 1;
+    });
+    camBack();
+    // E. home: the telescope catches the light
+    await observatoryShot();
+    F.add(ph); F.add(p); F.add(clock);
+    const tip2 = tipPos();
+    ph.dir = Math.atan2(tip2.y - OBS.moon.y, tip2.x - OBS.moon.x);
+    await F.until(() => {
+      const u = F.clamp((el() - half * 1.82) / (half * 0.18), 0, 1);
+      ph.x = F.lerp(OBS.moon.x, tip2.x, u); ph.y = F.lerp(OBS.moon.y, tip2.y, u);
+      return el() >= T;
+    });
+    off();
+    clock.sec = T; clock.digits = 6;
+    clock.note = "Home! A real round trip, measured " + fmtDate(m.t);
+    F.remove(ph);
+    scopeIdle = false;
+    sfx("thud");
+    await F.keys(scope, [[{ sx: 1.16, sy: 0.82 }, 90, EZ.out], [{ sx: 0.94, sy: 1.08 }, 160, EZ.out], [{ sx: 1, sy: 1 }, 260, EZ.back]]);
+    scopeIdle = true;
+    // the photons that came home: one cartoon for each one the telescope counted
+    const n = Math.min(m.photons, 60);
+    const home = [];
+    for (let i = 0; i < n; i++) {
+      const f = F.sprite(i % 5 === 4 ? "foton_cansado" : "foton_feliz", { x: OBS.moon.x, y: OBS.moon.y, w: 34, z: 40, op: 1, s: 0.3 });
+      home.push(f);
+    }
+    const tip3 = tipPos();
+    home.forEach((f, i) => {
+      wait(i * 28).then(() => {
+        F.add(f);
+        const a = Math.random() * 6.2832, r = Math.sqrt(Math.random());
+        const tx = tip3.x + 120 + Math.cos(a) * r * 190, ty = tip3.y + 40 + Math.sin(a) * r * 70;
+        tw(f, { s: 1 }, 500, EZ.out);
+        return F.arc(f, tx, ty, 60 + Math.random() * 60, 620, EZ.inOut);
+      }).then(() => { f.sx = 1.3; f.sy = 0.75; return tw(f, { sx: 1, sy: 1 }, 300, EZ.elastic); })
+        .then(() => { if (i % 6 === 0) sfx("pop", 1 + Math.random()); }).catch(() => {});
+    });
+    await wait(n * 28 + 900);
+    const count = F.stamp([m.photons + " photons came home"], { x: 1020, y: 330, size: 32, rot: 0.05, kicker: STATIONS[m.station] });
+    F.popIn(count, 420, "tada");
+    await wait(2600);
+    return home;
+  }
+
+  // ---------- interactive: send your light ----------
+  const sendBtn = F.$("send");
+  function waitSend() {
+    const id = F.runId;
+    F.show(sendBtn);
+    return F.quiet(new Promise((resolve, reject) => {
+      function go(e) {
+        if (e) e.stopPropagation();
+        sendBtn.removeEventListener("click", go);
+        clearInterval(chk);
+        sendBtn.blur();
+        F.hide(sendBtn);
+        if (id !== F.runId) reject(F.ABORT); else resolve();
+      }
+      const chk = setInterval(() => { if (id !== F.runId) { clearInterval(chk); sendBtn.removeEventListener("click", go); F.hide(sendBtn); reject(F.ABORT); } }, 200);
+      sendBtn.addEventListener("click", go);
+      if (F.AUTOPLAY) setTimeout(go, 2500);
+    }));
+  }
+
+  async function sendLight() {
+    await observatoryShot();
+    await F.irisIn(scope.x + 60, 480, 800);
+    const hint = F.stamp(["Press the button to send light to the Moon"], { x: W / 2, y: 70, size: 26, style: "ink", par: 0 });
+    F.popIn(hint, 400);
+    await waitSend();
+    F.popOut(hint);
+    shotsFired++;
+    // anticipation: the telescope crouches and leans back, holds, then fires and recoils
+    scopeIdle = false;
+    sfx("slideDown", 0.7);
+    await F.keys(scope, [[{ sx: 1.14, sy: 0.8, rot: -0.06 }, 480, EZ.inOut]]);
+    await wait(140);
+    sfx("zap");
+    F.shake(6);
+    const tip = tipPos();
+    const p0 = fx(); F.add(p0);
+    p0.emit("smoke", tip.x, tip.y, 6, { spread: 20, vx: -60, vy: -20, r: 16, life: 0.8, fill: "#f3e6c8", g: -20 });
+    F.keys(scope, [[{ sx: 0.86, sy: 1.22, rot: 0.05 }, 110, EZ.out], [{ sx: 1.08, sy: 0.9, rot: -0.03 }, 200, EZ.out],
+      [{ sx: 1, sy: 1, rot: 0 }, 380, EZ.back]]).then(() => { scopeIdle = true; }).catch(() => {});
+    return flight(shot);
+  }
+
+  async function chapter1() {
+    setChapter(1);
+    F.music("assets/music/alegre.mp3", 0.3);
+    await chapterCard("Chapter 1", "The Mirror");
+    await sendLight();
+    await F.irisOut(OBS.moon.x, OBS.moon.y, 600);
+
+    // --- 4. The Mirror wakes up: "Oh! …Hello. Was that you?"
+    const luna = F.plate("sc_luna", { x: -40, y: -24, w: 1360, h: 765 });
+    const p = fx();
+    mir.x = LUNA.mirror.x; mir.y = LUNA.mirror.y; mir.s = 0.62; mir.eyes = "half"; mir.mouth = "closed"; mir.brows = false; mir.lx = 0; mir.ly = 0;
+    mir.dust = 0.5;
+    F.scene([luna, F.stars({ n: 120, par: 0.2, w: W * 1.4, h: 260, y: -40 }), mir, p], { bg: "#05060a", cam: { x: 640, y: 400, z: 1.25 } });
+    await F.irisIn(mir.x, mir.y - 200, 700);
+    await wait(300);
+    // anticipation: it sinks...
+    await tw(mir, { sx: 1.08, sy: 0.88 }, 300, EZ.inOut);
+    // ...then the take: eyes pop, it springs up, dust flies off, it overshoots and settles
+    mir.eyes = "open"; mir.mouth = "oh"; mir.brows = true;
+    sfx("boing", 1.1);
+    p.emit("puff", mir.x, mir.y - 300, 10, { spread: 260, vy: -120, vyr: 80, vxr: 240, g: 160, r: 12, life: 1, fill: "#cfc7b8", ink: "rgba(40,40,40,0.4)" });
+    mir.dust = 0;
+    await F.keys(mir, [[{ sx: 0.9, sy: 1.16, y: LUNA.mirror.y - 40 }, 160, EZ.out], [{ sx: 1.05, sy: 0.95, y: LUNA.mirror.y }, 220, EZ.in],
+      [{ sx: 1, sy: 1 }, 380, EZ.elastic]]);
+    const v4 = speak(4, mir);
+    await atw(4, "hello", 0, 1.2);
+    mir.brows = false;
+    await atw(4, "you", 0, 3.4);
+    tw(F.cam, { z: 1.45, y: 380 }, 500, EZ.back);
+    mir.lx = 0; await v4;
+    mir.mouth = "smile";
+    await wait(250);
+
+    // --- 5. "I am a mirror. Two astronauts set me down here in July 1969, and I have not moved since."
+    tw(F.cam, { z: 1.15, y: 400 }, 900, EZ.inOut);
+    const v5 = speak(5, mir);
+    await atw(5, "mirror", 0, 0.8);
+    sfx("sparkle");
+    p.emit("spark", mir.x, mir.y - 220, 8, { spread: 240, vy: -30, g: 0, r: 12, life: 0.9, fill: "#fff6c8" });
+    tw(mir, { sy: 1.06 }, 250, EZ.out).then(() => tw(mir, { sy: 1 }, 400, EZ.back)).catch(() => {});
+    await atw(5, "july", 0, 2.6);
+    const proof = F.proof("as11", "Tranquility Base, July 20, 1969. NASA photo AS11-40-5948.", { x: 1000, y: 300, w: 380, rot: 0.05 });
+    F.popIn(proof, 450, "shutter");
+    await atw(5, "moved", 0, 5.4);
+    F.popOut(proof);
+    // the years go by and the Mirror does not move: calendar pages fly past
+    const years = F.custom(function (c) {
+      if (this.y0 <= 0) return;
+      c.font = "bold 64px " + F.FONT; c.textAlign = "center"; c.textBaseline = "middle";
+      c.lineWidth = 10; c.strokeStyle = F.INK; c.fillStyle = "#ffe07a";
+      const txt = String(Math.round(this.year));
+      c.strokeText(txt, W / 2, 120); c.fillText(txt, W / 2, 120);
+    }, { par: 0, z: 120, year: 1969, y0: 1 });
+    F.add(years);
+    tw(years, { year: 2026 }, 1700, EZ.inOut, () => { if (F.step(F.t) % 2) sfx("tick"); });
+    tw(mir, { dust: 0.7 }, 1700, EZ.lin);
+    mir.eyes = "half";
+    await v5;
+    // a shrug shakes the dust off
+    mir.eyes = "open";
+    sfx("boing", 0.8);
+    p.emit("puff", mir.x, mir.y - 300, 8, { spread: 260, vy: -80, g: 160, r: 11, life: 0.9, fill: "#cfc7b8", ink: "rgba(40,40,40,0.4)" });
+    mir.dust = 0;
+    await F.keys(mir, [[{ sy: 1.08, sx: 0.95 }, 150, EZ.out], [{ sy: 1, sx: 1 }, 350, EZ.elastic]]);
+    F.remove(years);
+
+    // --- 6. "No battery. No motor. I cannot call you. But when your light reaches me, I send it straight back."
+    const v6 = speak(6, mir);
+    mir.eyes = "half";
+    tw(mir, { sy: 0.95 }, 600, EZ.inOut);
+    const ic = [F.icon("battery", { x: 420, y: 170, s: 0.6 }), F.icon("gear", { x: 640, y: 150, s: 0.6 }), F.icon("voice", { x: 860, y: 170, s: 0.6 })];
+    const w6 = [["battery", 0.4], ["motor", 1.5], ["call", 2.9]];
+    for (let i = 0; i < 3; i++) {
+      await atw(6, w6[i][0], 0, w6[i][1]);
+      ic[i].xp = 1; ic[i].s = 0.6;
+      F.popIn(ic[i], 300, "pop");
+    }
+    await atw(6, "but", 0, 4.4);
+    ic.forEach((x) => F.popOut(x));
+    mir.eyes = "open"; mir.brows = true;
+    tw(mir, { sy: 1.05 }, 250, EZ.out).then(() => tw(mir, { sy: 1 }, 400, EZ.back)).catch(() => {});
+    await atw(6, "reaches", 0, 5.4);
+    await cornerCube(6);
+    await v6;
+
+    // --- 7. The number: half the round trip tells the distance
+    await numberShot();
+    // --- 8. "Nobody guessed it. They timed it."
+    await timedShot();
+    // --- 9. "And you don't have to take my word for it. Look."
+    await lookShot();
+    // --- 10-12. The chart of real measurements, in a 1930s theater
+    await theaterShots();
+    // --- 13. The neighbors
+    await neighborsShot();
+  }
+
+  // ---------- inside one of the mirror's glass corners: the light goes straight back ----------
+  async function cornerCube(n) {
+    const cx = W / 2, cy = H / 2 + 20;
+    const cube = F.custom(function (c, t) {
+      // three square mirrors meeting in one corner, seen from the front: three diamonds
+      const R = 230;
+      const faces = [[-Math.PI / 2, "#9fc7d9"], [Math.PI / 6, "#7fb0c6"], [5 * Math.PI / 6, "#b7dbe8"]];
+      c.lineJoin = "round";
+      for (const f of faces) {
+        const a = f[0];
+        c.beginPath();
+        c.moveTo(cx, cy);
+        c.lineTo(cx + Math.cos(a - Math.PI / 3) * R, cy + Math.sin(a - Math.PI / 3) * R);
+        c.lineTo(cx + Math.cos(a) * R * 1.15, cy + Math.sin(a) * R * 1.15);
+        c.lineTo(cx + Math.cos(a + Math.PI / 3) * R, cy + Math.sin(a + Math.PI / 3) * R);
+        c.closePath();
+        c.fillStyle = f[1]; c.fill();
+        c.strokeStyle = F.INK; c.lineWidth = 7; c.stroke();
+      }
+      // shine
+      c.globalAlpha = 0.5 + 0.2 * Math.sin(t / 300);
+      c.strokeStyle = "#fff"; c.lineWidth = 5; c.lineCap = "round";
+      c.beginPath(); c.moveTo(cx - 120, cy - 60); c.lineTo(cx - 70, cy - 110); c.stroke();
+      c.globalAlpha = 1;
+      // the path of the light
+      if (this.k > 0) {
+        const pts = this.pts, segs = pts.length - 1, upto = this.k * segs;
+        c.strokeStyle = "#ffe07a"; c.lineWidth = 6; c.setLineDash([14, 10]); c.lineDashOffset = -t / 30;
+        c.beginPath(); c.moveTo(pts[0][0], pts[0][1]);
+        for (let i = 1; i <= Math.ceil(upto); i++) {
+          const u = Math.min(1, upto - (i - 1));
+          c.lineTo(F.lerp(pts[i - 1][0], pts[i][0], u), F.lerp(pts[i - 1][1], pts[i][1], u));
+        }
+        c.stroke(); c.setLineDash([]);
+      }
+    }, { par: 0, z: 10, k: 0 });
+    // in, bounce, bounce, bounce, out: parallel to the way in
+    cube.pts = [[120, 60], [cx - 80, cy - 40], [cx + 60, cy - 10], [cx + 10, cy + 90], [cx - 150 + 330, 60 + 330 - 400]];
+    cube.pts[4] = [cube.pts[3][0] - (cube.pts[1][0] - 120), cube.pts[3][1] - (cube.pts[1][1] - 60)];
+    const ph = F.photon({ s: 0.9, z: 20, par: 0 });
+    const lab = F.stamp(["One of the mirror's 100 glass corners"], { x: W / 2, y: 660, size: 26, style: "ink" });
+    const p = F.particles({ z: 30, par: 0 });
+    F.scene([F.stars({ n: 200, par: 0 }), cube, ph, p], { bg: "#0b0f1c" });
+    F.popIn(lab, 300);
+    const pts = cube.pts;
+    for (let i = 1; i < pts.length; i++) {
+      const a = pts[i - 1], b = pts[i];
+      ph.x = a[0]; ph.y = a[1]; ph.dir = Math.atan2(b[1] - a[1], b[0] - a[0]);
+      await F.tw({ u: 0 }, { u: 1 }, i === 1 ? 650 : 330, i === 1 ? EZ.in : EZ.lin, (e) => {
+        ph.x = F.lerp(a[0], b[0], e); ph.y = F.lerp(a[1], b[1], e);
+        cube.k = (i - 1 + e) / (pts.length - 1);
+      });
+      if (i < pts.length - 1) {
+        sfx("ting", 1 + i * 0.25);
+        p.emit("spark", b[0], b[1], 5, { spread: 10, vy: 0, vyr: 160, vxr: 160, g: 0, r: 10, life: 0.4, fill: "#ffe07a" });
+        ph.stretch = -0.3; tw(ph, { stretch: 0 }, 200, EZ.out);
+      }
+    }
+    F.remove(ph);
+    const back = F.stamp(["Straight back to where it came from!"], { x: W / 2, y: 90, size: 34, style: "gold" });
+    F.popIn(back, 380, "tada");
+    await at(n, 99);
+    await wait(400);
+  }
+
+  // ---------- 7: the number on the screen ----------
+  async function numberShot() {
+    const luna = F.plate("sc_luna", { x: -40, y: -24, w: 1360, h: 765 });
+    const sw = F.stopwatch({ x: 930, y: 300, s: 0.95, sec: shot.tof, digits: 6, label: "your light's round trip" });
+    mir.x = 330; mir.y = 640; mir.s = 0.5; mir.eyes = "open"; mir.mouth = "smile"; mir.brows = false;
+    const p = fx();
+    F.scene([luna, mir, p], { bg: "#05060a", cam: { x: 640, y: 360, z: 1 } });
+    const v7 = speak(7, mir);
+    F.popIn(sw, 500, "pop");
+    mir.lx = 6;
+    await atw(7, "same", 0, 8.4);
+    // light always runs at the same speed
+    const space = F.plate("sc_espacio", { x: 0, y: 0, w: 1680, h: 720 });
+    const ph = F.photon({ s: 0.9, x: 200, y: 360, dir: 0 });
+    const speed = F.stamp(["299,792 km every second"], { x: W / 2, y: 120, size: 38, style: "card", kicker: "the speed of light, always" });
+    F.scene([space, spacePatch(space), F.stars({ n: 160, par: 0.3, w: 2000, h: 900, x: -200, y: -100 }), ph], { bg: "#000", cam: { x: 840, y: 360, z: 1 } });
+    F.popIn(speed, 400);
+    sfx("whoosh", 1.2);
+    tw(ph, { x: 1480 }, 1800, EZ.lin);
+    await atw(7, "half", 0, 11);
+    // half the trip there, half back
+    F.scene([luna, mir, p, sw], { bg: "#05060a", cam: { x: 640, y: 360, z: 1 } });
+    sw.label = "half there, half back";
+    sfx("slideUp");
+    await tw(sw, { split: 1 }, 700, EZ.inOut);
+    const halfS = F.stamp([(shot.tof / 2).toFixed(6) + " s each way"], { x: 930, y: 560, size: 30, style: "card" });
+    F.popIn(halfS, 360);
+    await atw(7, "far", 0, 13.8);
+    // how far: time each way multiplied by the speed of light
+    const tape = F.custom(function (c) {
+      const x0 = 150, x1 = 150 + (1530 - 150) * this.k, y = 470;
+      c.fillStyle = "#e9c86b"; c.strokeStyle = F.INK; c.lineWidth = 4;
+      c.fillRect(x0, y - 14, x1 - x0, 28); c.strokeRect(x0, y - 14, x1 - x0, 28);
+      c.lineWidth = 2;
+      for (let x = x0 + 30; x < x1; x += 30) { c.beginPath(); c.moveTo(x, y - 14); c.lineTo(x, y - (x % 150 < 30 ? 0 : 6)); c.stroke(); }
+    }, { z: 30, k: 0 });
+    const dist = F.stamp([fmtKm(shot.km * 0)], { x: W / 2, y: 140, size: 50, style: "gold", kicker: "telescope to mirror" });
+    F.scene([space, spacePatch(space), F.stars({ n: 160, par: 0.3, w: 2000, h: 900, x: -200, y: -100 }), tape], { bg: "#000", cam: { x: 840, y: 360, z: 0.78 } });
+    F.add(dist); dist.s = 1;
+    sfx("slideUp", 0.6);
+    await tw(tape, { k: 1 }, 1600, EZ.inOut, (e) => { dist.lines = [fmtKm(shot.km * e)]; });
+    sfx("ding");
+    dist.sx = 1.15; dist.sy = 0.88; tw(dist, { sx: 1, sy: 1 }, 400, EZ.elastic);
+    await v7;
+    await wait(600);
+  }
+
+  // ---------- 8: nobody guessed it, they timed it ----------
+  async function timedShot() {
+    const luna = F.plate("sc_luna", { x: -40, y: -24, w: 1360, h: 765 });
+    mir.x = 640; mir.y = 610; mir.s = 0.6; mir.eyes = "open"; mir.mouth = "smile";
+    const p = fx();
+    F.scene([luna, mir, p], { bg: "#05060a", cam: { x: 640, y: 380, z: 1.1 } });
+    const v8 = speak(8, mir);
+    await atw(8, "guessed", 0, 3.9);
+    const guess = F.stamp(["100 km?", "1 million km?"], { x: 330, y: 220, size: 34, style: "card", rot: -0.08, kicker: "a guess" });
+    F.popIn(guess, 380, "squeak");
+    mir.eyes = "half"; mir.lx = -8;
+    await wait(700);
+    sfx("pop", 0.5);
+    p.emit("spark", 330, 220, 10, { spread: 120, vy: 0, vyr: 200, vxr: 200, g: 200, r: 10, life: 0.6, fill: "#fff" });
+    F.remove(guess);
+    await atw(8, "timed", 0, 5.6);
+    mir.eyes = "open"; mir.lx = 0;
+    const sw = F.stopwatch({ x: 960, y: 290, s: 0.8, sec: shot.tof, digits: 6, label: "timed!" });
+    await F.stampDown(sw);
+    sfx("click");
+    await v8;
+    await wait(300);
+  }
+
+  // ---------- 9: "Look." ----------
+  async function lookShot() {
+    const luna = F.plate("sc_luna", { x: -40, y: -24, w: 1360, h: 765 });
+    mir.x = 640; mir.y = 610; mir.s = 0.6; mir.eyes = "open"; mir.mouth = "smile";
+    F.scene([luna, mir], { bg: "#05060a", cam: { x: 640, y: 380, z: 1.1 } });
+    const v9 = speak(9, mir);
+    tw(F.cam, { z: 1.7, y: 330 }, 2600, EZ.inOut);   // it leans in to tell you a secret
+    mir.lx = 7; mir.ly = 2;
+    await atw(9, "look", 0, 3.6);
+    mir.lx = 0; mir.ly = 0;
+    await v9;
+  }
+
+  // ---------- 10-12: the real measurements on a movie screen ----------
+  const SCREEN = { x0: 318, y0: 198, x1: 962, y1: 534 };   // the white screen in the painted theater
+  async function theaterShots() {
+    const hall = F.plate("sc_teatro", { x: 0, y: 0, w: 1280, h: 720 });
+    const chart = F.llrChart({ x0: SCREEN.x0, y0: SCREEN.y0, x1: SCREEN.x1, y1: SCREEN.y1, prog: 0, line: 0, z: 10, op: 0 });
+    const curtains = F.custom(function (c) {
+      const k = this.k, w = (SCREEN.x1 - SCREEN.x0) / 2 + 40;
+      for (const side of [-1, 1]) {
+        const cx = (SCREEN.x0 + SCREEN.x1) / 2 + side * (w / 2 + w * k);
+        c.fillStyle = "#8f1f1a"; c.strokeStyle = F.INK; c.lineWidth = 5;
+        c.fillRect(cx - w / 2, SCREEN.y0 - 40, w, SCREEN.y1 - SCREEN.y0 + 80);
+        c.strokeRect(cx - w / 2, SCREEN.y0 - 40, w, SCREEN.y1 - SCREEN.y0 + 80);
+        c.strokeStyle = "rgba(40,0,0,0.6)"; c.lineWidth = 3;
+        for (let i = 1; i < 6; i++) { const x = cx - w / 2 + i * w / 6; c.beginPath(); c.moveTo(x, SCREEN.y0 - 40); c.lineTo(x + Math.sin(i) * 6, SCREEN.y1 + 40); c.stroke(); }
+      }
+    }, { z: 12, k: 0 });
+    const beam = F.custom(function (c, t) {
+      const fl = 0.16 + 0.04 * Math.sin(t / 37) * Math.sin(t / 91);
+      const g = c.createLinearGradient(640, 760, 640, SCREEN.y0);
+      g.addColorStop(0, "rgba(255,246,210," + (fl * 2).toFixed(3) + ")"); g.addColorStop(1, "rgba(255,246,210,0)");
+      c.globalAlpha = this.op; c.fillStyle = g;
+      c.beginPath(); c.moveTo(620, 760); c.lineTo(SCREEN.x0, SCREEN.y0); c.lineTo(SCREEN.x1, SCREEN.y0); c.lineTo(SCREEN.x1, SCREEN.y1); c.lineTo(SCREEN.x0, SCREEN.y1); c.lineTo(660, 760); c.closePath(); c.fill();
+    }, { z: 11, op: 0 });
+    const presenter = F.mirror({ x: 1100, y: 700, s: 0.42, eyes: "open", mouth: "smile", z: 30 });
+    const p = fx();
+    F.scene([hall, chart, beam, curtains, presenter, p, F.credit("Dots: NASA CDDIS / ILRS laser ranging normal points, 2025-2026. Line: NASA/JPL Horizons.")], { bg: "#1a0e0a", cam: { x: 640, y: 360, z: 1.05 } });
+    sfx("whoosh");
+    tw(curtains, { k: 1 }, 1100, EZ.inOut);
+    tw(beam, { op: 1 }, 600, EZ.inOut);
+    await tw(chart, { op: 1 }, 600, EZ.inOut);
+    tw(F.cam, { x: (SCREEN.x0 + SCREEN.x1) / 2 + 40, y: (SCREEN.y0 + SCREEN.y1) / 2 + 40, z: 1.25 }, 2000, EZ.inOut);
+
+    // 10. every dot is a real measurement
+    const v10 = speak(10, presenter);
+    tw(chart, { prog: 1 }, 7000, EZ.inOut, (e) => { if (Math.random() < 0.15) sfx("tick"); });
+    await atw(10, "someone", 0, 7.6);
+    const tally = F.stamp([countBy("GRSM") + " from Grasse, France", countBy("APOL") + " from Apache Point, USA"], { x: 1080, y: 150, size: 24, style: "card", rot: 0.04, kicker: LLR.length + " real measurements" });
+    F.popIn(tally, 420);
+    await atw(10, "answer", 0, 14.2);
+    sfx("sparkle"); sfx("tada");
+    tw(chart, { glowAll: 1 }, 200, EZ.out).then(() => tw(chart, { glowAll: 0 }, 800, EZ.inOut)).catch(() => {});
+    presenter.sy = 1.1; tw(presenter, { sy: 1 }, 500, EZ.elastic);
+    await v10;
+    F.popOut(tally);
+
+    // 11. the wave: the Moon swings closer and farther
+    const v11 = speak(11, presenter);
+    await atw(11, "wave", 0, 0.6);
+    sfx("slideUp", 0.8);
+    tw(chart, { line: 1 }, 2200, EZ.inOut);
+    await atw(11, "closer", 0, 2.8);
+    await swingShot(11);
+    F.scene([hall, chart, beam, presenter, p], { bg: "#1a0e0a", cam: { x: (SCREEN.x0 + SCREEN.x1) / 2 + 40, y: (SCREEN.y0 + SCREEN.y1) / 2 + 40, z: 1.25 } });
+    await v11;
+
+    // 12. the dots sit below the line: both ends stand on the surfaces
+    const v12 = speak(12, presenter);
+    await atw(12, "because", 0, 2.6);
+    await surfacesShot(12);
+    F.scene([hall, chart, beam, presenter, p], { bg: "#1a0e0a", cam: { x: (SCREEN.x0 + SCREEN.x1) / 2 + 40, y: (SCREEN.y0 + SCREEN.y1) / 2 + 40, z: 1.25 } });
+    await atw(12, "agree", 0, 10);
+    const ok = F.stamp(["The numbers agree"], { x: W / 2, y: H / 2, size: 56, style: "gold", rot: -0.05 });
+    await F.stampDown(ok);
+    sfx("tada");
+    await v12;
+    await wait(500);
+  }
+
+  // the Moon really does swing closer and farther: real distances from JPL Horizons
+  async function swingShot(n) {
+    const orbit = window.MOON_ORBIT;
+    let kmMin = Infinity, kmMax = 0;
+    orbit.forEach((p) => { kmMin = Math.min(kmMin, p[1]); kmMax = Math.max(kmMax, p[1]); });
+    const space = F.plate("sc_espacio", { x: -200, y: 0, w: 1680, h: 720 });
+    const moon = F.sprite("moon", { x: 1000, y: 360, w: 150, z: 20 });
+    const readout = F.stamp([fmtKm(kmMax)], { x: W / 2, y: 110, size: 44, style: "gold", kicker: "Earth to Moon, center to center" });
+    const state = { u: 0 };
+    F.scene([space, spacePatch(space), F.stars({ n: 160, par: 0.3, w: 2000, h: 900, x: -200, y: -100 }), moon, readout], { bg: "#000", cam: { x: 640, y: 360, z: 1 } });
+    // one month of real data, played in about four seconds
+    const i0 = 0, i1 = Math.min(orbit.length - 1, 4 * 30);
+    await F.tw(state, { u: 1 }, 4200, EZ.inOut, (e) => {
+      const i = Math.round(F.lerp(i0, i1, e)), km = orbit[i][1];
+      const k = (km - kmMin) / (kmMax - kmMin);
+      moon.x = 760 + k * 420;
+      moon.s = 1.15 - k * 0.3;
+      readout.lines = [fmtKm(km)];
+    });
+  }
+
+  // why the dots sit below the line: the telescope and the mirror stand on the surfaces
+  async function surfacesShot(n) {
+    const E = { x: 300, y: 380, r: 210 }, Mo = { x: 1010, y: 380, r: 90 };
+    const diag = F.custom(function (c) {
+      if (F.ready(IM.earth)) c.drawImage(IM.earth, E.x - E.r, E.y - E.r, E.r * 2, E.r * 2);
+      if (F.ready(IM.moon)) c.drawImage(IM.moon, Mo.x - Mo.r, Mo.y - Mo.r, Mo.r * 2, Mo.r * 2);
+      c.setLineDash([12, 10]); c.strokeStyle = F.PAPER; c.lineWidth = 4;
+      c.beginPath(); c.moveTo(E.x, E.y); c.lineTo(E.x + (Mo.x - E.x) * this.k1, Mo.y); c.stroke();
+      c.setLineDash([]);
+      c.fillStyle = F.PAPER; c.beginPath(); c.arc(E.x, E.y, 8, 0, 6.2832); c.fill(); c.beginPath(); c.arc(Mo.x, Mo.y, 6, 0, 6.2832); c.fill();
+      if (this.k2 > 0) {
+        c.strokeStyle = "#ffe07a"; c.lineWidth = 9; c.lineCap = "round";
+        const x0 = E.x + E.r, x1 = x0 + (Mo.x - Mo.r - x0) * this.k2;
+        c.beginPath(); c.moveTo(x0, E.y - 26); c.lineTo(x1, E.y - 26); c.stroke();
+        c.fillStyle = "#ffe07a"; c.beginPath(); c.arc(x0, E.y - 26, 10, 0, 6.2832); c.fill();
+      }
+      c.font = "bold 24px " + F.FONT; c.textAlign = "center"; c.lineWidth = 6; c.strokeStyle = F.INK;
+      c.fillStyle = F.PAPER; c.strokeText("center to center: the line", (E.x + Mo.x) / 2, E.y + 50); c.fillText("center to center: the line", (E.x + Mo.x) / 2, E.y + 50);
+      if (this.k2 > 0.5) {
+        c.globalAlpha = Math.min(1, (this.k2 - 0.5) * 2);
+        c.fillStyle = "#ffe07a"; c.strokeText("surface to surface: the dots", (E.x + Mo.x) / 2 + 40, E.y - 62); c.fillText("surface to surface: the dots", (E.x + Mo.x) / 2 + 40, E.y - 62);
+      }
+    }, { par: 0, z: 10, k1: 0, k2: 0 });
+    F.scene([F.stars({ n: 200, par: 0 }), diag, F.credit("Sizes and distance not to scale.")], { bg: "#05060a" });
+    sfx("slideUp", 0.7);
+    await tw(diag, { k1: 1 }, 1100, EZ.inOut);
+    await atw(n, "surface", 0, 5.6);
+    sfx("slideUp", 1.2);
+    await tw(diag, { k2: 1 }, 1100, EZ.inOut);
+    await atw(n, "numbers", 0, 9.4);
+  }
+
+  // ---------- 13: the neighbors ----------
+  async function neighborsShot() {
+    const luna = F.plate("sc_luna", { x: -40, y: -24, w: 1360, h: 765 });
+    mir.x = 640; mir.y = 610; mir.s = 0.6; mir.eyes = "open"; mir.mouth = "smile";
+    const mars = F.custom(function (c, t) {
+      const r = 5 + Math.sin(t / 200) * 1.5;
+      const g = c.createRadialGradient(this.x, this.y, 0, this.x, this.y, r * 5);
+      g.addColorStop(0, "rgba(255,140,90,0.9)"); g.addColorStop(1, "rgba(255,140,90,0)");
+      c.fillStyle = g; c.beginPath(); c.arc(this.x, this.y, r * 5, 0, 6.2832); c.fill();
+      c.fillStyle = "#e0703c"; c.beginPath(); c.arc(this.x, this.y, r, 0, 6.2832); c.fill();
+    }, { z: 5, x: 1080, y: 110 });
+    F.scene([luna, F.stars({ n: 120, par: 0.2, w: W * 1.4, h: 260, y: -40 }), mars, mir], { bg: "#05060a", cam: { x: 640, y: 380, z: 1.1 } });
+    await F.irisIn(W / 2, H / 2, 600);
+    const v13 = speak(13, mir);
+    await atw(13, "neighbors", 0, 1.0);
+    mir.lx = 9; mir.ly = -3;
+    await atw(13, "measurement", 0, 7.0);
+    mir.eyes = "happy";
+    await atw(13, "introduce", 0, 8.4);
+    mir.eyes = "open";
+    sfx("whoosh");
+    tw(F.cam, { x: mars.x, y: mars.y + 40, z: 2.2 }, 1500, EZ.inOut);
+    await v13;
+    await F.irisOut(F.toScreen(mars.x, mars.y).x, F.toScreen(mars.x, mars.y).y, 700);
+    mir.lx = 0; mir.ly = 0;
+  }
+
+  // =================== chapters, jumps and the start ===================
+  const chaptersNav = F.$("chapters");
+  function setChapter(n) {
+    chaptersNav.querySelectorAll("button").forEach((b) => b.classList.toggle("current", +b.getAttribute("data-ch") === n));
+  }
+  F.setChapter = setChapter;
+  const CHAPTERS = {};
+  F.CHAPTERS = CHAPTERS;
+  CHAPTERS[1] = chapter1;
+  F.story = { mir, speak, atw, at, chapterCard, fx, LUNA, setChapter, fmtKm, fmtDate };
+
+  async function playFrom(n) {
+    for (let k = n; k <= 4; k++) {
+      if (!CHAPTERS[k]) break;
+      await CHAPTERS[k]();
+    }
+    if (!CHAPTERS[4]) await theEnd();
+  }
+  async function theEnd() {
+    setChapter(4);
+    F.scene([F.stamp(["The End"], { x: W / 2, y: H / 2, size: 90, style: "gold", par: 0 })], { bg: "#0b0b0b" });
+    await F.irisIn(W / 2, H / 2, 700);
+    F.show(F.$("again"));
+  }
+  function resetAll() {
+    F.runId++;
+    F.stopVoice();
+    F.$("stage").classList.add("instant");
+    requestAnimationFrame(() => requestAnimationFrame(() => F.$("stage").classList.remove("instant")));
+    ["send", "greet", "again", "oppPanel"].forEach((id) => F.hide(F.$(id)));
+    if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+    F.ov.iris = 2000; F.ov.fade = 0; F.ov.flash = 0; F.ov.snapA = 0;
+    scopeIdle = true;
+    F.scene([], { bg: "#000" });
+  }
+  F.resetAll = resetAll;
+  chaptersNav.addEventListener("click", (e) => {
+    const b = e.target.closest("button[data-ch]");
+    if (!b) return;
+    e.stopPropagation();
+    b.blur();
+    const n = +b.getAttribute("data-ch");
+    resetAll();
+    F.guard(playFrom(n));
+  });
+  F.$("again").addEventListener("click", (e) => {
+    e.stopPropagation();
+    resetAll();
+    F.guard(playFrom(1));
+  });
+
+  // ---------- start ----------
+  const goBtn = F.$("go"), startEl = F.$("start"), hint = F.$("loadHint");
+  const params = new URLSearchParams(location.search);
+  F.AUTOPLAY = params.has("auto");
+  goBtn.disabled = true;
+  hint.textContent = "Loading the pictures…";
+  loading.then(() => {
+    goBtn.disabled = false;
+    hint.textContent = "Turn your sound on · about 6 minutes";
+    if (F.AUTOPLAY) goBtn.click();
+  });
+  goBtn.addEventListener("click", () => {
+    F.renderLog.t0 = performance.now();
+    F.audioInit();
+    goBtn.blur();
+    F.hide(startEl);
+    F.show(chaptersNav);
+    const from = +(params.get("ch") || 0);
+    F.guard((async () => {
+      if (!from) { await opening(); await playFrom(1); }
+      else await playFrom(from);
+    })());
+  });
+})();
