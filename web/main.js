@@ -29,7 +29,14 @@
   // ---------- helpers ----------
   function show(el) { el.classList.remove("hidden"); }
   function hide(el) { el.classList.add("hidden"); }
-  function wait(ms) { return new Promise(function (res) { setTimeout(res, ms); }); }
+  // Jumping to a chapter cancels the scene that was playing: every timer checks this run number
+  var runId = 0, ABORT = { abort: true };
+  window.addEventListener("unhandledrejection", function (e) { if (e.reason === ABORT) e.preventDefault(); });
+  function guard(p) { return p.catch(function (e) { if (e !== ABORT) console.error(e); }); }
+  function wait(ms) {
+    var id = runId;
+    return new Promise(function (res, rej) { setTimeout(function () { if (id === runId) res(); else rej(ABORT); }, ms); });
+  }
   function fmtDate(ms) {
     return new Date(ms).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" });
   }
@@ -37,7 +44,8 @@
 
   // Resolves on click, Space or Enter; or after `auto` ms if given
   function advance(el, auto, until) {
-    return new Promise(function (res) {
+    var id = runId;
+    return new Promise(function (res, rej) {
       var done = false, to = null;
       function finish() {
         if (done) return;
@@ -45,7 +53,7 @@
         el.removeEventListener("click", finish);
         document.removeEventListener("keydown", onKey);
         if (to) clearTimeout(to);
-        res();
+        if (id === runId) res(); else rej(ABORT);
       }
       function onKey(e) { if (e.key === " " || e.key === "Enter") { e.preventDefault(); finish(); } }
       el.addEventListener("click", finish);
@@ -87,24 +95,24 @@
   function filmFrame() {
     grainEl.style.backgroundPosition = Math.floor(Math.random() * 256) + "px " + Math.floor(Math.random() * 256) + "px";
     // the frame never sits perfectly still in an old projector
-    weave.x = (Math.random() - 0.5) * 1.6;
-    weave.y = (Math.random() - 0.5) * 1.6;
-    if (Math.random() < 0.035) weave.y += Math.random() < 0.5 ? -3 : 3;
+    weave.x = (Math.random() - 0.5) * 0.8;
+    weave.y = (Math.random() - 0.5) * 0.8;
+    if (Math.random() < 0.02) weave.y += Math.random() < 0.5 ? -1.5 : 1.5;
     applyStage();
 
     fctx.clearRect(0, 0, 640, 360);
     // flicker: kept gentle on purpose
     var f = Math.random();
-    if (f < 0.45) { fctx.fillStyle = "rgba(0,0,0," + (Math.random() * 0.07).toFixed(3) + ")"; fctx.fillRect(0, 0, 640, 360); }
+    if (f < 0.45) { fctx.fillStyle = "rgba(0,0,0," + (Math.random() * 0.035).toFixed(3) + ")"; fctx.fillRect(0, 0, 640, 360); }
     else if (f > 0.965) { fctx.fillStyle = "rgba(255,255,255,0.045)"; fctx.fillRect(0, 0, 640, 360); }
     // vertical scratches that live for a few frames
-    if (Math.random() < 0.09 && scratches.length < 3) {
+    if (Math.random() < 0.035 && scratches.length < 2) {
       scratches.push({ x: Math.random() * 640, life: 4 + Math.random() * 22, light: Math.random() < 0.7 });
     }
     scratches = scratches.filter(function (s) { return s.life-- > 0; });
     scratches.forEach(function (s) {
       s.x += (Math.random() - 0.5) * 1.2;
-      fctx.strokeStyle = s.light ? "rgba(255,255,255,0.24)" : "rgba(0,0,0,0.4)";
+      fctx.strokeStyle = s.light ? "rgba(255,255,255,0.14)" : "rgba(0,0,0,0.25)";
       fctx.lineWidth = 0.6;
       fctx.beginPath();
       fctx.moveTo(s.x, 0);
@@ -112,7 +120,7 @@
       fctx.stroke();
     });
     // dust specks and hairs
-    var n = Math.random() < 0.38 ? 1 + Math.floor(Math.random() * 3) : 0;
+    var n = Math.random() < 0.15 ? 1 : 0;
     for (var i = 0; i < n; i++) {
       var x = Math.random() * 640, y = Math.random() * 360;
       if (Math.random() < 0.72) {
@@ -144,10 +152,12 @@
   // ---------- iris wipe, the classic way old cartoons change scene ----------
   var irisEl = $("iris");
   function iris(cx, cy, from, to, ms) {
-    return new Promise(function (res) {
+    var id = runId;
+    return new Promise(function (res, rej) {
       irisEl.style.display = "block";
       var frames = Math.max(2, Math.round(ms / 42)), i = 0;
       (function tick() {
+        if (id !== runId) { rej(ABORT); return; }
         var r = from + (to - from) * (i / frames);
         irisEl.style.background = "radial-gradient(circle at " + cx + "px " + cy + "px, rgba(0,0,0,0) " + r + "px, #000 " + (r + 3) + "px)";
         if (i++ < frames) setTimeout(tick, 42);
@@ -195,7 +205,7 @@
     return new Promise(function (res) {
       var v = window.VOICE && window.VOICE[n];
       if (!v) { res(); return; }
-      var a = new Audio("assets/voice/" + (n < 10 ? "0" : "") + n + ".mp3");
+      var a = new Audio("assets/voice/" + (n < 10 ? "0" : "") + n + ".mp3?v=" + window.BUILD);
       a.muted = muted;
       currentVoice = a;
       var done = false, raf = 0, silent = false, t0 = performance.now();
@@ -745,7 +755,7 @@
     e.stopPropagation();
     if (sending) return;
     sending = true;
-    sendLight();
+    guard(sendLight());
   });
   againBtn.addEventListener("click", function (e) {
     e.stopPropagation();
@@ -753,10 +763,10 @@
       if (sending) return;
       sending = true;
       hide(againBtn);
-      sendLight();
+      guard(sendLight());
       return;
     }
-    backToSky();
+    guard(backToSky());
   });
 
   // =================== Chapter 2: Opportunity on Mars ===================
@@ -792,7 +802,7 @@
   ["mars_ground", "art/rover_cuerpo", "art/rover_mastil", "art/rover_brazo", "art/rover_ojos_abiertos", "art/rover_ojos_medio",
     "art/rover_ojos_cerrados", "art/cielo_sol", "art/cielo_nube_a", "art/cielo_nube_b", "art/cielo_nube_c", "art/cielo_tormenta"].forEach(function (f) {
     var im = new Image();
-    im.src = "assets/" + f + ".png";
+    im.src = "assets/" + f + ".png?v=" + window.BUILD;
     mi[f.replace("art/", "")] = im;
   });
 
@@ -821,14 +831,14 @@
     return new Promise(function (res) {
       var from = {};
       for (var k in to) from[k] = obj[k];
-      M.tweens.push({ obj: obj, from: from, to: to, t0: performance.now(), ms: REDUCED ? 1 : Math.max(1, ms), ease: ease || EZ.inOut, res: res });
+      M.tweens.push({ obj: obj, from: from, to: to, t0: performance.now(), ms: REDUCED ? 1 : Math.max(1, ms), ease: ease || EZ.inOut, res: res, id: runId });
     });
   }
   function runTweens(now) {
     M.tweens = M.tweens.filter(function (tw) {
       var u = Math.min(1, (now - tw.t0) / tw.ms), e = tw.ease(u);
       for (var k in tw.to) tw.obj[k] = tw.from[k] + (tw.to[k] - tw.from[k]) * e;
-      if (u >= 1) { tw.res(); return false; }
+      if (u >= 1) { if (tw.id === runId) tw.res(); return false; }
       return true;
     });
   }
@@ -899,8 +909,8 @@
 
     // the sky: its colour comes from the measured dust
     var g = c.createLinearGradient(0, 0, 0, 430);
-    g.addColorStop(0, mix([196, 150, 106], [34, 22, 14], d));
-    g.addColorStop(1, mix([236, 200, 152], [94, 62, 38], d));
+    g.addColorStop(0, mix([196, 150, 106], [92, 62, 40], d));
+    g.addColorStop(1, mix([236, 200, 152], [140, 98, 64], d));
     c.fillStyle = g;
     c.fillRect(0, 0, W, H);
 
@@ -941,7 +951,7 @@
       c.drawImage(mi.mars_ground, -M.pan, gy, gw, gh);
       c.drawImage(mi.mars_ground, -M.pan + gw, gy, gw, gh);
     }
-    c.fillStyle = "rgba(70, 42, 24, " + (d * 0.62).toFixed(3) + ")";
+    c.fillStyle = "rgba(70, 42, 24, " + (d * 0.4).toFixed(3) + ")";
     c.fillRect(0, 300, W, H - 300);
 
     // the rover. Follow-through: the mast and the arm lag behind every change of speed, then spring back
@@ -993,7 +1003,7 @@
       c.restore();
     }
 
-    c.fillStyle = "rgba(0,0,0," + (d * 0.3).toFixed(3) + ")";
+    c.fillStyle = "rgba(0,0,0," + (d * 0.14).toFixed(3) + ")";
     c.fillRect(0, 0, W, H);
     c.fillStyle = "rgba(255,255,255,0.6)";
     c.font = "13px Arial, sans-serif";
@@ -1099,9 +1109,10 @@
   window.addEventListener("pointerup", function () { sliderHeld = false; });
   function waitSlide() {
     return new Promise(function (res) {
-      var t0 = performance.now();
+      var t0 = performance.now(), id = runId;
       oppPanel.classList.add("invite");
       (function check() {
+        if (id !== runId) { oppPanel.classList.remove("invite"); return; }
         var now = performance.now();
         var done = lastSlide > t0 ? now - lastSlide > 4500 && !sliderHeld : now - t0 > 12000;
         if (done) { oppPanel.classList.remove("invite"); res(); } else setTimeout(check, 200);
@@ -1232,9 +1243,12 @@
   }
 
   async function chapter2() {
-    await iris(640, 360, 1500, 0, 800);
+    setChapter(2);
+    await iris(640, 360, 1500, 0, 700);
     hide(chart); hide(balloon); hide(mirror);
     balloon.classList.remove("overChart");
+    irisEl.style.display = "none";
+    await chapterCard("Chapter 2", "Opportunity,<br>the rover that watched the sky");
     resetMars();
     show(marsCv);
     await wait(400);
@@ -1271,6 +1285,57 @@
     show(againBtn);
   }
 
+  // =================== Chapters: a bar to see where you are and jump ===================
+  var chaptersEl = $("chapters");
+  function setChapter(n) {
+    [].forEach.call(chaptersEl.querySelectorAll("button"), function (b) {
+      var on = +b.getAttribute("data-ch") === n;
+      b.classList.toggle("current", on);
+      b.setAttribute("aria-current", on ? "step" : "false");
+    });
+  }
+  async function chapterCard(kicker, title) {
+    cardText.innerHTML = '<span class="kicker">' + kicker + "</span>" + title;
+    show(card);
+    anim(cardText, [{ transform: "translateY(-30px) scale(0.94)", opacity: 0 }, { transform: "translateY(5px) scale(1.02)", opacity: 1, offset: 0.65 }, { transform: "none", opacity: 1 }],
+      { duration: 650, easing: EASE.out });
+    await advance(card, 2800);
+    hide(card);
+    await wait(500);
+  }
+  function resetAll() {
+    runId++;
+    stopVoice();
+    flight = null;
+    clearPhotons();
+    obsStop();
+    M.tweens = [];
+    [startEl, card, sky, obs, photonLayer, base, chart, mirror, balloon, readout, sendBtn, againBtn, marsCv, oppPanel].forEach(hide);
+    mirror.classList.remove("inset", "surprised", "flash");
+    balloon.classList.remove("caption", "overChart");
+    readout.classList.remove("onBase");
+    irisEl.style.display = "none";
+    sending = false;
+  }
+  async function chapter1() {
+    setChapter(1);
+    shotsFired = 0;
+    await chapterCard("Chapter 1", "The mirror on the Moon");
+    show(sky); show(obs); show(photonLayer);
+    obsBreathe();
+    show(sendBtn);
+  }
+  chaptersEl.addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-ch]");
+    if (!b) return;
+    e.stopPropagation();
+    resetAll();
+    show(chaptersEl);
+    var n = +b.getAttribute("data-ch");
+    if (n === 1) guard(chapter1());
+    if (n === 2) guard(chapter2());
+  });
+
   // Skip straight to a scene with ?scene=sky (useful while building)
   var start = new URLSearchParams(location.search).get("scene");
   var startEl = $("start"), goBtn = $("go");
@@ -1283,10 +1348,11 @@
       });
     });
   }
-  (async function () {
+  guard((async function () {
     if (start === "mars") {
       await waitStart();                 // one click first, so the browser lets the voice play
       hide(startEl); hide(sky); hide(obs); hide(photonLayer);
+      show(chaptersEl);
       shotsFired = 1;
       await chapter2();
       return;
@@ -1296,13 +1362,18 @@
       await anim(goBtn, [{ transform: "scale(1)" }, { transform: "scale(1.12, 0.84)", offset: 0.4 }, { transform: "scale(0.96, 1.06)", offset: 0.75 }, { transform: "scale(1)" }],
         { duration: 260, easing: EASE.out });
       hide(startEl);
+      show(chaptersEl);
+      setChapter(1);
       await wait(500);
       await titleCards();
+      await chapterCard("Chapter 1", "The mirror on the Moon");
     } else {
       hide(startEl);
+      show(chaptersEl);
+      setChapter(1);
     }
     show(sky); show(obs); show(photonLayer);
     obsBreathe();
     show(sendBtn);
-  })();
+  })());
 })();
