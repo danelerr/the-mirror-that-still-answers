@@ -131,6 +131,17 @@
   }, { z: 20, par: 0, pos: 0, list: rocks(36, 22) });
   const jupiter = F.custom(function (c, t) {
     const cx = this.x, cy = this.y, R = this.r;
+    // the team's Jupiter with a face (J1 drawings, each pose in two small steps: dozing 0, an eye opens 2, looks
+    // down at something tiny 4, "oh" 6, a warm smile 8, chuckles 10, winks 12, dozes off 14)
+    const J = (window.SPRITES || {}).J1_jupiter_cara;
+    if (J && this.drawn !== false) {
+      const im = IM["spr_J1_jupiter_cara_" + (this.pose + (t - this.since > 110 ? 1 : 0))];
+      if (F.ready(im)) {
+        const k = 2 * R / J.u;
+        c.drawImage(im, cx - J.cx * k, cy - J.cy * k, J.w * k, J.h * k);
+        return;
+      }
+    }
     c.save(); c.beginPath(); c.arc(cx, cy, R, 0, 6.2832); c.clip();
     const bands = ["#e9d5b0", "#c98b5a", "#efe0c2", "#b46d43", "#e7cfa6", "#c48958", "#f1e4c8", "#a8653e", "#e3c99e"];
     for (let i = 0; i < 18; i++) {
@@ -148,7 +159,8 @@
     c.fillStyle = g; c.fillRect(cx - R, cy - R, 2 * R, 2 * R);
     c.restore();
     c.strokeStyle = F.INK; c.lineWidth = 6; c.beginPath(); c.arc(cx, cy, R, 0, 6.2832); c.stroke();
-  }, { z: 5, x: 980, y: 400, r: 330 });
+  }, { z: 5, x: 980, y: 400, r: 330, pose: 0, since: 0 });
+  jupiter.face = (k) => { if (k !== jupiter.pose) { jupiter.pose = k; jupiter.since = F.t; } };
   // radio rings travelling from a to b
   function rings(o) {
     return F.custom(function (c, t) {
@@ -276,12 +288,14 @@
     go();
     if (p2) { F.remove(p2); pr.op = 1; }
     // past the giant planet
-    jupiter.x = 1100; jupiter.r = 340;
+    const toonJ = F.hasSprites("J1_jupiter_cara");
+    jupiter.x = 1100; jupiter.r = toonJ ? 270 : 340; jupiter.pose = 0; jupiter.since = F.t;   // (the drawing is sharper a little smaller)
     pr.x = -100; pr.y = 260; pr.s = 0.3;
     F.scene([F.stars({ n: 260, par: 0.1 }), jupiter, pr, inset, F.credit("Drawing of Jupiter. Pioneer 10 flew past it in December 1973.")], { bg: "#05060a", cam: { x: 640, y: 360, z: 1 } });
     tw(jupiter, { x: 900 }, 3600, EZ.inOut);
     sfx("whoosh", 1.5);
     await tw(pr, { x: 620, y: 300 }, 2200, EZ.out);
+    jupiter.face(2);                                   // the giant opens an eye at the tiny visitor
     pr.eyes = "open"; pr.lx = 10; F.face(pr, "surprised");
     let amaze = null;
     if (F.hasSprites("P3_sonda_jupiter")) {
@@ -293,6 +307,8 @@
           [10, 180], [11, 220], [12, 220, "shutter"], [13, 380], [14, 200], [15, 380], [14, 200], [15, 600]]) {
           if (!amaze) return;
           amaze.frame = f; if (snd) sfx(snd); if (f === 12) F.flash(0.3);
+          const jf = { 1: 4, 3: 6, 8: 8, 12: 10, 15: 12 }[f];          // Jupiter looks down, says "oh", smiles, chuckles at the photo, winks
+          if (jf !== undefined) jupiter.face(jf);
           await wait(ms);
         }
       })());
@@ -300,7 +316,9 @@
     await v;
     const art = F.proof("ph_p10art", "How NASA pictured Pioneer 10 at Jupiter. NASA Ames artwork ARC-1972-AC72-1354.", { x: 380, y: 470, w: 380, rot: -0.04, label: "NASA ART" });
     F.popIn(art, 400, "shutter");
-    await wait(1800);
+    await wait(1100);
+    jupiter.face(14);                                  // and dozes off again
+    await wait(700);
     F.popOut(art);
     if (amaze) { F.remove(amaze); amaze = null; pr.op = 1; F.faceNow(pr, "happy"); }
     pr.lx = 0;

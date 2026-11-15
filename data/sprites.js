@@ -514,5 +514,15 @@ window.SPRITES = {
   "w": 481,
   "h": 341,
   "center": true
+ },
+ "J1_jupiter_cara": {
+  "n": 16,
+  "w": 380,
+  "h": 371,
+  "center": true,
+  "u": 362.0,
+  "cx": 192.0,
+  "cy": 188.0,
+  "g": 188.0
  }
 };
