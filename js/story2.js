@@ -160,7 +160,7 @@
       const sol = OPP_ALL[i][0], tau = OPP_ALL[i][1], direct = Math.exp(-tau) * 100;
       const pct = direct >= 1 ? Math.round(direct) + "%" : "less than 1%";
       read.innerHTML = "<b>" + monthYear(sol) + "</b> · dust (tau) <b>" + tau.toFixed(2) + "</b>" + (i === OPP_ALL.length - 1 ? " (NASA estimate)" : "") +
-        " · sunlight <b>" + pct + "</b>" + (M.odo ? " · driven <b>45.16 km</b>" : "");
+        " · sunlight <b>" + pct + "</b>" + (M.odo ? " · driven <b>45.16&nbsp;km</b>" : "");
       if (!held) slider.value = String(i);
     }
     const c = occ, w = 540, h = 120, L = 34, R = 8, T = 8, B = 18;

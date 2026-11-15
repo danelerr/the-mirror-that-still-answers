@@ -319,7 +319,7 @@
     plan.lines = ["21 months"];
     sfx("rip");
     const x = F.icon("voice", { x: 640, y: 160, s: 0.01, op: 0 });
-    F.popOut(plan);
+    await F.popOut(plan);                  // (the years take its place only once it has gone)
     tw(r1, { op: 1 }, 400);
     pr.radio = true;                       // drawn: it talks home through its dish, sending little radio waves
     const yr = F.stamp(["1972"], { x: 640, y: 170, size: 64, style: "gold" });
@@ -336,30 +336,60 @@
     F.remove(x);
   }
 
+  // The antenna on Earth as a character (the team's A1 drawings: each pose in two small steps; listening 0, waiting 2,
+  // "oh" 4, happy 6, worried 8, sad 10, brave 12, tossing a letter 14). It stands in the empty left part of the
+  // painted desert, so the painted dish is out of the picture.
+  function antennaStage() {
+    const has = F.hasSprites("A1_antena_escucha");
+    const st = { has, pose: 0, since: F.t };
+    st.dish = has ? F.plate("sc_antena", { x: 0, y: -352, w: 2327, h: 1309 }) : F.plate("sc_antena", { x: -30, y: -20, w: 1340, h: 754 });
+    st.ant = has ? F.spriteSet("A1_antena_escucha", { x: 780, y: 655, w: 440, z: 20, frame: 0 }) : null;
+    const meta = (window.SPRITES || {}).A1_antena_escucha || {}, k = 440 / (meta.w || 440);
+    st.dishX = has ? 780 + ((meta.cx || 0) - meta.w / 2) * k : 500;          // the middle of the dish
+    st.dishY = has ? 655 - (meta.h - meta.cy) * k : 330;
+    st.glove = has ? { x: 780 + 0.35 * 440, y: 655 - 0.93 * meta.h * k } : { x: 520, y: 330 };   // where the letter is in drawing 15
+    st.pose = (p) => {
+      if (!st.ant || p === st.cur) return;
+      st.cur = p; st.since = F.t;
+      st.ant.sx = 1.05; st.ant.sy = 0.95; tw(st.ant, { sx: 1, sy: 1 }, 260, EZ.back);
+    };
+    st.tick = st.ant ? F.onFrame((tt) => { st.ant.frame = (st.cur || 0) + (tt - st.since > 110 ? 1 : 0); }) : () => {};
+    st.cur = 0;
+    return st;
+  }
+
   async function signal24() {
-    const dish = F.plate("sc_antena", { x: -30, y: -20, w: 1340, h: 754 });
-    const r1 = rings({ ax: 60, ay: 40, bx: 500, by: 330, k: 0, period: 1800, color: "#fff2b0" });
+    const A = antennaStage();
+    const r1 = rings({ ax: 60, ay: 40, bx: A.dishX, by: A.dishY, k: 0, period: 1800, color: "#fff2b0" });
     const p = F.particles({ z: 40 });
-    F.scene([dish, r1, p, inset, F.credit("Painted scene: AI image generator. Distance: NASA/JPL Horizons.")], { bg: "#4a3a5a", cam: { x: 640, y: 360, z: 1 } });
-    await F.irisIn(500, 330, 600);
+    F.scene([A.dish, A.ant, r1, p, inset, F.credit("Painted scene and drawings: AI image generator. Distance: NASA/JPL Horizons.")].filter(Boolean), { bg: "#4a3a5a", cam: { x: 640, y: 360, z: 1 } });
+    await F.irisIn(A.dishX, A.dishY, 600);
     const v = say(24);
     tw(r1, { k: 1 }, 1600, EZ.inOut);
+    await atw(24, "reached", 0, 2.0);
+    A.pose(4);                                    // "oh": the signal arrives
     await atw(24, "january", 0, 2.8);
+    A.pose(6);
     const last = p10At(Date.UTC(2003, 0, 22));
-    const when = F.stamp(["January 2003"], { x: 1040, y: 110, size: 44, rot: 0.04, kicker: "its last signal" });
+    const when = F.stamp(["January 2003"], { x: 1110, y: 110, size: 44, rot: 0.04, kicker: "its last signal" });
     F.popIn(when, 360, "stamp");
     await atw(24, "billion", 0, 6.8);
-    const far = F.stamp([bil(last.km)], { x: 1040, y: 230, size: 40, style: "card", kicker: "away from Earth" });
+    A.pose(2);                                    // looking up, toward something very far away
+    const far = F.stamp([bil(last.km)], { x: 1110, y: 230, size: 40, style: "card", kicker: "away from Earth" });
     F.popIn(far, 360);
     sfx("radio");
     await atw(24, "signal", 0, 9.3);
-    F.popOut(when); F.popOut(far);
-    clock.h = 0; clock.x = 1010; clock.y = 280;
+    A.pose(8);
+    tw(r1, { op: 0 }, 900);
+    F.popOut(when); await F.popOut(far);   // the clock comes in once the cards have gone
+    clock.h = 0; clock.x = 1110; clock.y = 290;
     F.popIn(clock, 400);
     await tw(clock, { h: 11 + 20 / 60 }, 3000, EZ.inOut, () => { if (Math.random() < 0.25) sfx("tick"); });
     sfx("ding");
+    A.pose(10);                                   // the last one: nothing has come since
     await v;
     F.popOut(clock);
+    A.tick();
   }
 
   // the viewer sends a greeting: a little winged letter leaves the dish
@@ -379,24 +409,37 @@
     }));
   }
   async function greet25() {
-    const dish = F.plate("sc_antena", { x: -30, y: -20, w: 1340, h: 754 });
-    const letter = F.sprite("carta", { x: 520, y: 330, w: 150, z: 30, op: 0 });
+    const A = antennaStage();
+    A.pose(12);                                   // brave again
+    // the team's flying letter (L1 drawings): its wings flap up, half way, down and back
+    const winged = F.hasSprites("L1_carta_vuela");
+    const letter = winged
+      ? F.sprite("spr_L1_carta_vuela_0", { x: A.glove.x, y: A.glove.y, w: 250, z: 30, op: 0, fps: 12, loop: true,
+          frames: [0, 8, 2, 3, 10, 1].map((i) => "spr_L1_carta_vuela_" + i) })
+      : F.sprite("carta", { x: A.glove.x, y: A.glove.y, w: 150, z: 30, op: 0 });
     const p = F.particles({ z: 40 });
-    F.scene([dish, letter, p, inset], { bg: "#4a3a5a", cam: { x: 640, y: 360, z: 1 } });
+    F.scene([A.dish, A.ant, letter, p, inset].filter(Boolean), { bg: "#4a3a5a", cam: { x: 640, y: 360, z: 1 } });
     await say(25);
     await waitGreet();
-    letter.op = 1; letter.s = 0.2;
+    if (A.ant) {                                  // it tosses the drawn letter up; the flying letter takes over from its glove
+      A.pose(14); await wait(240);
+      A.ant.frame = 15; A.tick(); await wait(160);
+      A.tick = F.onFrame((tt) => { A.ant.frame = 6 + (tt - A.since > 110 ? 1 : 0); }); A.since = F.t;
+      letter.op = 1; letter.s = 0.6;
+    } else { letter.op = 1; letter.s = 0.2; }
     sfx("pop");
     await tw(letter, { s: 1 }, 300, EZ.bigBack);
     // anticipation: it crouches, then flies off along an arc, flapping
     await tw(letter, { sx: 1.15, sy: 0.85 }, 200);
     sfx("whoosh", 1.2);
-    const flap = F.onFrame((t) => { letter.sy = 1 + Math.sin(t / 60) * 0.08; });
+    const flap = winged ? F.onFrame((t) => { letter.rot = Math.sin(t / 180) * 0.06; })      // the drawings flap; a little rock
+      : F.onFrame((t) => { letter.sy = 1 + Math.sin(t / 60) * 0.08; });
     letter.sx = 1;
     tw(letter, { s: 0.25 }, 1500, EZ.in);
     await F.arc(letter, 120, 30, 160, 1500, EZ.in);
     flap();
     p.emit("spark", 120, 30, 6, { spread: 30, vy: 0, vyr: 120, vxr: 120, g: 0, r: 10, life: 0.5, fill: "#ffe07a" });
+    A.tick();
   }
 
   async function far26() {
