@@ -262,3 +262,38 @@ button:active { transform: translateX(-50%) translateY(4px); }
 @media (prefers-reduced-motion: reduce) {
   #basePhoto, #stage.jitter, #mirror .bob, #send:not(.hidden) { animation: none; }
 }
+
+/* ---------- Start screen ---------- */
+#start { position: absolute; inset: 0; display: grid; place-items: center; background: #0b0b0b; z-index: 5; transition: opacity 0.9s ease; }
+#start .cardInner { align-content: center; justify-items: center; text-align: center; }
+.startTitle { margin: 0; font-size: 66px; line-height: 1.08; font-variant: small-caps; letter-spacing: 0.03em; color: var(--paper); }
+.startSub { margin: 18px 0 34px; font-size: 24px; color: var(--paper); opacity: 0.85; }
+.startHint { margin: 20px 0 0; font: 15px Arial, sans-serif; color: var(--paper); opacity: 0.7; }
+#go { position: static; transform: none; }
+#go:active { transform: translateY(4px); }
+#go:not(.hidden) { animation: pulse 1.1s steps(4) infinite alternate; }
+
+/* The film effects sit above everything; the small buttons above them */
+#iris, #tint, #grain, #film, #vignette { z-index: 6; }
+#fx, #mute { z-index: 7; }
+#mute {
+  left: auto; right: 168px; top: 12px; bottom: auto; transform: none;
+  padding: 5px 12px; font: 13px Arial, sans-serif; letter-spacing: 0;
+  color: #fff; background: rgba(0, 0, 0, 0.45); border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: none; opacity: 0.6;
+}
+#mute:hover, #mute:focus-visible { background: rgba(0, 0, 0, 0.7); opacity: 1; }
+#mute:active { transform: none; }
+
+/* The number the Mirror talks about, shown over Tranquility Base */
+#readout.onBase {
+  left: 520px; right: 40px; top: 52px;
+  padding: 12px 20px 14px;
+  background: rgba(11, 11, 11, 0.8);
+  border: 3px solid var(--paper);
+  border-radius: 16px;
+  box-shadow: 6px 8px 0 rgba(0, 0, 0, 0.55);
+  transform-origin: 50% 0;
+}
+#readout.onBase #timer { font-size: 54px; }
+#readout.onBase #readoutNote { font-size: 20px; min-height: 0; }

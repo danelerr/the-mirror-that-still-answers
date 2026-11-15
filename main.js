@@ -36,7 +36,7 @@
   function fmtKm(km) { return Math.round(km).toLocaleString("en-US") + " km"; }
 
   // Resolves on click, Space or Enter; or after `auto` ms if given
-  function advance(el, auto) {
+  function advance(el, auto, until) {
     return new Promise(function (res) {
       var done = false, to = null;
       function finish() {
@@ -51,6 +51,7 @@
       el.addEventListener("click", finish);
       document.addEventListener("keydown", onKey);
       if (auto) to = setTimeout(finish, auto);
+      if (until) until.then(finish);
     });
   }
 
@@ -175,6 +176,63 @@
     mirror.classList.add("blink");
     setTimeout(function () { mirror.classList.remove("blink"); }, 150);
   }, 3400);
+
+  // ---------- the voice: lines recorded by the team; the mouth follows their loudness ----------
+  var muted = false, currentVoice = null;
+  function voiceLevel(n, sec) {
+    var v = window.VOICE && window.VOICE[n];
+    if (!v) return 0;
+    var i = Math.floor(sec * 12) * 2;   // read on twos: the mouth changes 12 times a second
+    return v.env[Math.min(i, v.env.length - 1)] || 0;
+  }
+  function mouthFor(level) {
+    if (level < 0.12) return "closed";
+    if (level < 0.4) return "small";
+    if (level < 0.84) return "open";
+    return "oh";
+  }
+  function playVoice(n, onLevel) {
+    return new Promise(function (res) {
+      var v = window.VOICE && window.VOICE[n];
+      if (!v) { res(); return; }
+      var a = new Audio("assets/voice/" + (n < 10 ? "0" : "") + n + ".mp3");
+      a.muted = muted;
+      currentVoice = a;
+      var done = false, raf = 0, silent = false, t0 = performance.now();
+      function finish() {
+        if (done) return;
+        done = true;
+        cancelAnimationFrame(raf);
+        if (onLevel) onLevel(0);
+        if (currentVoice === a) currentVoice = null;
+        res();
+      }
+      a._finish = finish;
+      a.addEventListener("ended", finish);
+      a.addEventListener("error", function () { silent = true; });
+      // if the browser refuses to play, keep the timing of the line anyway
+      a.play().catch(function () { silent = true; });
+      (function tick() {
+        var sec = silent ? (performance.now() - t0) / 1000 : a.currentTime;
+        if (onLevel) onLevel(voiceLevel(n, sec));
+        if (silent && sec >= v.d) { finish(); return; }
+        raf = requestAnimationFrame(tick);
+      })();
+    });
+  }
+  function stopVoice() {
+    if (!currentVoice) return;
+    currentVoice.pause();
+    currentVoice._finish();
+  }
+  var muteBtn = $("mute");
+  muteBtn.addEventListener("click", function (e) {
+    e.stopPropagation();
+    muted = !muted;
+    if (currentVoice) currentVoice.muted = muted;
+    muteBtn.textContent = "Sound: " + (muted ? "off" : "on");
+    muteBtn.setAttribute("aria-pressed", muted ? "true" : "false");
+  });
 
   // ---------- Shot A: the sky ----------
   var earthImg = new Image(), moonImg = new Image();
@@ -519,8 +577,7 @@
   }
 
   // ---------- the Mirror speaks ----------
-  var talking = null;
-  function say(html, restMouth) {
+  function say(html, restMouth, n) {
     var wasShown = !balloon.classList.contains("hidden");
     balloonText.innerHTML = html;
     show(balloon);
@@ -532,23 +589,28 @@
       anim(mirror, [{ transform: "none" }, { transform: "rotate(1.6deg) translateX(5px)", offset: 0.35 }, { transform: "rotate(-0.4deg)", offset: 0.75 }, { transform: "none" }],
         { duration: 900, easing: EASE.inOut });
     }
-    var plain = balloonText.textContent || "";
-    var until = performance.now() + Math.min(4200, 600 + plain.length * 32);
-    var open = false;
-    if (talking) clearInterval(talking);
-    talking = setInterval(function () {
-      if (performance.now() > until) {
-        clearInterval(talking); talking = null;
-        setMouth(restMouth || "smile");
-        return;
-      }
-      open = !open;
-      setMouth(open ? (Math.random() < 0.5 ? "open" : "small") : "closed");
-    }, 130);
-    return advance(balloon).then(function () {
-      if (talking) { clearInterval(talking); talking = null; }
+    stopVoice();
+    var hasVoice = !!(n && window.VOICE && window.VOICE[n]);
+    var spoken = hasVoice
+      ? playVoice(n, function (lv) { setMouth(lv > 0 ? mouthFor(lv) : "closed"); }).then(function () { return wait(650); })
+      : wait(Math.min(6500, 1400 + (balloonText.textContent || "").length * 45));
+    return advance(balloon, null, spoken).then(function () {
+      stopVoice();
       setMouth(restMouth || "smile");
     });
+  }
+
+  // The number the Mirror is talking about, on a small card over the photo
+  function showNumber(m) {
+    readout.classList.add("onBase");
+    timer.textContent = m.tof.toFixed(6) + " s";
+    note.innerHTML = "Your light's round trip. Half of it: <b>" + (m.tof / 2).toFixed(6) + " s</b> = <b>" + fmtKm(m.km) + "</b> away.";
+    show(readout);
+    anim(readout, [{ transform: "scale(0.6)" }, { transform: "scale(1.06)", offset: 0.65 }, { transform: "scale(1)" }], { duration: 420, easing: EASE.out });
+  }
+  function hideNumber() {
+    hide(readout);
+    setTimeout(function () { readout.classList.remove("onBase"); }, 900);
   }
 
   // ---------- the story ----------
@@ -563,7 +625,9 @@
       cardText.innerHTML = lines[i];
       anim(cardText, [{ transform: "translateY(-30px) scale(0.94)", opacity: 0 }, { transform: "translateY(5px) scale(1.02)", opacity: 1, offset: 0.65 }, { transform: "none", opacity: 1 }],
         { duration: 650, easing: EASE.out });
-      await advance(card, 5200);
+      var read = playVoice(i + 1).then(function () { return wait(900); });
+      await advance(card, null, read);
+      stopVoice();
     }
     hide(card);
   }
@@ -591,6 +655,12 @@
     spawnPhotons(shot.photons);
     note.innerHTML = "It answered. Your wait was real: on <b>" + fmtDate(shot.t) + "</b>, light sent from <b>" +
       STATIONS[shot.station] + "</b> took exactly this long. <b>" + shot.photons + " photons</b> came home.";
+    if (shotsFired > 1) {
+      await wait(1200);
+      show(againBtn);
+      sending = false;
+      return;
+    }
     await advance(stage, 5200);
     await mirrorScene();
   }
@@ -629,23 +699,24 @@
     await take;
     await wait(250);
 
-    var half = (shot.tof / 2).toFixed(6);
-    await say("Oh! … Hello. Was that <b>you</b>?", "smile");
+    await say("Oh! … Hello. Was that <b>you</b>?", "smile", 4);
     mirror.classList.remove("surprised");
-    await say("I am a mirror. Two astronauts set me down here in July 1969, and I have not moved since.", "smile");
-    await say("No battery. No motor. I cannot call you. But when your light reaches me, I send it <b>straight back</b> to where it came from.", "closed");
-    await say("Your light took <b>" + shot.tof.toFixed(6) + " seconds</b> to come home. Light always travels at the same speed, so half of that time, " + half + " seconds, tells you how far away I am.", "smile");
-    await say("On that day I was <b>" + fmtKm(shot.km) + "</b> from the telescope. That is how people know the distance to the Moon. Nobody guessed it. They timed it.", "smile");
-    await say("And you do not have to take my word for it. <b>Look.</b>", "smile");
+    await say("I'm a mirror. Two astronauts set me down here in July 1969, and I have not moved since.", "smile", 5);
+    await say("No battery. No motor. I cannot call you. But when your light reaches me, I send it <b>straight back</b> to where it came from.", "closed", 6);
+    showNumber(shot);
+    await say("Look at the number on the screen. That is how long your light took to come home. Light always travels at the <b>same speed</b>, so half of that time tells you how far away I am.", "smile", 7);
+    await say("That is how people know the distance to the Moon. Nobody <b>guessed</b> it. They <b>timed</b> it.", "smile", 8);
+    hideNumber();
+    await say("And you don't have to take my word for it. <b>Look.</b>", "smile", 9);
 
     hide(base);
     drawChart(shot, 0);
     show(chart);
     animateChart(shot, 2600);
     balloon.classList.add("overChart");
-    await say("Every dot is a real measurement from 2025 and 2026. <b>" + DATA.length + "</b> times, someone on Earth sent me light. " + DATA.length + " times, I answered.", "smile");
-    await say("See the wave? The Moon swings closer and farther every month. The line is the distance between the centers of the Earth and the Moon.", "smile");
-    await say("My dots sit a little below the line, because the telescope and I both stand on the surface, facing each other. <b>The numbers agree.</b>", "smile");
+    await say("Every dot is a real measurement from 2025 and 2026. <b>" + DATA.length + "</b> times, someone on Earth sent me light. " + DATA.length + " times, <b>I answered.</b>", "smile", 10);
+    await say("See the wave? The Moon swings closer and farther every month. The line is the distance between the centers of the Earth and the Moon.", "smile", 11);
+    await say("My dots sit a little below the line, because the telescope and I both stand on the surface, facing each other. <b>The numbers agree.</b>", "smile", 12);
     hide(balloon);
     balloon.classList.remove("overChart");
     show(againBtn);
@@ -674,12 +745,41 @@
     sending = true;
     sendLight();
   });
-  againBtn.addEventListener("click", function (e) { e.stopPropagation(); backToSky(); });
+  againBtn.addEventListener("click", function (e) {
+    e.stopPropagation();
+    if (!sky.classList.contains("hidden")) {   // still in the sky: just fire again
+      if (sending) return;
+      sending = true;
+      hide(againBtn);
+      sendLight();
+      return;
+    }
+    backToSky();
+  });
 
   // Skip straight to a scene with ?scene=sky (useful while building)
   var start = new URLSearchParams(location.search).get("scene");
+  var startEl = $("start"), goBtn = $("go");
+  function waitStart() {
+    return new Promise(function (res) {
+      goBtn.addEventListener("click", function h(e) {
+        e.stopPropagation();
+        goBtn.removeEventListener("click", h);
+        res();
+      });
+    });
+  }
   (async function () {
-    if (start !== "sky") await titleCards();
+    if (start !== "sky") {
+      await waitStart();
+      await anim(goBtn, [{ transform: "scale(1)" }, { transform: "scale(1.12, 0.84)", offset: 0.4 }, { transform: "scale(0.96, 1.06)", offset: 0.75 }, { transform: "scale(1)" }],
+        { duration: 260, easing: EASE.out });
+      hide(startEl);
+      await wait(500);
+      await titleCards();
+    } else {
+      hide(startEl);
+    }
     show(sky); show(obs); show(photonLayer);
     obsBreathe();
     show(sendBtn);
