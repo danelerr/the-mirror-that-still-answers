@@ -180,7 +180,8 @@
     const name = F.stamp(["Pioneer 10"], { x: 1020, y: 140, size: 52, style: "card", rot: 0.04, kicker: "spacecraft, 1972" });
     F.popIn(name, 400, "tada");
     await v;
-    const proof = F.proof("ph_p10", "Pioneer 10 being prepared, 1972. NASA Ames photo ARC-1972-AC72-2135.", { x: 330, y: 330, w: 420, rot: -0.05 });
+    const proof = F.proof("ph_p10", "Pioneer 10 being prepared, 1972. NASA Ames photo ARC-1972-AC72-2135.", { x: 960, y: 340, w: 420, rot: 0.04 });
+    tw(pr, { x: 330 }, 600, EZ.inOut);
     F.popOut(name);
     F.popIn(proof, 400, "shutter");
     await wait(1700);
@@ -397,6 +398,7 @@
       c.fillText("Pioneer 10's distance from Earth, every month since 1972 (NASA/JPL Horizons)", X0 - 70, Y0 - 56);
     }, { par: 0, z: 50, op: 0, k: 0, k2: 0 });
     F.add(graph);
+    tw(pr, { op: 0.15 }, 400);
     await tw(graph, { op: 1 }, 400);
     sfx("slideUp", 0.7);
     await tw(graph, { k: 1 }, 2200, EZ.inOut);
@@ -406,6 +408,7 @@
     await v;
     await wait(700);
     F.remove(graph);
+    pr.op = 1;
   }
 
   async function plaque28(pr) {
@@ -421,6 +424,7 @@
       for (let i = 0; i < 9; i++) { c.beginPath(); c.arc(-140 + i * 34, 80, 4 + (i === 3 ? 4 : 0), 0, 6.2832); c.stroke(); }
       c.beginPath(); c.arc(-140, -75, 10, 0, 6.2832); c.arc(-110, -75, 10, 0, 6.2832); c.stroke();
       const sh = ((t / 1400) % 1.6) - 0.3;
+      F.roundRect(c, -180, -110, 360, 220, 14); c.clip();                // the shine stays on the plaque
       c.globalAlpha = 0.5; c.fillStyle = "#fff8d0";
       c.beginPath(); c.moveTo(-180 + sh * 400, -110); c.lineTo(-140 + sh * 400, -110); c.lineTo(-220 + sh * 400, 110); c.lineTo(-260 + sh * 400, 110); c.closePath(); c.fill();
     }, { par: 0, z: 60, x: 820, y: 330, s: 0.01 });
