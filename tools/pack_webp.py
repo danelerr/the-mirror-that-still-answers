@@ -32,7 +32,9 @@ def main():
     for src in targets():
         dst = src[:-4] + ".webp"
         if FORCE or not os.path.exists(dst) or os.path.getmtime(dst) < os.path.getmtime(src):
-            Image.open(src).convert("RGBA").save(dst, "WEBP", quality=QUALITY, method=4, alpha_quality=100)
+            tmp = dst + ".part"          # written aside and renamed, so a run cut short never leaves a broken file
+            Image.open(src).convert("RGBA").save(tmp, "WEBP", quality=QUALITY, method=4, alpha_quality=100)
+            os.replace(tmp, dst)
             n += 1
         before += os.path.getsize(src)
         after += os.path.getsize(dst)
