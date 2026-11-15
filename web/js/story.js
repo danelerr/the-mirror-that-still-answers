@@ -89,7 +89,7 @@
       .concat(PROPS.map((n) => [n, "assets/scenes/" + n + ".png"]))
       .concat([["earth", "assets/earth.png"], ["moon", "assets/moon.png"], ["as11", "assets/tranquility_as11-40-5948.jpg"],
         ["mars_ground", "assets/mars_ground.png"]])
-  );
+  ).then(() => F.loadSprites());
 
   // ---------- the cast ----------
   const mir = F.mirror({ x: 640, y: 560, s: 0.62 });
