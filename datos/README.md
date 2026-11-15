@@ -50,7 +50,7 @@ About the instrument:
 
 ## 4. Pioneer 10: where it is now
 
-- **What it is.** Distance from Earth and from the Sun, and one-way light travel time, once a month from March 1972 to December 2026.
+- **What it is.** Distance from Earth and from the Sun, and one-way light travel time, once a month from March 1972 to December 2030.
 - **Source.** NASA/JPL Horizons API, target -23 (Pioneer 10), observer 500@399.
 - **Raw file.** `raw/horizons_pioneer10_monthly.txt`.
 - **Table.** `pioneer10_distance_monthly.json`, built by `scripts/build_datasets.py`.

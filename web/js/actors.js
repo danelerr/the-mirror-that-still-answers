@@ -764,7 +764,8 @@
   const LISTEN_K = { neutral: 2, curious: 2, happy: 6, proud: 14, determined: 14, surprised: 4, scared: 4, worried: 12, sad: 12, tired: 12 };
   // hopping: the team's hop drawings (E16) follow the hop's phase (take-off squash, spring, stretch, air, down,
   // landing squash); the arc itself is done in the draw. The drawings face right: flipped when it hops left.
-  const HOP = "E16_espejo_salta", HOP_SEQ = [1, 2, 3, 4, 11, 12, 10, 5, 8, 9];
+  // (drawings 3, 4, 10-12 have gloves with four fingers: the hop uses the fists of 2 and 6 instead)
+  const HOP = "E16_espejo_salta", HOP_SEQ = [1, 2, 6, 6, 2, 5, 7, 8, 9];
   function mirrorDrawing(m, t) {
     let e;
     if (m.force && F.hasSprites(m.force[0])) {          // a scene can hold one exact drawing (m.force = [set, frame])
@@ -1005,12 +1006,11 @@
       if (this.drive > 0.3 && has("R1_rover_avanza")) { set = "R1_rover_avanza"; k = F.R1_CYCLE[st % F.R1_CYCLE.length]; }
       else if ((this.eyes === "closed" || mood === "asleep") && has("R7_rover_ultimos_dias")) { set = "R7_rover_ultimos_dias"; k = 15; }
       else if (this.dusty > 0.5 && has("R5_rover_tormenta")) { set = "R5_rover_tormenta"; k = 6 + (Math.floor(st / 8) % 2); }
-      else if (this.armT > 1.5 && has("R10_rover_saluda")) {   // the team's wave: the arm comes up, then waves to and fro
-        if (!(this.waveT0 >= 0)) this.waveT0 = t;                // (drawing 13 has the arm painted blue: skipped)
-        const e = Math.floor((t - this.waveT0) / 1000 * 12), WV = [5, 6, 7, 8, 9, 10, 11, 12, 11, 10, 9, 8, 7, 6];
-        set = "R10_rover_saluda"; k = e < 2 ? 3 + e : WV[(e - 2) % WV.length];
+      else if (this.armT > 1.5 && has("R8_rover_celebra")) {    // it raises its arm and shakes its fist happily
+        if (!(this.waveT0 >= 0)) this.waveT0 = t;                 // (the open-glove waves of R10 and R8 have four
+        const WV = [0, 12, 14, 12];                               //  fingers, so they are not used)
+        set = "R8_rover_celebra"; k = WV[Math.floor((t - this.waveT0) / 1000 * 6) % WV.length];
       }
-      else if (this.armT > 1.5 && has("R8_rover_celebra")) { set = "R8_rover_celebra"; k = 5; }
       else if ((mood === "tired" || this.eyes === "half") && has("R7_rover_ultimos_dias")) { set = "R7_rover_ultimos_dias"; k = 3; }
       else if ((mood === "worried" || mood === "scared" || mood === "sad") && has("R5_rover_tormenta")) { set = "R5_rover_tormenta"; k = 0; }
       else if (mood === "surprised" && has("R6_rover_sacude")) { set = "R6_rover_sacude"; k = 0; }
@@ -1108,7 +1108,7 @@
     const DATA = F.LLR;
     const a = Object.assign({ x0: 300, y0: 150, x1: 980, y1: 470, prog: 1, line: 1, sel: null, z: 10, par: 1, op: 1, light: true, glowAll: 0 }, o);
     a.draw = function (c) {
-      const X0 = this.x0 + 70, X1 = this.x1 - 16, Y0 = this.y0 + 40, Y1 = this.y1 - 46;
+      const X0 = this.x0 + 88, X1 = this.x1 - 16, Y0 = this.y0 + 40, Y1 = this.y1 - 46;
       const t0 = DATA[0].t, t1 = DATA[DATA.length - 1].t;
       let kmMin = Infinity, kmMax = -Infinity;
       DATA.forEach((d) => { kmMin = Math.min(kmMin, d.km); kmMax = Math.max(kmMax, d.km); });

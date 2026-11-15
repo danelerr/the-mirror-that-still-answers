@@ -460,7 +460,7 @@
     tally.lines = [String(m.photons)];
     tally.sx = 1.2; tally.sy = 0.85; tw(tally, { sx: 1, sy: 1 }, 400, EZ.elastic);
     F.popOut(legend);
-    const count = F.stamp([m.photons + " photons came home"], { x: 1010, y: 380, size: 34, rot: 0.04, kicker: STATIONS[m.station] });
+    const count = F.stamp([m.photons + " photons came home"], { x: 1010, y: 380, size: 34, rot: 0.04, kicker: STATIONS[m.station] + " · in ~10 min of laser shots" });
     F.popIn(count, 420, "tada");
     if (F.hasSprites("F4_foton_llega")) {
       // the team's drawn frames: one photon lands at home, squashes, bounces, waves and cheers
@@ -813,7 +813,7 @@
       c.strokeStyle = F.INK; c.lineWidth = 7; c.beginPath(); c.arc(cx, cy, R, 0, 6.2832); c.stroke();
     }, { par: 0, z: 10, k: 0 });
     const ph = F.photon({ s: 0.8, z: 20, par: 0 });
-    const lab = F.stamp(["Inside one of the mirror's 100 glass corners"], { x: W / 2, y: 672, size: 26, style: "card" });
+    const lab = F.stamp(["Inside one of the mirror's 100 glass corners"], { x: W / 2, y: 600, size: 26, style: "card", kicker: "side view, simplified" });
     const p = F.particles({ z: 30, par: 0 });
     F.scene([F.stars({ n: 200, par: 0 }), scene, ph, p], { bg: "#0b0f1c" });
     F.popIn(lab, 300);
@@ -868,7 +868,7 @@
     // light always runs at the same speed
     const space = F.plate("sc_espacio", { x: 0, y: 0, w: 1680, h: 720 });
     const ph = F.photon({ s: 0.9, x: 200, y: 360, dir: 0 });
-    const speed = F.stamp(["299,792 km every second"], { x: W / 2, y: 120, size: 38, style: "card", kicker: "the speed of light, always" });
+    const speed = F.stamp(["299,792 km every second"], { x: W / 2, y: 120, size: 38, style: "card", kicker: "the speed of light in space" });
     F.scene([space, spacePatch(space), F.stars({ n: 160, par: 0.3, w: 2000, h: 900, x: -200, y: -100 }), ph], { bg: "#000", cam: { x: 840, y: 360, z: 1 } });
     F.popIn(speed, 400);
     sfx("whoosh", 1.2);
@@ -998,7 +998,7 @@
       // a curtain rope drops from the flies; it reaches up, grabs it and pulls it down hard (the curtains open with
       // the pull), lets go with a bounce, and the rope flies back up. Drawings of the hop sheet; the glove positions
       // in those drawings were measured so the rope sits in its hand.
-      const GL = { 3: [439, 63], 1: [468, 266], 8: [413, 287], 9: [428, 249], 14: [481, 271] };
+      const GL = { 2: [432, 129], 1: [468, 266], 8: [413, 287], 9: [428, 249], 14: [481, 271] };
       const meta = window.SPRITES.E16_espejo_salta, M = F.CHAR.mirror, kk = M.k * M.U / meta.u;
       const glove = (f) => [presenter.x + (GL[f][0] - meta.cx) * kk * presenter.s, presenter.y + (13 + (GL[f][1] - meta.cy - M.RHO * meta.u) * kk) * presenter.s];
       const rope = F.custom(function (c, tt) {
@@ -1013,12 +1013,12 @@
         c.fillStyle = "#b8432f"; c.strokeStyle = F.INK; c.lineWidth = 3;   // a red tassel at its end
         c.beginPath(); c.moveTo(this.x - 7, this.y + 14); c.lineTo(this.x + 7, this.y + 14); c.lineTo(this.x + 9, this.y + 34); c.lineTo(this.x - 9, this.y + 34); c.closePath(); c.fill(); c.stroke();
       }, { z: 29, par: 0, x: 0, y: -220, swing: 1 });
-      const g3 = glove(3), g1 = glove(1);
+      const g3 = glove(2), g1 = glove(1);
       rope.x = g3[0]; F.add(rope);
       F.faceNow(presenter, "curious");
       sfx("slideUp", 0.7);
       await tw(rope, { y: g3[1] }, 520, EZ.back);
-      presenter.force = ["E16_espejo_salta", 3]; sfx("pop");        // reaches up and grabs it
+      presenter.force = ["E16_espejo_salta", 2]; sfx("pop");        // reaches up and grabs it in its fist
       rope.swing = 0;
       await wait(380);
       presenter.force = ["E16_espejo_salta", 1];                    // pulls it down hard, squashed with effort
@@ -1282,6 +1282,7 @@
     F.audioInit();
     sfx("projector");
     F.music("assets/music/tierna.mp3", 0.3);
+    if (!F.RENDER) F.unlockAudio();
     startEl.classList.add("lit");
     setTimeout(() => startEl.classList.remove("gated"), 450);     // so the same click cannot also press Start
   }
@@ -1294,6 +1295,7 @@
   goBtn.addEventListener("click", () => {
     F.renderLog.t0 = performance.now();
     F.audioInit();
+    if (!F.RENDER) F.unlockAudio();               // inside the click: the voice and the music may play from now on
     F.playing = true;
     goBtn.blur();
     F.hide(startEl);
