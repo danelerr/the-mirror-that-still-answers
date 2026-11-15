@@ -141,9 +141,29 @@ def probe(r, regs):
     return STEEL                                      # booms
 
 
+def probe_plain(r, regs):
+    """Pioneer 10 without flying rocks: only the dish (cream) and the small body (gold) get colour;
+    gloves, eyes and booms stay white, so no glove or eye is painted by mistake."""
+    dish = max(regs, key=lambda q: q["area"])
+    if r is dish:
+        return CREAM
+    sl = dish["sl"]
+
+    def inside(q):
+        cy = q["sl"][0].start + q["h"] / 2
+        cx = q["sl"][1].start + q["w"] / 2
+        return sl[0].start < cy < sl[0].stop and sl[1].start < cx < sl[1].stop
+    if inside(r):
+        return None
+    rest = sorted((q for q in regs if q is not dish and not inside(q)), key=lambda q: -q["area"])
+    if rest and r is rest[0] and r["frac"] > 0.01 and r["fill"] > 0.6 and r["ry"] > 0.45:
+        return GOLD
+    return None
+
+
 RULES = {"R1_rover_avanza": rover, "R2_rover_despliega": rover, "R5_rover_tormenta": rover, "R6_rover_sacude": rover,
          "E2_espejo_despierta": mirror, "F1_foton_vuela": photon, "O2_bolsas_rebotan": bags,
-         "E7_espejo_atrapa": mirror, "E6_espejo_cuenta": mirror, "E9_espejo_secreto": mirror, "E5_espejo_anios": mirror, "E3_espejo_saluda": mirror, "E11_espejo_mira_lejos": mirror, "R4_rover_excava": rover,
+         "E7_espejo_atrapa": mirror, "E6_espejo_cuenta": mirror, "E9_espejo_secreto": mirror, "E5_espejo_anios": mirror, "E3_espejo_saluda": mirror, "E11_espejo_mira_lejos": mirror, "E12_espejo_habla": mirror, "E13_espejo_gestos": mirror, "E2_espejo_despierta_brazos": mirror, "R3_rover_mira_sol": rover, "R8_rover_celebra": rover, "P1_sonda_despliega": probe_plain, "P3_sonda_jupiter": probe_plain, "P4_sonda_llama": probe_plain, "R4_rover_excava": rover,
          "R7_rover_ultimos_dias": rover, "P2_sonda_esquiva": probe, "P5_sonda_se_apaga": probe}
 
 ONLY = None   # set from the command line to colour just some sets

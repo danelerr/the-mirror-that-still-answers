@@ -59,6 +59,24 @@
       c.drawImage(img, -0.82 * w, -0.97 * h, w, h);
       c.restore();
     }
+    // the drawn probe (the team's sheets): one design in every scene, chosen by its state
+    a.drawing = function (t) {
+      if (this.drawn === false) return null;
+      const st = Math.floor(t / 1000 * 12), has = F.hasSprites, mood = this.faceName || "neutral";
+      let set = null, k = 0;
+      if (this.radio && has("P4_sonda_llama")) { set = "P4_sonda_llama"; k = Math.floor(st / 2) % 12; }
+      else if (this.unfold < 0.5 && has("P1_sonda_despliega")) { set = "P1_sonda_despliega"; k = 0; }
+      else if (this.eyes === "closed" && has("P5_sonda_se_apaga")) { set = "P5_sonda_se_apaga"; k = 15; }
+      else if ((this.eyes === "half" || this.sleepy > 0.5) && has("P5_sonda_se_apaga")) { set = "P5_sonda_se_apaga"; k = 6; }
+      else if (has("P3_sonda_jupiter")) {
+        set = "P3_sonda_jupiter";
+        k = { surprised: 4, scared: 6, curious: 0, happy: 8, proud: 9 }[mood];
+        if (k === undefined) k = 8;
+        if (k === 0 || k === 8) k += Math.floor(st / 6) % 2;     // a gentle two-step while it floats
+      }
+      const im = set ? IM["spr_" + set + "_" + k] : null;
+      return F.ready(im) ? im : null;
+    };
     a.draw = function (c, t) {
       const body = IM.sonda_cuerpo;
       if (!F.ready(body)) return;
@@ -67,7 +85,14 @@
       c.globalAlpha = this.op;
       c.translate(this.x, this.y + drift);
       c.rotate(this.rot + Math.sin(t / 2100) * 0.03);
-      c.scale(this.s * this.sx, this.s * this.sy);
+      const dimg = this.drawing(t);
+      if (dimg) {
+        const w = 400 * this.s / 0.45, h = w * dimg.height / dimg.width;
+        c.scale(this.sx, this.sy);
+        c.drawImage(dimg, -w / 2, -h / 2, w, h);
+        return;
+      }
+      c.scale(this.s * this.sx, this.sy * this.s);
       const hx = -bw / 2 + 0.16 * bw, hy = -bh / 2 + 0.72 * bh;      // the small six-sided body
       boom(c, "sonda_brazo_a", hx, hy, -1.05 + this.ba, 200);
       boom(c, "sonda_brazo_b", hx, hy, -2.35 + this.bb, 200);
@@ -167,10 +192,23 @@
     F.scene([F.stars({ n: 260, par: 0.2 }), pr, inset], { bg: "#05060a" });
     F.flash(0.4);
     await atw(21, "pioneer", 0, 5.2);
-    pr.unfold = 1; sfx("slideUp");
-    await wait(400);
-    pr.eyes = "open"; F.faceNow(pr, "surprised"); sfx("ting");
-    wait(500).then(() => F.face(pr, "happy")).catch(() => {});
+    if (F.hasSprites("P1_sonda_despliega")) {
+      // the team's drawn frames: the booms swing out, bounce too far and settle, it wakes up, stretches and waves
+      const un = F.spriteSet("P1_sonda_despliega", { x: pr.x, y: pr.y, w: 400 * pr.s / 0.45, ay: 0.5, z: 31, frame: 0 });
+      F.add(un); pr.op = 0;
+      sfx("slideUp");
+      for (const [f, ms, snd] of [[1, 120], [2, 110], [3, 110, "boing"], [4, 110], [5, 110], [6, 140], [7, 160], [8, 160, "ting"], [9, 140],
+        [10, 140], [11, 140], [12, 140], [13, 140], [14, 120], [15, 300, "tada"]]) {
+        un.frame = f; if (snd) sfx(snd); await wait(ms);
+      }
+      pr.unfold = 1; pr.eyes = "open"; F.faceNow(pr, "happy");
+      F.remove(un); pr.op = 1;
+    } else {
+      pr.unfold = 1; sfx("slideUp");
+      await wait(400);
+      pr.eyes = "open"; F.faceNow(pr, "surprised"); sfx("ting");
+      wait(500).then(() => F.face(pr, "happy")).catch(() => {});
+    }
     const name = F.stamp(["Pioneer 10"], { x: 1020, y: 140, size: 52, style: "card", rot: 0.04, kicker: "spacecraft, 1972" });
     F.popIn(name, 400, "tada");
     await v;
@@ -229,12 +267,26 @@
     sfx("whoosh", 1.5);
     await tw(pr, { x: 620, y: 300 }, 2200, EZ.out);
     pr.eyes = "open"; pr.lx = 10; F.face(pr, "surprised");
-    wait(900).then(() => F.face(pr, "curious")).catch(() => {});
+    let amaze = null;
+    if (F.hasSprites("P3_sonda_jupiter")) {
+      // the team's drawn frames: it looks up at the giant, eyes widening, "oh!", then smiles, waves and takes a photo
+      amaze = F.spriteSet("P3_sonda_jupiter", { x: pr.x, y: pr.y, w: 400 * pr.s / 0.45, ay: 0.5, z: 31, frame: 0 });
+      F.add(amaze); pr.op = 0;
+      F.guard((async () => {
+        for (const [f, ms, snd] of [[0, 300], [1, 260], [2, 200], [3, 200, "boing"], [4, 360], [8, 260], [9, 260], [10, 180, "swish"], [11, 180],
+          [10, 180], [11, 220], [12, 220, "shutter"], [13, 380], [14, 200], [15, 380], [14, 200], [15, 600]]) {
+          if (!amaze) return;
+          amaze.frame = f; if (snd) sfx(snd); if (f === 12) F.flash(0.3);
+          await wait(ms);
+        }
+      })());
+    } else wait(900).then(() => F.face(pr, "curious")).catch(() => {});
     await v;
     const art = F.proof("ph_p10art", "How NASA pictured Pioneer 10 at Jupiter. NASA Ames artwork ARC-1972-AC72-1354.", { x: 380, y: 470, w: 380, rot: -0.04, label: "NASA ART" });
     F.popIn(art, 400, "shutter");
     await wait(1800);
     F.popOut(art);
+    if (amaze) { F.remove(amaze); amaze = null; pr.op = 1; F.faceNow(pr, "happy"); }
     pr.lx = 0;
   }
 
@@ -253,6 +305,7 @@
     const x = F.icon("voice", { x: 640, y: 160, s: 0.01, op: 0 });
     F.popOut(plan);
     tw(r1, { op: 1 }, 400);
+    pr.radio = true;                       // drawn: it talks home through its dish, sending little radio waves
     const yr = F.stamp(["1972"], { x: 640, y: 170, size: 64, style: "gold" });
     F.add(yr);
     const beeps = setInterval(() => sfx("radio", 1.2), 900);
@@ -263,6 +316,7 @@
     const more = F.stamp(["more than 30 years"], { x: 640, y: 260, size: 34, style: "card", rot: 0.03 });
     F.popIn(more, 360, "tada");
     await v;
+    pr.radio = false;
     F.remove(x);
   }
 

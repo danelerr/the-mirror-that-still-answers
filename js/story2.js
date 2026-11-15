@@ -373,9 +373,21 @@
     tw(rv, { glow: 1 }, 700, EZ.inOut);
     rv.eyes = "open"; F.face(rv, "happy");
     tw(rv, { sy: 1.06 }, 250, EZ.out).then(() => tw(rv, { sy: 1 }, 400, EZ.back)).catch(() => {});
+    // the team's drawn frames when they are there: it looks up, squints at the Sun, thinks, notes it down, smiles
+    let look = null;
+    if (F.hasSprites("R3_rover_mira_sol")) {
+      rv.op = 0; look = framesAt("R3_rover_mira_sol", { w: 470, frame: 0 });
+      playSeq(look, [[0, 260], [1, 260], [2, 200], [3, 0]]).catch(() => {});
+    }
+    // where the camera head is: on the drawing (about 68% across and 25% down) or on the puppet
+    const head = () => {
+      if (!look || !F.ready(IM[look.frames[0]])) return rv.head();
+      const im = IM[look.frames[0]], h = look.w * im.height / im.width;
+      return { x: look.x - look.w / 2 + 0.68 * look.w, y: look.y - h + 0.25 * h };
+    };
     const beam = F.custom(function (c, t) {
       if (this.k <= 0.01) return;
-      const hd = rv.head();
+      const hd = head();
       c.globalAlpha = this.k; c.setLineDash([10, 9]); c.lineDashOffset = -t / 25;
       c.strokeStyle = "#ffe07a"; c.lineWidth = 5;
       c.beginPath(); c.moveTo(hd.x, hd.y); c.lineTo(sun.x, sun.y); c.stroke();
@@ -384,14 +396,19 @@
     await atw(15, "sun", 0, 5.4);
     // it looks straight up at the Sun: a small dip first, then up
     F.face(rv, "proud");
-    await tw(rv, { mastT: -0.1 }, 220);
-    tw(rv, { mastT: 0.25, look: -10, lookX: 8 }, 600, EZ.back);
+    if (look) playSeq(look, [[4, 160], [5, 220, "tick"], [6, 160], [7, 0]]).catch(() => {});
+    else { await tw(rv, { mastT: -0.1 }, 220); tw(rv, { mastT: 0.25, look: -10, lookX: 8 }, 600, EZ.back); }
     await tw(beam, { k: 1 }, 500, EZ.out);
     sfx("radio");
     await atw(15, "dust", 0, 7.8);
+    if (look) playSeq(look, [[8, 200], [9, 260], [10, 180, "click"], [11, 260], [10, 180], [11, 0]]).catch(() => {});
     showPanel();
     await v;
     tw(beam, { k: 0 }, 500, EZ.in);
+    if (look) {
+      await playSeq(look, [[12, 160], [13, 220], [14, 160], [15, 420]]);
+      backToPuppet(look);
+    }
     tw(rv, { mastT: 0, look: 0, lookX: 0, glow: 0.5 }, 700);
     F.face(rv, "neutral");
   }
@@ -490,7 +507,15 @@
     M.odo = true; lastI = -1;
     odo.lines = ["45.16 km"]; sfx("ding");
     odo.sx = 1.15; odo.sy = 0.88; tw(odo, { sx: 1, sy: 1 }, 400, EZ.elastic);
-    F.face(rv, "proud"); F.guard(roverWave(700, "thumb"));
+    F.face(rv, "proud");
+    if (cyc && F.hasSprites("R8_rover_celebra")) {
+      // the team's drawn frames: it stops and does a happy little dance for its 45 km
+      F.remove(cyc); cyc = null; rv.drive = 0; plain.v = 0;
+      const dance = framesAt("R8_rover_celebra", { w: 470, frame: 0 });
+      await playSeq(dance, [[0, 140], [1, 120], [2, 110, "boing"], [3, 150], [4, 110, "thud"], [5, 170, "swish"], [6, 110], [7, 130],
+        [8, 110], [9, 120, "boing"], [10, 110], [11, 140, "thud"], [12, 120], [13, 110], [14, 150], [15, 320, "tada"]]);
+      backToPuppet(dance);
+    } else F.guard(roverWave(700, "thumb"));
     await atw(18, "june", 0, 5.0);
     rv.drive = 0; plain.v = 0; F.face(rv, "worried");
     if (cyc) { F.remove(cyc); rv.op = 1; }

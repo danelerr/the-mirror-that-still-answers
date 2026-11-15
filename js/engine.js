@@ -321,7 +321,10 @@
     rip: () => noise(0.3, "highpass", 900, 4000, 0.3, 0.8, 0.01),
     tada: () => { [523, 659, 784, 1046].forEach((f, i) => osc("triangle", f, 0, 0.5, 0.16, 0.01, i * 0.07)); },
     sad: () => { [392, 370, 349, 330].forEach((f, i) => osc("triangle", f, 0, 0.45, 0.12, 0.02, i * 0.32)); },
-    radio: (k) => { for (let i = 0; i < 3; i++) osc("sine", 1250 * k, 0, 0.08, 0.1, 0.003, i * 0.16); }
+    radio: (k) => { for (let i = 0; i < 3; i++) osc("sine", 1250 * k, 0, 0.08, 0.1, 0.003, i * 0.16); },
+    // an old television: k seconds of grey "snow" hiss, then the dial clicking onto a station
+    static: (k) => { noise(k, "highpass", 1400, 0, 0.3, 0.6, 0.03); noise(k, "bandpass", 3800, 2600, 0.16, 0.5, 0.03); },
+    tune: () => { noise(0.22, "bandpass", 4200, 500, 0.32, 2.5, 0.005); osc("sine", 90, 50, 0.12, 0.35, 0.002, 0.2); }
   };
   F.sfx = function (name, k) {
     if (F.RENDER) { F.renderLog.sfx.push([name, k || 1, performance.now()]); return; }
