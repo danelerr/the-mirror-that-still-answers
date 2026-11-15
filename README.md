@@ -16,10 +16,10 @@ The story asks one question over and over: **how do we know what we know?** Each
 
 ## How it works
 
-1. Three silent-film title cards introduce the mirror.
+1. Three silent-film title cards introduce the mirror, read by an old-film narrator.
 2. The viewer presses **Send your light**. A pulse of light travels to the Moon and back. The wait lasts exactly as long as a real measurement did. The first one is the most recent measurement in the archive: July 7, 2026, from Grasse, France, 2.505444 seconds.
 3. One small photon appears for every photon that actually returned in that measurement.
-4. The Mirror wakes up at Tranquility Base and explains how the travel time gives the distance.
+4. The Mirror wakes up at Tranquility Base and, in a recorded voice with its mouth following the words, explains how the travel time gives the distance.
 5. A chart shows all 275 measurements from 2025 and 2026 against the Moon's orbit.
 6. Each new try replays a different real measurement.
 
@@ -59,7 +59,8 @@ The challenge rules ask teams to say clearly where AI ("SI") tools were used.
 - **Research and data.** An AI assistant located the datasets, downloaded them from the NASA archives and wrote the conversion scripts. Every figure shown comes from the files in `datos/`.
 - **Code.** The web page, the animation and the tooling were written with an AI coding assistant, directed and reviewed by the team.
 - **Character illustrations.** The cartoon characters were made with an AI image generator from the team's prompts, using NASA photos only as shape references. Code removes the background, colours them and animates them. The originals are in `dibujos/`. A visible notice is shown on screen at all times.
-- **Not AI.** The photographs and the data are NASA's.
+- **Narration.** The voice is a team member's own recording, not synthetic. AI speech recognition (NVIDIA Parakeet and OpenAI Whisper, run locally) was used to find the best take of each line and to check that every word is understandable. Editing, cleaning and loudness matching were done with FFmpeg.
+- **Not AI.** The voice, the photographs and the data.
 
 No AI-generated image uses or modifies NASA logos, flags or mission identifiers.
 

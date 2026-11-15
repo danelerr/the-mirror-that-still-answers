@@ -11,6 +11,16 @@
 <body>
 <div id="stage" aria-live="polite">
 
+  <!-- Start screen: browsers only play sound after a click -->
+  <div id="start">
+    <div class="cardInner">
+      <p class="startTitle">The Mirror<br>That Still Answers</p>
+      <p class="startSub">An animated story told with real NASA data</p>
+      <button id="go" type="button">&#9654; Start</button>
+      <p class="startHint">Turn your sound on &middot; about 6 minutes</p>
+    </div>
+  </div>
+
   <!-- Shot A: Earth, Moon and the laser -->
   <canvas id="sky" width="1280" height="720" aria-label="The Earth and the Moon in space"></canvas>
 
@@ -67,12 +77,14 @@
   <canvas id="film" width="640" height="360" aria-hidden="true"></canvas>
   <div id="vignette" aria-hidden="true"></div>
   <button id="fx" type="button" aria-pressed="true">Old film look: on</button>
+  <button id="mute" type="button" aria-pressed="false">Sound: on</button>
 
   <p id="aiMark">Character illustrations and code made with AI tools. Photos and data: NASA.</p>
 </div>
 
 <script src="data/llr.js"></script>
 <script src="data/moon_orbit.js"></script>
+<script src="data/voice.js"></script>
 <script src="main.js"></script>
 </body>
 </html>
