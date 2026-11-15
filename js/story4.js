@@ -123,6 +123,13 @@
     lander.x = 1010; lander.y = -140; lander.flame = 1;
     F.scene([luna, F.stars({ n: 120, par: 0.2, w: W * 1.4, h: 260, y: -40 }), lander, mir, p], { bg: "#05060a", cam: { x: 640, y: 380, z: 1 } });
     F.faceNow(mir, "curious"); F.gesture(mir, "shade", 1);
+    // the team's drawn frames when they are there: it shades its eyes to watch the lander, then waves to it
+    let far = null;
+    if (F.hasSprites("E11_espejo_mira_lejos")) {
+      far = F.spriteSet("E11_espejo_mira_lejos", { x: mir.x + 3, y: mir.y + 7, w: 266, ay: 1, z: 21, frame: 2 });
+      F.add(far); mir.op = 0;
+      wait(120).then(() => { if (far) far.frame = 3; }).catch(() => {});
+    }
     const v = S.speak(32, mir);
     await atw(32, "come", 0, 1.6);
     sfx("rumble", 0.8);
@@ -132,7 +139,12 @@
     sfx("thud");
     await atw(32, "waiting", 0, 5.2);
     F.face(mir, "happy"); F.gesture(mir, "rest");
+    if (far) {
+      for (let k = 0; k < 6; k++) { far.frame = 10 + (k % 2); await wait(110); }
+      far.frame = 12; wait(110).then(() => { if (far) far.frame = 13; }).catch(() => {});
+    }
     await v;
+    if (far) { F.remove(far); far = null; mir.op = 1; }
     mir.eyes = "open"; mir.lx = 0; mir.ly = 0;
   }
 
@@ -143,7 +155,14 @@
     const ph = F.photon({ s: 0.6, op: 0 });
     F.scene([luna, F.stars({ n: 120, par: 0.2, w: W * 1.4, h: 260, y: -40 }), mir, ph, p], { bg: "#05060a", cam: { x: S.LUNA.earth.x + 100, y: S.LUNA.earth.y + 60, z: 1.4 } });
     F.faceNow(mir, "neutral"); F.gesture(mir, "rest", 1);
+    // the team's drawn frames when they are there: hopeful, looking up at the Earth; a joyful glow; a wink to the viewer
+    let fin = null;
+    if (F.hasSprites("E11_espejo_mira_lejos")) {
+      fin = F.spriteSet("E11_espejo_mira_lejos", { x: mir.x + 4, y: mir.y + 8, w: 330, ay: 1, z: 21, frame: 8 });
+      F.add(fin); mir.op = 0;
+    }
     const v = S.speak(33, mir);
+    if (fin) wait(900).then(() => { if (fin) fin.frame = 9; }).catch(() => {});
     await atw(33, "light", 0, 3.3);
     // a tiny spark leaves the Earth...
     p.emit("spark", S.LUNA.earth.x, S.LUNA.earth.y, 6, { spread: 40, vy: 0, vyr: 60, vxr: 60, g: 0, r: 10, life: 0.6, fill: "#ffe07a" });
@@ -159,12 +178,15 @@
     mir.glow = 1; F.flash(0.5); sfx("ting", 1.2);
     p.emit("spark", tx, ty, 12, { spread: 30, vy: 0, vyr: 260, vxr: 260, g: 0, r: 14, life: 0.7, fill: "#ffe07a" });
     tw(mir, { glow: 0 }, 900, EZ.out);
+    if (fin) { fin.frame = 12; fin.sx = 1.06; fin.sy = 0.94; tw(fin, { sx: 1, sy: 1 }, 400, EZ.elastic); wait(110).then(() => { if (fin) fin.frame = 13; }).catch(() => {}); }
     await atw(33, "answer", 0, 6.2);
     F.face(mir, "happy"); F.gesture(mir, "wave", 220); sfx("ding");
-    tw(F.cam, { x: mir.x, y: mir.y - 190, z: 2 }, 1500, EZ.inOut);
+    if (fin) { fin.frame = 14; wait(120).then(() => { if (fin) fin.frame = 15; }).catch(() => {}); }
+    tw(F.cam, { x: mir.x, y: mir.y - 150, z: 1.8 }, 1500, EZ.inOut);
     await v;
     await wait(900);
     await F.irisOut(W / 2, H / 2 - 20, 1100);
+    if (fin) { F.remove(fin); fin = null; mir.op = 1; }
   }
 
   // ---------- credits: where every number and picture came from ----------
