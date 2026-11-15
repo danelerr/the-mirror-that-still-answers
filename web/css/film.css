@@ -103,7 +103,8 @@ button.tool:hover, button.tool:focus-visible { background: rgba(0, 0, 0, 0.75); 
 
 /* ---------- the Start button, in the same art deco line work as the title frame ---------- */
 #go {
-  position: relative; padding: 14px 54px 15px; font-size: 32px; letter-spacing: 0.22em; text-indent: 0.22em;
+  position: relative; left: auto; bottom: auto; transform: none; margin-top: 6px;
+  padding: 14px 54px 15px; font-size: 32px; letter-spacing: 0.22em; text-indent: 0.22em;
   color: #f3d98b; background: #0d0b09; border: 6px double #efe1bf; border-radius: 0;
   box-shadow: 0 0 0 3px #0d0b09, 0 0 0 5px rgba(239, 225, 191, 0.55);
 }
@@ -120,3 +121,5 @@ button.tool:hover, button.tool:focus-visible { background: rgba(0, 0, 0, 0.75); 
   to { box-shadow: 0 0 0 3px #0d0b09, 0 0 0 5px rgba(239, 225, 191, 0.85), 0 0 26px rgba(243, 217, 139, 0.35); }
 }
 @media (prefers-reduced-motion: reduce) { #go { animation: none; } }
+/* captions: smaller and lower, so they cover less of the picture */
+#cc { bottom: 52px; max-width: 860px; font-size: 19px; line-height: 1.25; padding: 5px 14px 7px; background: rgba(0, 0, 0, 0.66); }

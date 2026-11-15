@@ -431,7 +431,7 @@
     const tally = F.stamp(["0"], { x: tip3.x + 170, y: tip3.y - 70, size: 44, style: "gold", par: 1, z: 60, kicker: "real photons back" });
     F.add(tally);
     // what the little photons mean, said once and plainly
-    const legend = F.stamp(["1 little photon = 1 real photon", "the telescope counted"], { x: 960, y: 230, size: 26, style: "card", rot: 0.03, kicker: STATIONS[m.station] + " · " + fmtDate(m.t) });
+    const legend = F.stamp(["1 little photon = 1 real photon", "the telescope counted"], { x: 1010, y: 380, size: 26, style: "card", rot: 0.03, kicker: STATIONS[m.station] + " · " + fmtDate(m.t) });
     F.popIn(legend, 380, "pop");
     let got = 0;
     home.forEach((f, i) => {
@@ -452,7 +452,7 @@
     tally.lines = [String(m.photons)];
     tally.sx = 1.2; tally.sy = 0.85; tw(tally, { sx: 1, sy: 1 }, 400, EZ.elastic);
     F.popOut(legend);
-    const count = F.stamp([m.photons + " photons came home"], { x: 1000, y: 260, size: 34, rot: 0.04, kicker: STATIONS[m.station] });
+    const count = F.stamp([m.photons + " photons came home"], { x: 1010, y: 380, size: 34, rot: 0.04, kicker: STATIONS[m.station] });
     F.popIn(count, 420, "tada");
     if (F.hasSprites("F4_foton_llega")) {
       // the team's drawn frames: one photon lands at home, squashes, bounces, waves and cheers
@@ -882,10 +882,11 @@
     const guess = F.stamp(["100 km?", "1 million km?"], { x: 330, y: 220, size: 34, style: "card", rot: -0.08, kicker: "a guess" });
     F.popIn(guess, 380, "squeak");
     mir.eyes = "open"; mir.lx = -8; F.face(mir, "worried"); gesture(mir, "shrug");
-    await wait(700);
+    await wait(900);
+    // the guess goes up in a little cartoon puff (instead of loose white sparks)
     sfx("pop", 0.5);
-    p.emit("spark", 330, 220, 10, { spread: 120, vy: 0, vyr: 200, vxr: 200, g: 200, r: 10, life: 0.6, fill: "#fff" });
-    F.remove(guess);
+    p.emit("puff", 330, 220, 9, { spread: 140, vy: -30, vyr: 60, vxr: 160, g: -10, r: 16, life: 0.7, fill: "#f3e6c8", ink: "rgba(60,40,30,0.45)" });
+    F.popOut(guess, 160);
     await atw(8, "timed", 0, 5.6);
     mir.eyes = "open"; mir.lx = 0; F.face(mir, "proud"); gesture(mir, "thumb", 200);
     const sw = F.stopwatch({ x: 960, y: 290, s: 0.8, sec: shot.tof, digits: 6, label: "timed!" });
