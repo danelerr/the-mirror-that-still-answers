@@ -213,7 +213,7 @@
     mir.x = 640; mir.y = 600; mir.s = 0.62; mir.eyes = "open"; mir.mouth = "smile";
     const p = S.fx();
     const ph = F.photon({ s: 0.6, op: 0 });
-    F.scene([luna, F.stars({ n: 120, par: 0.2, w: W * 1.4, h: 260, y: -40 }), mir, ph, p], { bg: "#05060a", cam: { x: S.LUNA.earth.x + 100, y: S.LUNA.earth.y + 60, z: 1.4 } });
+    F.scene([luna, F.stars({ n: 120, par: 0.2, w: W * 1.4, h: 260, y: -40 }), mir, ph, p], { bg: "#05060a", cam: { x: S.LUNA.earth.x + 100, y: S.LUNA.earth.y + 150, z: 1.4 } });     // (the Mirror's face clear of the captions)
     F.faceNow(mir, "neutral"); F.gesture(mir, "rest", 1);
     // the team's drawn frames when they are there: hopeful, looking up at the Earth; a joyful glow; a wink to the viewer
     let fin = null;

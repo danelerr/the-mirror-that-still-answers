@@ -897,7 +897,7 @@
     F.face(mir, "happy"); gesture(mir, "present");
     sfx("slideUp");
     await tw(sw, { split: 1 }, 700, EZ.inOut);
-    const halfS = F.stamp([(shot.tof / 2).toFixed(6) + " s each way"], { x: 690, y: 108, size: 30, style: "card" });
+    const halfS = F.stamp([(shot.tof / 2).toFixed(6) + " s each way"], { x: 500, y: 108, size: 30, style: "card" });
     F.popIn(halfS, 360);
     await atw(7, "far", 0, 13.8);
     // how far: time each way multiplied by the speed of light
@@ -1076,7 +1076,7 @@
     tw(chart, { prog: 1 }, 7000, EZ.inOut, (e) => { if (Math.random() < 0.15) sfx("tick"); });
     await atw(10, "someone", 0, 7.6);
     F.face(presenter, "curious");
-    const tally = F.stamp([countBy("GRSM") + " from Grasse, France", countBy("APOL") + " from Apache Point, USA"], { x: 300, y: 560, size: 24, style: "card", rot: -0.03, kicker: LLR.length + " real measurements" });
+    const tally = F.stamp([countBy("GRSM") + " from Grasse, France", countBy("APOL") + " from Apache Point, USA"], { x: 175, y: 330, size: 24, style: "card", rot: -0.05, kicker: LLR.length + " real measurements" });
     F.popIn(tally, 420);
     await atw(10, "answer", 0, 14.2);
     sfx("sparkle"); sfx("tada");
