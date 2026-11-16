@@ -13,6 +13,15 @@
   // ?render: used only to make the video. Sound is not played live; it is logged and mixed afterwards.
   F.RENDER = new URLSearchParams(location.search).has("render");
   F.renderLog = { voice: [], sfx: [], t0: 0 };
+  // Phones and tablets get half-size pictures (web/assets_m) and a lighter canvas: iOS closes a page that keeps
+  // too many decoded pictures in memory. ?lite forces it on a computer, ?full turns it off on a tablet.
+  F.LITE = (() => {
+    const q = new URLSearchParams(location.search), ua = navigator.userAgent || "";
+    if (q.has("full") || F.RENDER) return false;
+    if (q.has("lite")) return true;
+    return /iPhone|iPad|iPod|Android|Mobile/i.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1)
+      || window.matchMedia("(pointer: coarse)").matches;
+  })();
 
   // ---------- run ids: jumping to a chapter cancels everything that was playing ----------
   F.runId = 0;
@@ -40,7 +49,7 @@
     const vw = (vv && vv.width) || window.innerWidth;
     const vh = (vv && vv.height) || window.innerHeight;
     scale = Math.min(vw / W, vh / H);
-    res = Math.min(2, Math.max(1, scale * (window.devicePixelRatio || 1)));
+    res = Math.min(F.LITE ? 1.5 : 2, Math.max(1, scale * (window.devicePixelRatio || 1)));
     cv.width = Math.round(W * res);
     cv.height = Math.round(H * res);
     applyStage();
@@ -65,11 +74,24 @@
   // (a server asked for some 500 pictures at once may drop one now and then: each is tried up to three times)
   F.load = (list, onOne) => Promise.all(list.map(([name, src]) => new Promise((resolve) => {
     if (IM[name]) { if (onOne) onOne(); resolve(); return; }
-    const im = new Image(), url = src + (src.indexOf("?") < 0 ? "?" : "&") + "v=" + window.BUILD;
+    const v = (src.indexOf("?") < 0 ? "?" : "&") + "v=" + window.BUILD;
+    // on phones and tablets the half-size copy is loaded, and it reports the full size, so every drawing
+    // (always drawn with an explicit width and height) keeps its place and size
+    let lite = F.LITE && /^assets\/(sprites|scenes|photos)\/|^assets\/(earth|moon)\.webp|^assets\/tranquility/.test(src);
+    const im = new Image();
+    let url = (lite ? src.replace(/^assets\//, "assets_m/") : src) + v;
     let tries = 0;
     const done = () => { if (onOne) onOne(); resolve(); };
-    im.onload = done;
+    im.onload = () => {
+      if (lite) {
+        const w = im.naturalWidth * 2, h = im.naturalHeight * 2;
+        Object.defineProperty(im, "width", { get: () => w, configurable: true });
+        Object.defineProperty(im, "height", { get: () => h, configurable: true });
+      }
+      done();
+    };
     im.onerror = () => {
+      if (lite) { lite = false; url = src + v; }        // no half-size copy: the full picture instead
       if (++tries < 3) setTimeout(() => { im.src = url + "&try=" + tries; }, 400 * tries);
       else done();
     };
