@@ -150,6 +150,7 @@
   plain.update = function (dt) { this.pan += this.v * dt; };
 
   // ---------- the data panel ----------
+  const hideNow = (el) => { el.style.transition = "none"; F.hide(el); requestAnimationFrame(() => requestAnimationFrame(() => { el.style.transition = ""; })); };
   const panel = F.$("oppPanel"), chartEl = F.$("oppChart"), occ = chartEl.getContext("2d");
   const slider = F.$("oppSlider"), read = F.$("oppRead"), goBtn = F.$("oppGo");
   slider.max = String(OPP_ALL.length - 1);
@@ -352,7 +353,7 @@
     tw(F.cam, { z: 1, y: 360 }, 1200, EZ.inOut);
     const v = say(14);
     await atw(14, "opportunity", 0, 1.0);
-    const name = F.stamp(["Opportunity"], { x: 1000, y: 150, size: 52, style: "card", rot: -0.04, kicker: "Mars rover, 2004 - 2018" });
+    const name = F.stamp(["Opportunity"], { x: 720, y: 150, size: 52, style: "card", rot: -0.04, kicker: "Mars rover, 2004 - 2018" });
     F.popIn(name, 420, "tada");
     F.face(rv, "happy"); F.guard(roverWave(1000));
     await wait(1100);
@@ -372,9 +373,9 @@
       const dig = framesAt("R4_rover_excava");
       const dream = F.thought("sc_marte_agua", { x: 840, y: 230, w: 440, h: 280, fromX: rv.x + 150, fromY: rv.y - 300, z: 70 });
       F.add(dream);
-      for (let i = 0; i < 16; i++) {
+      for (const i of [0, 1, 2, 3, 4, 5, 8, 9, 10, 11, 12, 13, 14, 15]) {      // (6 and 7 have grey panels)
         dig.frame = i;
-        if (i === 3 || i === 5 || i === 7) sfx("click");
+        if (i === 3 || i === 5 || i === 8) sfx("click");
         if (i === 10) { sfx("sparkle"); tw(dream, { open: 1 }, 600, EZ.bigBack); }
         if (i === 12) sfx("boing", 1.2);
         await wait(i < 10 ? 150 : 210);
@@ -436,7 +437,7 @@
     await tw(beam, { k: 1 }, 500, EZ.out);
     sfx("radio");
     await atw(15, "dust", 0, 7.8);
-    if (look) playSeq(look, [[8, 200], [9, 260], [10, 180, "click"], [11, 260], [10, 180], [11, 0]]).catch(() => {});
+    if (look) playSeq(look, [[8, 200], [9, 260], [10, 180, "click"], [9, 260], [10, 180], [9, 0]]).catch(() => {});
     showPanel();
     await v;
     tw(beam, { k: 0 }, 500, EZ.in);
@@ -482,7 +483,7 @@
     let storm = null;
     if (F.hasSprites("R5_rover_tormenta")) {
       rv.op = 0; storm = framesAt("R5_rover_tormenta");
-      playSeq(storm, [[0, 500], [1, 420], [2, 420], [3, 900], [4, 140], [3, 140], [4, 140], [3, 140], [4, 400]]).catch(() => {});
+      playSeq(storm, [[0, 500], [1, 420], [2, 900], [4, 140], [5, 140], [4, 140], [5, 140], [4, 400]]).catch(() => {});
     } else {
       F.face(rv, "scared");
       rv.hand = "open";
@@ -490,7 +491,7 @@
     }
     await atw(17, "waited", 0, 7.1);
     F.face(rv, "asleep");
-    if (storm) playSeq(storm, [[5, 500], [6, 600], [7, 500], [6, 500], [7, 600]]).catch(() => {});
+    if (storm) playSeq(storm, [[5, 2700]]).catch(() => {});      // (6 and 7: dust painted blue)
     const zz = F.stamp(["z z z"], { x: rv.x + 120, y: rv.y - 300, size: 40, style: "ink", par: 1, z: 60 });
     F.popIn(zz, 300);
     tw(zz, { y: rv.y - 360 }, 1500, EZ.inOut);
@@ -532,7 +533,7 @@
     F.popIn(odo, 360);
     // the whole mission, 2004 to 2018: its two ends are exact; there is no year during the count, because the
     // rover did not drive the same distance every year
-    const year = F.stamp(["2004 → 2018"], { x: 300, y: 130, size: 46, style: "gold" });
+    const year = F.stamp(["2004 → 2018"], { x: 390, y: 130, size: 46, style: "gold" });
     F.add(year);
     const yS = 0, yE = idxOfSol(5050);
     await F.tw({ u: 0 }, { u: 1 }, 2800, EZ.inOut, (e) => {
@@ -593,8 +594,8 @@
       c.restore();
       c.strokeStyle = F.INK; c.lineWidth = 6; c.beginPath(); c.arc(cx, cy, R, 0, 6.2832); c.stroke();
     }, { par: 0, z: 10, cover: 0 });
-    const when = F.stamp(["June 2018"], { x: 1060, y: 110, size: 46, rot: 0.04, kicker: "a storm around the whole planet" });
-    F.hide(panel);
+    const when = F.stamp(["June 2018"], { x: 1000, y: 110, size: 46, rot: 0.04, kicker: "a storm around the whole planet" });
+    hideNow(panel);
     F.scene([F.stars({ n: 220, par: 0 }), planet, inset, F.credit("Drawing of Mars. Not to scale.")], { bg: "#05060a" });
     F.popIn(when, 400, "stamp");
     sfx("rumble", 1.5);
@@ -615,6 +616,8 @@
     let r7 = null;
     if (F.hasSprites("R7_rover_ultimos_dias")) { rv.op = 0; r7 = framesAt("R7_rover_ultimos_dias"); }
     const r7to = (a, b, ms) => { if (!r7) return; F.guard((async () => { for (let i = a; i <= b; i++) { r7.frame = i; await wait(ms / (b - a + 1)); } })()); };
+    // (drawings 11 and 13-15 have the head painted yellow: the last steps use 8-10 and 12)
+    const r7seq = (list, ms) => { if (!r7) return; F.guard((async () => { for (const i of list) { r7.frame = i; await wait(ms / list.length); } })()); };
     const v = say(19);
     // the numbers climb: each new measurement steps up like a stair, and the sky gets darker
     const calm = OPP.filter((r) => r[0] >= 5084 && r[0] <= 5102).length;
@@ -633,7 +636,7 @@
       F.popIn(st, 360, k === 2 ? "stamp" : "pop");
       tw(rv, { glow: 0, dim: Math.min(1, (k + 1) * 0.33) }, 700);
       F.face(rv, ["worried", "tired", "asleep"][k], 400);
-      r7to(4 + k * 4, 7 + k * 4, k === 2 ? 1600 : 900);
+      r7seq([[4, 5, 6, 7], [8, 9, 10, 10], [12, 12]][k], k === 2 ? 1600 : 900);
       if (k === 2) {
         rv.eyes = "closed";
         tw(rv, { mastT: -0.42, armT: 0.35, sy: 0.92, sx: 1.04 }, 1900);
@@ -669,7 +672,7 @@
       }
     }, { z: 10, k: 0, par: 1 });
     const p = F.particles({ z: 40 });
-    F.hide(panel);
+    hideNow(panel);
     F.scene([crater, sky, little, p, inset, F.credit("Painted scene: AI image generator. Dots: Opportunity's real measurements (NASA PDS).")], { bg: "#3a1f16", cam: { x: 640, y: 380, z: 1.05 } });
     await F.irisIn(1040, 600, 800);
     const v = say(20);
@@ -703,7 +706,7 @@
     await drive18();
     await last19();
     await quiet20();
-    F.hide(panel);
+    hideNow(panel);
   }
   F.CHAPTERS[2] = chapter2;
 })();

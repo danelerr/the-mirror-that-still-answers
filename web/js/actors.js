@@ -29,6 +29,10 @@
       const h = this.h || this.w * img.height / img.width;
       c.globalAlpha = this.op;
       c.drawImage(img, this.x, this.y, this.w, h);
+      if (this.ext) {                                   // mirrored copies on both sides, so no edge ever shows
+        c.save(); c.translate(this.x, 0); c.scale(-1, 1); c.drawImage(img, 0, this.y, this.w, h); c.restore();
+        c.save(); c.translate(this.x + 2 * this.w, 0); c.scale(-1, 1); c.drawImage(img, 0, this.y, this.w, h); c.restore();
+      }
       if (this.tint && this.tintA > 0) {
         c.globalAlpha = this.op * this.tintA;
         c.fillStyle = this.tint;
@@ -338,8 +342,9 @@
       c.font = "bold " + fs + "px " + FONT;
       let w = 0;
       for (const l of this.lines) w = Math.max(w, c.measureText(l).width);
-      if (this.kicker) { c.font = "bold " + ks + "px " + FONT; w = Math.max(w, c.measureText(this.kicker).width * 1.25); }
-      const th = this.lines.length * lh + (this.kicker ? ks * 1.6 : 0);
+      if (this.kicker) { c.font = "bold " + ks + "px " + FONT; w = Math.max(w, c.measureText(this.kicker.toUpperCase()).width * 1.08); }
+      const pad = this.kicker && this.style === "card" ? ks * 0.9 : 0;    // room under the card's top line
+      const th = this.lines.length * lh + (this.kicker ? ks * 1.6 : 0) + pad;
       if (this.style === "card") {
         const pw = w + fs * 1.1, ph = th + fs * 0.75;
         c.fillStyle = "rgba(0,0,0,0.35)"; roundRect(c, -pw / 2 + 7, -ph / 2 + 9, pw, ph, 14); c.fill();
@@ -348,7 +353,7 @@
         c.lineWidth = 2; roundRect(c, -pw / 2 + 10, -ph / 2 + 10, pw - 20, ph - 20, 8); c.stroke();
       }
       c.textAlign = "center"; c.textBaseline = "middle";
-      let y = -th / 2;
+      let y = -th / 2 + pad;
       if (this.kicker) {
         c.font = "bold " + ks + "px " + FONT;
         c.fillStyle = this.style === "card" ? RED : GOLD;
@@ -405,14 +410,16 @@
       c.fillStyle = "#f7f1e3"; c.fillRect(-w / 2 - b, -h / 2 - b, w + b * 2, h + b * 2 + 44);
       c.drawImage(img, -w / 2, -h / 2, w, h);
       c.strokeStyle = INK; c.lineWidth = 2; c.strokeRect(-w / 2, -h / 2, w, h);
-      c.fillStyle = INK; c.font = "15px Arial, sans-serif"; c.textAlign = "center"; c.textBaseline = "middle";
+      c.fillStyle = INK; c.textAlign = "center"; c.textBaseline = "middle";
+      let cfs = 15; c.font = cfs + "px Arial, sans-serif";            // the caption always fits the card
+      while (c.measureText(this.caption).width > w + b * 2 - 16 && cfs > 10) { cfs -= 0.5; c.font = cfs + "px Arial, sans-serif"; }
       c.fillText(this.caption, 0, h / 2 + 30);
       // tape
       c.fillStyle = "rgba(236, 222, 170, 0.85)";
       c.save(); c.translate(-w / 2 + 10, -h / 2 - 6); c.rotate(-0.6); c.fillRect(-40, -12, 80, 24); c.restore();
       c.save(); c.translate(w / 2 - 10, -h / 2 - 6); c.rotate(0.6); c.fillRect(-40, -12, 80, 24); c.restore();
       // label
-      c.save(); c.translate(w / 2 - 20, h / 2 - 8); c.rotate(-0.12);
+      c.save(); c.translate(w / 2 - 14, -h / 2 + 34); c.rotate(-0.12);      // on the photo's top corner, off the caption
       c.font = "bold 22px " + FONT;
       const lw = c.measureText(this.label).width + 26;
       c.fillStyle = RED; roundRect(c, -lw, -18, lw, 36, 6); c.fill();
@@ -1108,7 +1115,7 @@
     const DATA = F.LLR;
     const a = Object.assign({ x0: 300, y0: 150, x1: 980, y1: 470, prog: 1, line: 1, sel: null, z: 10, par: 1, op: 1, light: true, glowAll: 0 }, o);
     a.draw = function (c) {
-      const X0 = this.x0 + 88, X1 = this.x1 - 16, Y0 = this.y0 + 40, Y1 = this.y1 - 46;
+      const X0 = this.x0 + 88, X1 = this.x1 - 46, Y0 = this.y0 + 40, Y1 = this.y1 - 46;
       const t0 = DATA[0].t, t1 = DATA[DATA.length - 1].t;
       let kmMin = Infinity, kmMax = -Infinity;
       DATA.forEach((d) => { kmMin = Math.min(kmMin, d.km); kmMax = Math.max(kmMax, d.km); });
@@ -1163,7 +1170,7 @@
       c.fillStyle = fg; c.fillText("Apache Point, New Mexico", X0 + 146, ly);
       c.strokeStyle = fg; c.lineWidth = 2; c.beginPath(); c.moveTo(X0 + 340, ly); c.lineTo(X0 + 366, ly); c.stroke();
       c.fillText("center to center (JPL Horizons)", X0 + 372, ly);
-      c.font = "12px Arial, sans-serif"; c.textAlign = "right"; c.globalAlpha = this.op * 0.8;
+      c.font = "bold 14px Arial, sans-serif"; c.textAlign = "right"; c.globalAlpha = this.op; c.fillStyle = "#3a2516";
       c.fillText("Each dot: one real laser measurement to the Apollo 11 mirror. Data: NASA CDDIS / ILRS.", X1, this.y0 + 14);
     };
     return a;

@@ -42,7 +42,8 @@ button.big:active { transform: translateX(-50%) translateY(4px); }
 #go, button.big:not(.hidden):not(.small) { animation: pulse 1.1s steps(4) infinite alternate; }
 @keyframes pulse { to { box-shadow: 0 0 0 9px rgba(255, 224, 122, 0.45), 0 10px 0 rgba(0, 0, 0, 0.6); } }
 button.small { font-size: 24px; padding: 10px 28px; bottom: 90px; }
-#send { left: 61%; }   /* clear of the drawn observatory on the left */
+#send { left: 61%; }
+#greet { left: 26%; }   /* beside the antenna, not over it */   /* clear of the drawn observatory on the left */
 
 /* ---------- Opportunity's data panel ---------- */
 /* framed like a 1930s chalkboard (the team's drawn frame, M3): the corners keep their shape however wide it is */
@@ -101,7 +102,7 @@ button.tool:hover, button.tool:focus-visible { background: rgba(0, 0, 0, 0.75); 
 @media (prefers-reduced-motion: reduce) {
   #go, button.big { animation: none !important; }
 }
-#oppGo { position: absolute; right: 12px; bottom: 8px; opacity: 0.9; }
+#oppGo { position: absolute; right: 0; top: -54px; opacity: 0.95; }   /* above the frame, clear of the reading */
 
 /* ---------- captions: each word turns gold as it is spoken ---------- */
 #cc span { transition: color 0.12s linear; }
@@ -128,7 +129,7 @@ button.tool:hover, button.tool:focus-visible { background: rgba(0, 0, 0, 0.75); 
 }
 @media (prefers-reduced-motion: reduce) { #go { animation: none; } }
 /* captions: smaller and lower, so they cover less of the picture */
-#cc { bottom: 52px; max-width: 860px; font-size: 19px; line-height: 1.25; padding: 5px 14px 7px; background: rgba(0, 0, 0, 0.66); }
+#cc { bottom: 52px; max-width: 1120px; font-size: 18px; line-height: 1.22; padding: 4px 14px 6px; background: rgba(0, 0, 0, 0.62); }
 /* the buttons inside the film share the Start button's art deco look */
 button.big {
   color: #f3d98b; background: #0d0b09; border: 6px double #efe1bf; border-radius: 0; letter-spacing: 0.14em;

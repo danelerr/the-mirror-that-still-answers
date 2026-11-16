@@ -252,7 +252,7 @@
     await wait(250);
 
     // --- the photo dissolves into our cartoon world: the same mirror, asleep
-    const luna = F.plate("sc_luna", { x: -40, y: -24, w: 1360, h: 765 });
+    const luna = F.plate("sc_luna", { x: -40, y: -24, w: 1360, h: 765, ext: true });
     mir.x = LUNA.mirror.x; mir.y = LUNA.mirror.y; mir.s = 0.62; mir.eyes = "closed"; mir.mouth = "closed"; mir.brows = false; mir.op = 1;
     mir.sx = mir.sy = 1; mir.rot = 0; mir.glow = 0; mir.dust = 0;
     F.faceNow(mir, "neutral"); gesture(mir, "ground", 1);
@@ -380,7 +380,7 @@
     await F.tw({ u: 0 }, { u: 1 }, half * 0.6 * 1000, EZ.lin, (e) => { ph.x = F.lerp(EARTH_P.x + 60, MOON_P.x - 70, e); });
     camFollow();
     // C. on the Moon: the light hits the sleeping Mirror
-    const luna = F.plate("sc_luna", { x: -40, y: -24, w: 1360, h: 765 });
+    const luna = F.plate("sc_luna", { x: -40, y: -24, w: 1360, h: 765, ext: true });
     mir.x = LUNA.mirror.x; mir.y = LUNA.mirror.y; mir.eyes = "closed"; mir.mouth = "closed"; mir.brows = false; mir.op = 1; mir.s = 0.62;
     const hitX = mir.x - 25, hitY = mir.y - 240;
     ph.x = -40; ph.y = 120; ph.dir = Math.atan2(hitY - 120, hitX + 40);
@@ -475,7 +475,7 @@
     tally.lines = [String(m.photons)];
     tally.sx = 1.2; tally.sy = 0.85; tw(tally, { sx: 1, sy: 1 }, 400, EZ.elastic);
     F.popOut(legend);
-    const count = F.stamp([m.photons + " photons came home"], { x: 1010, y: 380, size: 34, rot: 0.04, kicker: STATIONS[m.station] + " · in ~10 min of laser shots" });
+    const count = F.stamp([m.photons + " photons came home"], { x: 950, y: 380, size: 34, rot: 0.04, kicker: STATIONS[m.station] + " · in ~10 min of laser shots" });
     F.popIn(count, 420, "tada");
     if (F.hasSprites("F4_foton_llega")) {
       // the team's drawn frames: one photon lands at home, squashes, bounces, waves and cheers
@@ -563,7 +563,7 @@
     await F.irisOut(OBS.moon.x, OBS.moon.y, 600);
 
     // --- 4. The Mirror wakes up: "Oh! …Hello. Was that you?"
-    const luna = F.plate("sc_luna", { x: -40, y: -24, w: 1360, h: 765 });
+    const luna = F.plate("sc_luna", { x: -40, y: -24, w: 1360, h: 765, ext: true });
     const p = fx();
     mir.x = LUNA.mirror.x; mir.y = LUNA.mirror.y; mir.s = 0.62; mir.eyes = "half"; mir.mouth = "closed"; mir.brows = false; mir.lx = 0; mir.ly = 0;
     mir.dust = 0.5;
@@ -735,7 +735,8 @@
       const pitch = F.mirrorFrames("E7_espejo_atrapa", mir);
       F.add(pitch); mir.op = 0;
       // (drawings 4, 13 and 14 came out with the colours swapped, so they are skipped; the poses hold a little longer)
-      for (const [i, ms] of [[0, 140], [1, 140], [2, 180], [3, 140], [5, 130], [6, 130], [7, 160], [8, 110], [9, 110], [10, 110], [11, 200], [12, 300]]) {
+      // (8-11: the throwing arm crosses its mouth like a black bar: the throw goes from 7 straight to 12)
+      for (const [i, ms] of [[0, 140], [1, 140], [2, 180], [3, 140], [5, 130], [6, 130], [7, 260], [12, 420]]) {
         pitch.frame = i;
         if (i === 2) { sfx("ting", 1.3); F.shake(6); pitch.sx = 1.1; pitch.sy = 0.9; tw(pitch, { sx: 1, sy: 1 }, 300, EZ.elastic); }
         if (i === 10) { sfx("whoosh", 1.3); pitch.sx = 0.92; pitch.sy = 1.08; tw(pitch, { sx: 1, sy: 1 }, 300, EZ.back); }
@@ -828,7 +829,7 @@
       c.strokeStyle = F.INK; c.lineWidth = 7; c.beginPath(); c.arc(cx, cy, R, 0, 6.2832); c.stroke();
     }, { par: 0, z: 10, k: 0 });
     const ph = F.photon({ s: 0.8, z: 20, par: 0 });
-    const lab = F.stamp(["Inside one of the mirror's 100 glass corners"], { x: W / 2, y: 600, size: 26, style: "card", kicker: "side view, simplified" });
+    const lab = F.stamp(["Inside one of the mirror's 100 glass corners"], { x: W / 2, y: 62, size: 26, style: "card", kicker: "side view, simplified" });
     const p = F.particles({ z: 30, par: 0 });
     F.scene([F.stars({ n: 200, par: 0 }), scene, ph, p], { bg: "#0b0f1c" });
     F.popIn(lab, 300);
@@ -846,6 +847,7 @@
       }
     }
     F.remove(ph);
+    F.popOut(lab);
     const back = F.stamp(["Straight back to where it came from!"], { x: W / 2, y: 70, size: 34, style: "gold" });
     F.popIn(back, 380, "tada");
     await at(n, 99);
@@ -854,7 +856,7 @@
 
   // ---------- 7: the number on the screen ----------
   async function numberShot() {
-    const luna = F.plate("sc_luna", { x: -40, y: -24, w: 1360, h: 765 });
+    const luna = F.plate("sc_luna", { x: -40, y: -24, w: 1360, h: 765, ext: true });
     const sw = F.stopwatch({ x: 930, y: 300, s: 0.95, sec: shot.tof, digits: 6, label: "your light's round trip" });
     mir.x = 330; mir.y = 640; mir.s = 0.5; mir.eyes = "open"; mir.mouth = "smile"; mir.brows = false;
     F.faceNow(mir, "curious"); gesture(mir, "right", 1);
@@ -863,7 +865,7 @@
     const v7 = speak(7, mir);
     if (F.hasSprites("F2_foton_cronometro")) {
       // the little photon runs across with the stopwatch over its head: it brings the time home
-      const run = F.spriteSet("F2_foton_cronometro", { x: -120, y: 702, w: 150, ay: 1, z: 25, fps: 14,
+      const run = F.spriteSet("F2_foton_cronometro", { x: -120, y: 606, w: 150, ay: 1, z: 25, fps: 14,
         frames: [0, 1, 2, 3, 4, 6, 7].map((i) => "spr_F2_foton_cronometro_" + i) });
       F.add(run);
       sfx("whoosh", 0.9);
@@ -895,7 +897,7 @@
     F.face(mir, "happy"); gesture(mir, "present");
     sfx("slideUp");
     await tw(sw, { split: 1 }, 700, EZ.inOut);
-    const halfS = F.stamp([(shot.tof / 2).toFixed(6) + " s each way"], { x: 930, y: 612, size: 30, style: "card" });
+    const halfS = F.stamp([(shot.tof / 2).toFixed(6) + " s each way"], { x: 690, y: 108, size: 30, style: "card" });
     F.popIn(halfS, 360);
     await atw(7, "far", 0, 13.8);
     // how far: time each way multiplied by the speed of light
@@ -927,7 +929,7 @@
 
   // ---------- 8: nobody guessed it, they timed it ----------
   async function timedShot() {
-    const luna = F.plate("sc_luna", { x: -40, y: -24, w: 1360, h: 765 });
+    const luna = F.plate("sc_luna", { x: -40, y: -24, w: 1360, h: 765, ext: true });
     mir.x = 640; mir.y = 610; mir.s = 0.6; mir.eyes = "open"; mir.mouth = "smile";
     const p = fx();
     F.scene([luna, mir, p], { bg: "#05060a", cam: { x: 640, y: 380, z: 1.1 } });
@@ -953,7 +955,7 @@
 
   // ---------- 9: "Look." ----------
   async function lookShot() {
-    const luna = F.plate("sc_luna", { x: -40, y: -24, w: 1360, h: 765 });
+    const luna = F.plate("sc_luna", { x: -40, y: -24, w: 1360, h: 765, ext: true });
     mir.x = 640; mir.y = 610; mir.s = 0.6; mir.eyes = "open"; mir.mouth = "smile";
     F.scene([luna, mir], { bg: "#05060a", cam: { x: 640, y: 380, z: 1.1 } });
     const v9 = speak(9, mir);
@@ -984,15 +986,21 @@
   async function theaterShots() {
     const hall = F.plate("sc_teatro", { x: 0, y: 0, w: 1280, h: 720 });
     const chart = F.llrChart({ x0: SCREEN.x0, y0: SCREEN.y0, x1: SCREEN.x1, y1: SCREEN.y1, prog: 0, line: 0, z: 10, op: 0 });
-    const curtains = F.custom(function (c) {
-      const k = this.k, w = (SCREEN.x1 - SCREEN.x0) / 2 + 40;
+    const curtains = F.custom(function (c, tt) {
+      // velvet curtains: soft folds of light and shadow, a wavy hem and a gold fringe; they open to the sides
+      const k = this.k, w = (SCREEN.x1 - SCREEN.x0) / 2 + 40, top = SCREEN.y0 - 40, bot = SCREEN.y1 + 40;
       for (const side of [-1, 1]) {
-        const cx = (SCREEN.x0 + SCREEN.x1) / 2 + side * (w / 2 + w * k);
-        c.fillStyle = "#8f1f1a"; c.strokeStyle = F.INK; c.lineWidth = 5;
-        c.fillRect(cx - w / 2, SCREEN.y0 - 40, w, SCREEN.y1 - SCREEN.y0 + 80);
-        c.strokeRect(cx - w / 2, SCREEN.y0 - 40, w, SCREEN.y1 - SCREEN.y0 + 80);
-        c.strokeStyle = "rgba(40,0,0,0.6)"; c.lineWidth = 3;
-        for (let i = 1; i < 6; i++) { const x = cx - w / 2 + i * w / 6; c.beginPath(); c.moveTo(x, SCREEN.y0 - 40); c.lineTo(x + Math.sin(i) * 6, SCREEN.y1 + 40); c.stroke(); }
+        const cx = (SCREEN.x0 + SCREEN.x1) / 2 + side * (w / 2 + w * k), x0 = cx - w / 2, x1 = cx + w / 2;
+        const sway = Math.sin(tt / 700 + side) * 3 * (1 - k);
+        c.beginPath(); c.moveTo(x0, top); c.lineTo(x1, top); c.lineTo(x1 + sway, bot);
+        for (let i = 6; i >= 0; i--) { const x = x0 + (w * i) / 6 + sway; c.quadraticCurveTo(x + w / 12, bot + 10, x, bot); }
+        c.closePath();
+        const g = c.createLinearGradient(x0, 0, x1, 0);
+        for (let i = 0; i <= 12; i++) g.addColorStop(i / 12, i % 2 ? "#b8342b" : "#6e1410");
+        c.fillStyle = g; c.fill();
+        c.strokeStyle = F.INK; c.lineWidth = 5; c.stroke();
+        c.fillStyle = "#e3b04a"; c.fillRect(x0 + 2, bot - 14, w - 4, 8);         // gold fringe
+        c.strokeStyle = "rgba(60,30,0,0.6)"; c.lineWidth = 2; c.strokeRect(x0 + 2, bot - 14, w - 4, 8);
       }
     }, { z: 12, k: 0 });
     const beam = F.custom(function (c, t) {
@@ -1068,7 +1076,7 @@
     tw(chart, { prog: 1 }, 7000, EZ.inOut, (e) => { if (Math.random() < 0.15) sfx("tick"); });
     await atw(10, "someone", 0, 7.6);
     F.face(presenter, "curious");
-    const tally = F.stamp([countBy("GRSM") + " from Grasse, France", countBy("APOL") + " from Apache Point, USA"], { x: 1080, y: 150, size: 24, style: "card", rot: 0.04, kicker: LLR.length + " real measurements" });
+    const tally = F.stamp([countBy("GRSM") + " from Grasse, France", countBy("APOL") + " from Apache Point, USA"], { x: 300, y: 560, size: 24, style: "card", rot: -0.03, kicker: LLR.length + " real measurements" });
     F.popIn(tally, 420);
     await atw(10, "answer", 0, 14.2);
     sfx("sparkle"); sfx("tada");
@@ -1137,7 +1145,7 @@
       c.drawImage(im, -mid * k, top - r[0] * k, meta.w * k, meta.h * k);
     }, { z: 20, px: 830, py: -430, L: 760, hang: 200, w: 260, s: 1, phi: 0.4 });
     const earth = F.spriteSet("O4_tierra_cara", { x: 215, y: 380, w: 385, z: 21, frame: 2 });
-    const readout = F.stamp([fmtKm(kmMax)], { x: W / 2 + 120, y: 615, size: 44, style: "gold", kicker: "Earth to Moon, center to center" });
+    const readout = F.stamp([fmtKm(kmMax)], { x: W / 2 + 120, y: 548, size: 44, style: "gold", kicker: "Earth to Moon, center to center" });
     F.scene([F.stars({ n: 200, par: 0.2, w: 2000, h: 900, x: -200, y: -100 }), earth, swing, readout], { bg: "#05060a", cam: { x: 640, y: 360, z: 1 } });
     // the Earth's face, landed in two small steps: waves hello, then smiles (far), is surprised (coming close),
     // laughs (closest)
@@ -1190,7 +1198,7 @@
 
   // ---------- 13: the neighbors ----------
   async function neighborsShot() {
-    const luna = F.plate("sc_luna", { x: -40, y: -24, w: 1360, h: 765 });
+    const luna = F.plate("sc_luna", { x: -40, y: -24, w: 1360, h: 765, ext: true });
     mir.x = 640; mir.y = 610; mir.s = 0.6; mir.eyes = "open"; mir.mouth = "smile";
     F.faceNow(mir, "neutral"); gesture(mir, "rest", 1);
     const mars = F.custom(function (c, t) {

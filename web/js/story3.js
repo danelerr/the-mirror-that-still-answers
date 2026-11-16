@@ -64,11 +64,11 @@
       if (this.drawn === false) return null;
       const st = Math.floor(t / 1000 * 12), has = F.hasSprites, mood = this.faceName || "neutral";
       let set = null, k = 0;
-      if (this.radio && has("P4_sonda_llama")) { set = "P4_sonda_llama"; k = Math.floor(st / 2) % 12; }
+      if (this.radio && has("P3_sonda_jupiter")) { set = "P3_sonda_jupiter"; k = 8 + (Math.floor(st / 6) % 2); }   // (P4 has a feed horn across the face)
       else if (this.unfold < 0.5 && has("P1_sonda_despliega")) { set = "P1_sonda_despliega"; k = 0; }
       // asleep and sleepy: drawings of the unfolding sheet (booms out, eyes closed / one eye open), so the probe keeps
       // the same design to the end (the drawings of P5 turn its booms into a wire and its body into an egg)
-      else if (this.eyes === "closed" && has("P1_sonda_despliega")) { set = "P1_sonda_despliega"; k = 6; }
+      else if (this.eyes === "closed" && has("P1_sonda_despliega")) { set = "P1_sonda_despliega"; k = 16; }   // (16: drawing 5 without its motion marks)
       else if ((this.eyes === "half" || this.sleepy > 0.5) && has("P1_sonda_despliega")) { set = "P1_sonda_despliega"; k = 8; }
       else if (has("P3_sonda_jupiter")) {
         set = "P3_sonda_jupiter";
@@ -96,7 +96,9 @@
           w = meta.w * k; h = meta.h * k; x0 = -meta.cx * k; y0 = -meta.cy * k;
         }
         c.scale(this.sx, this.sy);
+        c.shadowColor = "rgba(255,248,230,0.55)"; c.shadowBlur = 7;      // a little rim light: its black arms show against space
         c.drawImage(dr.im, x0, y0, w, h);
+        c.shadowBlur = 0;
         return;
       }
       c.scale(this.s * this.sx, this.sy * this.s);
@@ -268,7 +270,7 @@
     }
     await atw(22, "asteroid", 0, 4.1);
     if (p2) {
-      for (const i of [4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15]) {      // (drawing 12 came out with a dark, hollow dish)
+      for (const i of [5, 6, 7, 8, 9, 10, 11, 13, 14, 15]) {          // (4: the dish edge-on, another design)      // (drawing 12 came out with a dark, hollow dish)
         p2.frame = i;
         if (i % 3 === 1) sfx("swish");
         tw(p2, { y: 380 + Math.sin(i * 1.3) * 40 }, 110, EZ.inOut);
@@ -392,11 +394,11 @@
     await atw(24, "january", 0, 2.8);
     A.pose(6);
     const last = p10At(Date.UTC(2003, 0, 22));
-    const when = F.stamp(["January 2003"], { x: 1110, y: 110, size: 44, rot: 0.04, kicker: "its last signal" });
+    const when = F.stamp(["January 2003"], { x: 1060, y: 110, size: 44, rot: 0.04, kicker: "its last signal" });
     F.popIn(when, 360, "stamp");
     await atw(24, "billion", 0, 6.8);
     A.pose(2);                                    // looking up, toward something very far away
-    const far = F.stamp([bil(last.km)], { x: 1110, y: 230, size: 40, style: "card", kicker: "away from Earth" });
+    const far = F.stamp([bil(last.km)], { x: 1060, y: 230, size: 40, style: "card", kicker: "away from Earth" });
     F.popIn(far, 360);
     sfx("radio");
     await atw(24, "signal", 0, 9.3);
@@ -502,7 +504,7 @@
     F.popIn(clock, 400);
     await tw(clock, { h: now.lt }, 3200, EZ.inOut, () => { if (Math.random() < 0.2) sfx("tick"); });
     sfx("ding");
-    const note = F.stamp(["Your greeting arrives in " + hm(now.lt)], { x: W / 2, y: 600, size: 30, style: "card" });
+    const note = F.stamp(["Your greeting arrives in " + hm(now.lt)], { x: W / 2, y: 232, size: 30, style: "card" });
     F.popIn(note, 360);
     await v;
     await wait(600);
@@ -524,7 +526,7 @@
     await atw(27, "powers", 0, 3.0);
     sfx("sad");
     if (p5) {
-      for (const [i, ms] of [[10, 260], [9, 300], [8, 420], [8, 300], [7, 360], [6, 200]]) { p5.frame = i; await wait(ms); }
+      for (const [i, ms] of [[10, 260], [9, 300], [8, 420], [8, 300], [7, 360], [16, 200]]) { p5.frame = i; await wait(ms); }
       tw(p5, { sink: 1 }, 1400, EZ.inOut);
     } else {
       pr.eyes = "open"; F.face(pr, "tired", 500);
@@ -534,7 +536,7 @@
     await atw(27, "know", 0, 5.5);
     // its path: real distances from 1972 to today, and the line keeps going because we know how it moves
     const graph = F.custom(function (c, t) {
-      const X0 = 130, X1 = 1180, Y0 = 150, Y1 = 600;
+      const X0 = 240, X1 = 1180, Y0 = 150, Y1 = 552;      // (clear of the Mirror's window and of the captions)
       const t0 = P10[0].t, t1 = Date.UTC(2040, 0, 1), max = 170;
       const x = (ms) => X0 + (ms - t0) / (t1 - t0) * (X1 - X0), y = (au) => Y1 - au / max * (Y1 - Y0);
       c.globalAlpha = this.op;
