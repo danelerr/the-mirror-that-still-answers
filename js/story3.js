@@ -563,7 +563,7 @@
         c.fillText("today: " + a.au.toFixed(1) + " AU", px - 12, py - 10);
       }
       c.font = "bold 20px " + F.FONT; c.textAlign = "left"; c.textBaseline = "top"; c.fillStyle = "#ffe07a";
-      c.fillText("Pioneer 10's distance from Earth, every month since 1972 (NASA/JPL Horizons)", X0 - 70, Y0 - 56);
+      c.fillText("Pioneer 10's distance from Earth, every month since 1972 (NASA/JPL Horizons)", X0 - 10, Y0 - 56);
     }, { par: 0, z: 50, op: 0, k: 0, k2: 0 });
     F.add(graph);
     if (p5) tw(p5, { op: 0.15 }, 400); else tw(pr, { op: 0.15 }, 400);
