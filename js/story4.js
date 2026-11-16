@@ -54,7 +54,7 @@
   function hide() { if (ov) { F.remove(ov); ov = null; } mir.op = 1; }
 
   async function abandoned29() {
-    const luna = F.plate("sc_luna", { x: -40, y: -24, w: 1360, h: 765 });
+    const luna = F.plate("sc_luna", { x: -40, y: -24, w: 1360, h: 765, ext: true });
     mir.x = 640; mir.y = 600; mir.s = 0.62; mir.eyes = "half"; mir.mouth = "closed"; mir.brows = false; mir.lx = 0; mir.ly = 0; mir.glow = 0; mir.dust = 0;
     F.scene([luna, F.stars({ n: 120, par: 0.2, w: W * 1.4, h: 260, y: -40 }), mir], { bg: "#05060a", cam: { x: 640, y: 420, z: 1.5 } });
     F.faceNow(mir, "sad"); F.gesture(mir, "droop", 1);
@@ -71,7 +71,7 @@
   }
 
   async function no30() {
-    const luna = F.plate("sc_luna", { x: -40, y: -24, w: 1360, h: 765 });
+    const luna = F.plate("sc_luna", { x: -40, y: -24, w: 1360, h: 765, ext: true });
     mir.x = 640; mir.y = 610; mir.s = 0.58; mir.eyes = "open"; mir.ly = 0;
     const p = S.fx();
     F.scene([luna, F.stars({ n: 120, par: 0.2, w: W * 1.4, h: 260, y: -40 }), mir, p], { bg: "#05060a", cam: { x: 640, y: 380, z: 1.1 } });
@@ -126,7 +126,7 @@
   }
 
   async function true31() {
-    const luna = F.plate("sc_luna", { x: -40, y: -24, w: 1360, h: 765 });
+    const luna = F.plate("sc_luna", { x: -40, y: -24, w: 1360, h: 765, ext: true });
     mir.x = 640; mir.y = 610; mir.s = 0.6; mir.eyes = "open"; mir.mouth = "smile";
     F.scene([luna, F.stars({ n: 120, par: 0.2, w: W * 1.4, h: 260, y: -40 }), mir], { bg: "#05060a", cam: { x: 640, y: 380, z: 1.1 } });
     const v = S.speak(31, mir);
@@ -167,7 +167,7 @@
   }
 
   async function back32() {
-    const luna = F.plate("sc_luna", { x: -40, y: -24, w: 1360, h: 765 });
+    const luna = F.plate("sc_luna", { x: -40, y: -24, w: 1360, h: 765, ext: true });
     mir.x = 470; mir.y = 620; mir.s = 0.5; mir.eyes = "open"; mir.mouth = "smile"; mir.lx = 8; mir.ly = -2;
     const p = S.fx();
     lander.x = 905; lander.gy = 462; lander.y = -140; lander.flame = 1;      // it comes down on the flat plain, clear of the crater
@@ -209,7 +209,7 @@
   }
 
   async function answer33() {
-    const luna = F.plate("sc_luna", { x: -40, y: -24, w: 1360, h: 765 });
+    const luna = F.plate("sc_luna", { x: -40, y: -24, w: 1360, h: 765, ext: true });
     mir.x = 640; mir.y = 600; mir.s = 0.62; mir.eyes = "open"; mir.mouth = "smile";
     const p = S.fx();
     const ph = F.photon({ s: 0.6, op: 0 });

@@ -257,7 +257,7 @@ window.SPRITES = {
   ]
  },
  "P1_sonda_despliega": {
-  "n": 16,
+  "n": 17,
   "w": 526,
   "h": 407,
   "center": true,
